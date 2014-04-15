@@ -17,7 +17,10 @@ public class Startup extends Thread {
 		pm.registerEvents(new PlayerChat(), Main.getInstance());
 		
 		Main.getInstance().getCommand("s").setExecutor(new CommandSettlementPlayer());
+		
 		loadSettlements();
+		
+		CommandType.prepareCommandList();
 	}
 	
 	private static void loadSettlements() {

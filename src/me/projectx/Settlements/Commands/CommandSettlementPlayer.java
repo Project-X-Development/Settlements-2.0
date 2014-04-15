@@ -1,6 +1,7 @@
 package me.projectx.Settlements.Commands;
 
 import me.projectx.Settlements.API.SettlementManager;
+import me.projectx.Settlements.Utils.CommandType;
 
 import org.bukkit.command.CommandSender;
 
@@ -27,7 +28,7 @@ public class CommandSettlementPlayer extends CommandModel {
 				if (args[0].equalsIgnoreCase("leave"))
 					SettlementManager.getManager().leaveSettlement(sender.getName());
 			}else
-				return false;
+				CommandType.printList(sender);
 		}
 		return true;
 	}

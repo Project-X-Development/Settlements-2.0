@@ -8,7 +8,7 @@ public class Main extends JavaPlugin {
 	private static Main plugin;
 	
 	public void onEnable(){
-		plugin = this;
+		plugin = this;	
 		Startup.runStartup();
 	}
 	

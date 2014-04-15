@@ -2,15 +2,12 @@ package me.projectx.Settlements.API;
 
 import java.util.ArrayList;
 
-import me.projectx.Settlements.Utils.MessageType;
-
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class Settlement {
 	
-	private String leader, name;
+	private String leader, name, desc;
 	private ArrayList<String> officers = new ArrayList<String>();
 	private ArrayList<String> citizens = new ArrayList<String>();
 	
@@ -25,6 +22,15 @@ public class Settlement {
 	 */
 	public String getName(){
 		return this.name;
+	}
+	
+	/**
+	 * Set the name for the Settlement
+	 * 
+	 * @param name : The name for the settlement
+	 */
+	public void setName(String name){
+		this.name = name;
 	}
 	
 	/**
@@ -45,6 +51,23 @@ public class Settlement {
 		this.leader = name;
 	}
 	
+	/**
+	 * Get the description of the Settlement
+	 * 
+	 * @return The description of the Settlement
+	 */
+	public String getDescription(){
+		return this.desc;
+	}
+	
+	/**
+	 * Set the description of the Settlement
+	 * 
+	 * @param description : The description of the Settlement
+	 */
+	public void setDescription(String description){
+		this.desc = description;
+	}
 	/**
 	 * Grant citizenship to a player
 	 * 

@@ -98,6 +98,9 @@ public class SettlementManager {
 				Settlement s = new Settlement(name);
 				s.setLeader(sender.getName());
 				settlements.add(s);
+				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully created " + ChatColor.AQUA + s.getName());
+				sender.sendMessage(ChatColor.GREEN + "You can now set a description by doing " + ChatColor.RED + "/s desc <description>");
+				sender.sendMessage(ChatColor.GREEN + "For more things you can do, type " + ChatColor.RED + "/s");
 			}else
 				sender.sendMessage(MessageType.CREATE_IN_SETTLEMENT.getMsg());
 		}else
@@ -119,9 +122,8 @@ public class SettlementManager {
 		if (settlementExists(getPlayerSettlement(sender.getName()).getName())){
 			Settlement s = getPlayerSettlement(sender.getName());
 			if (s.isLeader(sender.getName())){
-				sender.sendMessage("Successfully deleted " + s.getName());
+				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully deleted " + ChatColor.AQUA + s.getName());
 				settlements.remove(s);
-				s = null; //Idk if this is necessary, but it's here ;)
 			}else
 				sender.sendMessage(MessageType.DELETE_NOT_LEADER.getMsg());
 		}
@@ -212,9 +214,13 @@ public class SettlementManager {
 	 */
 	public void leaveSettlement(String name){
 		if (!(getPlayerSettlement(name) == null)){
-			Bukkit.getPlayer(name).sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully left " + getPlayerSettlement(name).getName());
-			getPlayerSettlement(name).sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + name + ChatColor.GRAY + " left the Settlement :(");
-			getPlayerSettlement(name).revokeCitizenship(name);
+			Settlement s = getPlayerSettlement(name);
+			if (!s.isLeader(name)){
+				Bukkit.getPlayer(name).sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully left " + s.getName());
+				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + name + ChatColor.GRAY + " left the Settlement :(");
+				s.revokeCitizenship(name);
+			}else
+				Bukkit.getPlayer(name).sendMessage(MessageType.MUST_APPOINT_NEW_LEADER.getMsg());
 		}else
 			Bukkit.getPlayer(name).sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
 	}

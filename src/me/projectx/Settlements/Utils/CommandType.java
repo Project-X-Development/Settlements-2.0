@@ -7,10 +7,15 @@ import org.bukkit.command.CommandSender;
 
 public enum CommandType {
 	
-	SETTLEMENT_CREATE("/s create <name>", "Create a new settlement", "settlements.player.create"),
-	SETTLEMENT_DELETE("/s delete <name>", "Delete a settlement", "settlements.player.delete"),
-	SETTLEMENT_MEMBER_ADD("/s invite <player>", "Invite a player to join the settlement", "settlements.player.invite"),
-	SETTLEMENT_MEMBER_REMOVE("/s remove <player>", "Remove a player from the settlement", "settlements.player.remove");
+	SETTLEMENT_CREATE("/s create <name>", "Create a new Settlement", "settlements.player.create"),
+	SETTLEMENT_DELETE("/s delete <name>", "Delete a Settlement", "settlements.player.delete"),
+	SETTLEMENT_DESC("/s desc <description", "Set a description for the Settlement", "settlements.player.desc"),
+	SETTLEMENT_MEMBER_ADD("/s invite <player>", "Invite a player to join the Settlement", "settlements.player.invite"),
+	SETTLEMENT_INVITE_ACCEPT("/s accept", "Accept an invitation to join a Settlement", "settlements.player.accept"),
+	SETTLEMENT_INVITE_DECLINE("/s decline", "Decline an invitation to join a Settlement", "settlements.player.decline"),
+	SETTLEMENT_MEMBER_REMOVE("/s remove <player>", "Remove a player from the Settlement", "settlements.player.remove"),
+	SETTLEMENT_LEAVE("/s leave", "Leave your current Settlement", "settlements.player.leave"),
+	SETTLEMENT_CLAIM("/s claim", "Claim the chunk you are standing in", "settlements.player.claim");
 	
 	private String usage, info, perm;
 	private static ArrayList<String> list = new ArrayList<String>();

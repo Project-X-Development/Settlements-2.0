@@ -12,6 +12,7 @@ public enum MessageType {
 	SETTLEMENT_EXISTS(PREFIX.getMsg() + "&4That Settlement already exists!"),
 	CREATE_IN_SETTLEMENT(PREFIX.getMsg() + "&4You cannot be a member a Settlement when creating a new one!"),
 	NOT_IN_SETTLEMENT(PREFIX.getMsg() + "&4You are not in a Settlement!"),
+	MUST_APPOINT_NEW_LEADER(PREFIX.getMsg() + "&7You must appoint a new leader before leaving!"),
 	NO_PERM(PREFIX.getMsg() + "&4You don't have permission to use that command!");
 	
 	private String msg;
