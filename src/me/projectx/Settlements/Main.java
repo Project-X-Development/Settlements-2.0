@@ -1,5 +1,7 @@
 package me.projectx.Settlements;
 
+import me.projectx.Settlements.Utils.Startup;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
@@ -7,6 +9,7 @@ public class Main extends JavaPlugin {
 	
 	public void onEnable(){
 		plugin = this;
+		Startup.runStartup();
 	}
 	
 	public void onDisable(){

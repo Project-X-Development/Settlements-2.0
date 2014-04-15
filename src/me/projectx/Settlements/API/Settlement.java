@@ -2,6 +2,12 @@ package me.projectx.Settlements.API;
 
 import java.util.ArrayList;
 
+import me.projectx.Settlements.Utils.MessageType;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+
 public class Settlement {
 	
 	private String leader, name;
@@ -104,6 +110,16 @@ public class Settlement {
 	}
 	
 	/**
+	 * Determine if a player is a member of the settlement
+	 * 
+	 * @param name : The name of the player to check
+	 * @return True if the player is a citizen, officer, or leader
+	 */
+	public boolean hasMember(String name){
+		return isCitizen(name) || isOfficer(name) || isLeader(name);
+	}
+	
+	/**
 	 * Get the citizens of the settlement
 	 * 
 	 * @return The citizens of the settlement
@@ -119,5 +135,26 @@ public class Settlement {
 	 */
 	public ArrayList<String> getOfficers(){
 		return officers;
+	}
+	
+	/**
+	 * Get how many members are in the Settlement
+	 * 
+	 * @return How many members are in the Settlement
+	 */
+	public int memberSize(){
+		return (citizens.size() + officers.size() + 1); // +1 is to include the leader
+	}
+	
+	/**
+	 * Send a message to all the players in the Settlement
+	 * 
+	 * @param message : The message to send to the Settlement members
+	 */
+	public void sendSettlementMessage(String message){
+		for (Player p : Bukkit.getOnlinePlayers()){
+			if (hasMember(p.getName()))
+				p.sendMessage(message);
+		}
 	}
 }

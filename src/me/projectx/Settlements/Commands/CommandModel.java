@@ -11,7 +11,7 @@ public abstract class CommandModel implements CommandExecutor{
 
 	private String perms, usage;
 	
-	public CommandModel(String command, String permission, String usage){
+	public CommandModel(String permission, String usage){
 		this.perms = permission;
 		this.usage = usage;
 	}
