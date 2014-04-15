@@ -1,0 +1,4 @@
+name: Settlements
+version: 0.1
+main: me.projectx.Settlements.Main
+commands:
