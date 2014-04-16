@@ -1,5 +1,7 @@
 package me.projectx.Settlements.Commands;
 
+import java.sql.SQLException;
+
 import me.projectx.Settlements.API.SettlementManager;
 import me.projectx.Settlements.Utils.CommandType;
 
@@ -12,7 +14,7 @@ public class CommandSettlementPlayer extends CommandModel {
 	}
 
 	@Override
-	public boolean onCmd(CommandSender sender, String cml, String[] args) {
+	public boolean onCmd(CommandSender sender, String cml, String[] args) throws SQLException {
 		if (cml.equalsIgnoreCase("s")){
 			if (args.length > 0){
 				if (args[0].equalsIgnoreCase("create"))

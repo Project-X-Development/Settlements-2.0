@@ -1,5 +1,7 @@
 package me.projectx.Settlements.Commands;
 
+import java.sql.SQLException;
+
 import me.projectx.Settlements.Utils.MessageType;
 
 import org.bukkit.ChatColor;
@@ -16,7 +18,7 @@ public abstract class CommandModel implements CommandExecutor{
 		this.usage = usage;
 	}
 	
-	public abstract boolean onCmd(CommandSender sender, String cml, String[] args);
+	public abstract boolean onCmd(CommandSender sender, String cml, String[] args) throws SQLException;
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
@@ -25,9 +27,14 @@ public abstract class CommandModel implements CommandExecutor{
 			return false;
 		}
 		
-		if (!(onCmd(sender, commandLabel, args))){
-			sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Correct usage: " + ChatColor.AQUA + usage);
-			return false;
+		try {
+			if (!(onCmd(sender, commandLabel, args))){
+				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Correct usage: " + ChatColor.AQUA + usage);
+				return false;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return true;
 	}

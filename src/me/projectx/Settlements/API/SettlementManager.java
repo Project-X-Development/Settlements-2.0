@@ -43,6 +43,7 @@ public class SettlementManager {
 	 * Load settlements (Call onEnable)
 	 * 
 	 * @return Returns true if successful, false otherwise
+	 * @throws SQLException 
 	 */
 	public static void loadSettlments() throws SQLException{
 		ResultSet result = DatabaseUtils.query("SELECT * FROM settlements;");
@@ -52,10 +53,12 @@ public class SettlementManager {
 	 * Save settlements (Call onDisable)
 	 * 
 	 * @return Returns true if successful, false otherwise
+	 * @throws SQLException 
 	 */
 	public static void saveSettlements() throws SQLException{
 		for (Settlement set : settlements){
 			String tempName = set.getName();
+			long tempId = set.getId();
 			String tempLeader = set.getLeader();
 			String tempDesc = set.getDescription();
 			ArrayList<String> tempCits = set.getCitizens();
@@ -64,9 +67,9 @@ public class SettlementManager {
 					+ "SET name='"+ tempName + "'"
 					+ ", leader='"+ tempLeader +"'"
 					+ ", description='"+ tempDesc +"'"
-					+ ", leader='"+ tempLeader +"'"
-					+ ", description='"+ tempDesc +"'"
-					+ "WHERE CustomerName='Alfreds Futterkiste';");
+					+ ", citizens='"+ tempCits +"'"
+					+ ", officers='"+ tempOffs +"'"
+					+ "WHERE id='" + tempId + "';");
 		}
 	}
 	
@@ -139,13 +142,18 @@ public class SettlementManager {
 	 * 
 	 * @param name : The name of the new settlement
 	 * @param sender : Who issued the creation of the settlement
+	 * @throws SQLException 
 	 */
-	public void createSettlement(String name, CommandSender sender){
+	public void createSettlement(String name, CommandSender sender) throws SQLException{
 		if (!settlementExists(name)){
 			if (getPlayerSettlement(sender.getName()) == null){
 				Settlement s = new Settlement(name);
 				s.setLeader(sender.getName());
 				settlements.add(s);
+				
+				DatabaseUtils.query("INSERT INTO settlements (id, name, leader)"
+						+ "VALUES ('" + s.getId() + "','" + s.getName() + "','" + s.getLeader() + "');");
+				
 				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully created " + ChatColor.AQUA + s.getName());
 				sender.sendMessage(ChatColor.GREEN + "You can now set a description by doing " + ChatColor.RED + "/s desc <description>");
 				sender.sendMessage(ChatColor.GREEN + "For more things you can do, type " + ChatColor.RED + "/s");
@@ -161,17 +169,20 @@ public class SettlementManager {
 	 *  <p>
 	 * TODO
 	 * <p>
-	 * Still need to make database call to permanently save the settlement
+	 * -- Still need to make database call to permanently save the settlement -- (DONE)
 	 * 
 	 * @param name : The name of the settlement to delete
 	 * @param sender : Who issued the deletion of the settlement
+	 * @throws SQLException 
 	 */
-	public void deleteSettlement(CommandSender sender){
+	public void deleteSettlement(CommandSender sender) throws SQLException{
 		if (settlementExists(getPlayerSettlement(sender.getName()).getName())){
 			Settlement s = getPlayerSettlement(sender.getName());
 			if (s.isLeader(sender.getName())){
 				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully deleted " + ChatColor.AQUA + s.getName());
 				settlements.remove(s);
+				DatabaseUtils.query("DELETE FROM settlements"
+						+ "WHERE id='" + s.getId() + "' AND leader='" + s.getLeader() + "';");
 			}else
 				sender.sendMessage(MessageType.DELETE_NOT_LEADER.getMsg());
 		}
@@ -213,13 +224,18 @@ public class SettlementManager {
 	 * Accept an invite to a Settlement. Will only work if the player has a pending invite
 	 * 
 	 * @param player : The player who is accepting the invite
+	 * @throws SQLException 
 	 */
-	public void acceptInvite(String player){
+	public void acceptInvite(String player) throws SQLException{
 		if (hasInvite(player)){
 			if (getPlayerSettlement(player) == null){
 				Settlement s = invitedPlayers.get(player);
 				s.giveCitizenship(player);
 				invitedPlayers.remove(player);
+				
+				DatabaseUtils.query("UPDATE settlements"
+						+ "SET citizens='"+ s.getCitizens() +"'"
+						+ "WHERE id='" + s.getId() + "';");
 				
 				Bukkit.getPlayer(player).sendMessage(MessageType.PREFIX.getMsg() + 
 						ChatColor.GRAY + "Successfully joined " + ChatColor.AQUA + getPlayerSettlement(player).getName()); 
