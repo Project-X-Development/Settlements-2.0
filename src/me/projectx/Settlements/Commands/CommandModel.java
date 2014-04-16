@@ -28,14 +28,13 @@ public abstract class CommandModel implements CommandExecutor{
 		}
 		
 		try {
-			if (!(onCmd(sender, commandLabel, args))){
-				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Correct usage: " + ChatColor.AQUA + usage);
-				return false;
+				if (!(onCmd(sender, commandLabel, args))){
+					sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Correct usage: " + ChatColor.AQUA + usage);
+					return false;
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		return true;
 	}
 }
