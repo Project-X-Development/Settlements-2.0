@@ -25,12 +25,7 @@ import org.bukkit.plugin.Plugin;
  * @author tips48
  */
 public class MySQL extends Database {
-    private final String user;
-    private final String database;
-    private final String password;
-    private final String port;
-    private final String hostname;
-
+    private final String user, database, password, port, hostname;
     private Connection connection;
     
     Plugin plugin = Main.getInstance(); 
@@ -99,27 +94,22 @@ public class MySQL extends Database {
     public ResultSet querySQL(String query) {
         Connection c = null;
 
-        if (checkConnection()) {
+        if (checkConnection()) 
             c = getConnection();
-        } else {
+        else 
             c = openConnection();
-        }
-
+        
         Statement s = null;
 
         try {
             s = c.createStatement();
-        } catch (SQLException e1) {
-            e1.printStackTrace();
-        }
+        } catch (SQLException e1) {e1.printStackTrace();}
 
         ResultSet ret = null;
 
         try {
             ret = s.executeQuery(query);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        } catch (SQLException e) {e.printStackTrace();}
 
         closeConnection();
 
@@ -130,23 +120,17 @@ public class MySQL extends Database {
 
         Connection c = null;
 
-        if (checkConnection()) {
+        if (checkConnection())
             c = getConnection();
-        } else {
+        else
             c = openConnection();
-        }
 
         Statement s = null;
 
         try {
             s = c.createStatement();
             s.executeUpdate(update);
-        } catch (SQLException e1) {
-            e1.printStackTrace();
-        }
-
+        } catch (SQLException e1) {e1.printStackTrace();}
         closeConnection();
-
     }
-
 }
