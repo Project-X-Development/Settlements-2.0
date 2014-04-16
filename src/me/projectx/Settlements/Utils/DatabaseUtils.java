@@ -35,7 +35,7 @@ public class DatabaseUtils {
 	}
 
 	public static void setupMySQL() throws SQLException{
-		queryOut("CREATE TABLE IF NOT EXISTS settlement"
+		queryOut("CREATE TABLE IF NOT EXISTS settlements"
 				+ "("
 				+ "id BIGINT,"
 				+ "name varchar(255),"
