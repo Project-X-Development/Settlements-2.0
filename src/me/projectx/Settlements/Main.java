@@ -2,6 +2,8 @@ package me.projectx.Settlements;
 
 import java.sql.SQLException;
 
+import me.projectx.Settlements.API.SettlementManager;
+import me.projectx.Settlements.Utils.DatabaseUtils;
 import me.projectx.Settlements.Utils.Startup;
 
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,7 +22,10 @@ public class Main extends JavaPlugin {
 	}
 	
 	public void onDisable(){
-		
+		try {
+			SettlementManager.saveSettlements();
+		} catch(SQLException e) {e.printStackTrace();}
+		DatabaseUtils.closeConnection();
 		plugin = null;
 	}
 	

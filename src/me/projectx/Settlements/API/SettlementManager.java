@@ -211,7 +211,7 @@ public class SettlementManager {
 
 				//Remove from database - Checking leader for extra precaution
 				DatabaseUtils.queryOut("DELETE FROM settlements"
-						+ "WHERE id='" + s.getId() + "' AND leader='" + s.getLeader() + "';");
+						+ "WHERE id=" + s.getId() + " AND leader=" + s.getLeader() + ";");
 
 			} else {
 				sender.sendMessage(MessageType.DELETE_NOT_LEADER.getMsg());
