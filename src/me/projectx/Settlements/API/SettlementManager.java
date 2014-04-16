@@ -50,7 +50,7 @@ public class SettlementManager {
 		ResultSet result = DatabaseUtils.query("SELECT * FROM settlements;");
 		ArrayList<Settlement> tempSet = new ArrayList<Settlement>();  
 		while (result.next()){
-			Settlement set = result.
+			long set = result.getLong("id");
 		}
 	}
 	
