@@ -17,13 +17,13 @@ public class PlayerCache {
 	//Backsup PlayerName : UUID database - Can bog down the server a bit
 	public static void backupCache() throws SQLException{
 		for (String name : playerMap.keySet()){
-			DatabaseUtils.query("INSERT INTO cache (`name`, `UUID`) VALUES ('" + name + "', '" + playerMap.get(name).toString() + "');");
+			DatabaseUtils.queryOut("INSERT INTO cache (`name`, `UUID`) VALUES ('" + name + "', '" + playerMap.get(name).toString() + "');");
 		}
 	}
 
 	//Loads cache from backup database - Can bog down the server a bit
 	public static void loadCache() throws SQLException{
-		ResultSet result = DatabaseUtils.query("SELECT * FROM cache;");
+		ResultSet result = DatabaseUtils.queryIn("SELECT * FROM cache;");
 		HashMap<String, UUID> tempMap = new HashMap<String, UUID>();
 		while (result.next()){
 			String user = result.getString("name");

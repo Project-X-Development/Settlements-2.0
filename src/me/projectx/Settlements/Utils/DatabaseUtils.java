@@ -32,7 +32,7 @@ public class DatabaseUtils {
 		
 		if (mysql.checkConnection()){
 			//Connection successful....store in variable
-			con = mysql.getConnection();
+			con = mysql.openConnection();
 		}
 		else{
 			//Could not connect...throw error!
@@ -41,7 +41,7 @@ public class DatabaseUtils {
 	}
 	
 	public static void setupMySQL() throws SQLException{
-		query("CREATE TABLE IF NOT EXISTS settlement"
+		queryOut("CREATE TABLE IF NOT EXISTS settlement"
 				+ "("
 				+ "id BIGINT,"
 				+ "name varchar(255),"
@@ -51,7 +51,7 @@ public class DatabaseUtils {
 				+ "officers LONGBLOB"
 				+ ");");
 		
-		query("CREATE TABLE IF NOT EXISTS cache"
+		queryOut("CREATE TABLE IF NOT EXISTS cache"
 				+ "("
 				+ "name varchar(255),"
 				+ "id varchar(255)"
@@ -67,9 +67,15 @@ public class DatabaseUtils {
 	}
 
 	//Query database using SQL Syntax
-	public static ResultSet query(String query) throws SQLException{
+	public static ResultSet queryIn(String query) throws SQLException{
 		Statement statement = con.createStatement();
 		ResultSet result = statement.executeQuery(query);
 		return result;
+	}
+	
+	//Query database using SQL Syntax
+	public static void queryOut(String query) throws SQLException{
+		Statement statement = con.createStatement();
+		statement.executeUpdate(query);
 	}
 }

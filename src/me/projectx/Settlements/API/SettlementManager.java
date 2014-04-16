@@ -46,7 +46,7 @@ public class SettlementManager {
 	 * @throws SQLException 
 	 */
 	public static void loadSettlmentsFromDB() throws SQLException{
-		ResultSet result = DatabaseUtils.query("SELECT * FROM settlements;"); 
+		ResultSet result = DatabaseUtils.queryIn("SELECT * FROM settlements;"); 
 		while (result.next()){
 			String name = result.getString("name");
 			Settlement set = new Settlement(name);
@@ -72,7 +72,7 @@ public class SettlementManager {
 			String tempDesc = set.getDescription();
 			ArrayList<String> tempCits = set.getCitizens();
 			ArrayList<String> tempOffs = set.getOfficers();
-			DatabaseUtils.query("UPDATE settlements"
+			DatabaseUtils.queryOut("UPDATE settlements"
 					+ "SET name='"+ tempName + "'"
 					+ ", leader='"+ tempLeader +"'"
 					+ ", description='"+ tempDesc +"'"
@@ -173,7 +173,7 @@ public class SettlementManager {
 				settlements.add(s);
 				
 				//Create in database
-				DatabaseUtils.query("INSERT INTO settlements (id, name, leader)"
+				DatabaseUtils.queryOut("INSERT INTO settlements (id, name, leader)"
 						+ "VALUES ('" + s.getId() + "','" + s.getName() + "','" + s.getLeader() + "');");
 				
 				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully created " + ChatColor.AQUA + s.getName());
@@ -204,7 +204,7 @@ public class SettlementManager {
 				settlements.remove(s);
 				
 				//Remove from database - Checking leader for extra precaution
-				DatabaseUtils.query("DELETE FROM settlements"
+				DatabaseUtils.queryOut("DELETE FROM settlements"
 						+ "WHERE id='" + s.getId() + "' AND leader='" + s.getLeader() + "';");
 				
 			}else
@@ -259,7 +259,7 @@ public class SettlementManager {
 				s.giveCitizenship(player);
 				invitedPlayers.remove(player);
 				
-				DatabaseUtils.query("UPDATE settlements"
+				DatabaseUtils.queryOut("UPDATE settlements"
 						+ "SET citizens='"+ s.getCitizens() +"'"
 						+ "WHERE id='" + s.getId() + "';");
 				
@@ -314,7 +314,7 @@ public class SettlementManager {
 				s.revokeCitizenship(name);
 				
 				//Remove member form database
-				DatabaseUtils.query("UPDATE settlements"
+				DatabaseUtils.queryOut("UPDATE settlements"
 						+ "SET citizens='"+ s.getCitizens() +"'"
 						+ "WHERE id='" + s.getId() + "';");
 			}else
