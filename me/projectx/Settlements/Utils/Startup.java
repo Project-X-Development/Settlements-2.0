@@ -1,13 +1,10 @@
 package me.projectx.Settlements.Utils;
 
-import me.projectx.Settlements.Main;
-import me.projectx.Settlements.Commands.CommandSettlementPlayer;
-import me.projectx.Settlements.Events.PlayerChat;
-import me.projectx.Settlements.Events.PlayerJoin;
-import me.projectx.Settlements.Events.PlayerQuit;
-
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.PluginManager;
+import src.me.projectx.Settlements.Main;
+import src.me.projectx.Settlements.Commands.CommandSettlementPlayer;
+import src.me.projectx.Settlements.Events.PlayerChat;
+import src.me.projectx.Settlements.Events.PlayerJoin;
+import src.me.projectx.Settlements.Events.PlayerQuit;
 
 public class Startup extends Thread {
 

@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 import me.projectx.Settlements.Utils.DatabaseUtils;
 import me.projectx.Settlements.Utils.MessageType;
@@ -45,8 +46,12 @@ public class SettlementManager {
 	 * @return Returns true if successful, false otherwise
 	 * @throws SQLException 
 	 */
-	public static void loadSettlments() throws SQLException{
+	public static void loadSettlmentsFromDB() throws SQLException{
 		ResultSet result = DatabaseUtils.query("SELECT * FROM settlements;");
+		ArrayList<Settlement> tempSet = new ArrayList<Settlement>();  
+		while (result.next()){
+			Settlement set = result.
+		}
 	}
 	
 	/**
