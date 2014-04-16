@@ -55,7 +55,6 @@ public class SettlementManager {
 			set.setDescription(result.getString("description"));
 			set.setOfficer(result.getString("officers"));
 			set.giveCitizenship(result.getString("citizens"));
-			set.setId(result.getLong("id"));
 			settlements.add(set);
 		}
 	}
