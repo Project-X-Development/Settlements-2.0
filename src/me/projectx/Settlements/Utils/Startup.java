@@ -23,13 +23,13 @@ public class Startup extends Thread {
 
 		Main.getInstance().getCommand("s").setExecutor(new CommandSettlementPlayer());
 
-		loadSettlements();
-
 		CommandType.prepareCommandList();
 
 		//Setup database
 		DatabaseUtils.setupConnection();
 		DatabaseUtils.setupMySQL();
+		
+		loadSettlements();
 
 	}
 

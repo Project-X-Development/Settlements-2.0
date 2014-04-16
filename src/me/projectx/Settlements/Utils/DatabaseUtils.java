@@ -30,14 +30,9 @@ public class DatabaseUtils {
 		//Create SQL object for database
 		mysql = new MySQL(pl, host, port, db, user, pass);
 		
-		if (mysql.checkConnection()){
 			//Connection successful....store in variable
-			con = mysql.getConnection();
-		}
-		else{
-			//Could not connect...throw error!
-			pl.getLogger().severe(ChatColor.RED + "Could not connect to database!");
-		}
+		mysql.openConnection();
+		con = mysql.getConnection();
 	}
 	
 	public static void setupMySQL() throws SQLException{
@@ -64,6 +59,10 @@ public class DatabaseUtils {
 
 	public static Connection getConnection(){
 		return con;
+	}
+	
+	public static void openConnection(){
+		mysql.openConnection();
 	}
 
 	//Query database using SQL Syntax
