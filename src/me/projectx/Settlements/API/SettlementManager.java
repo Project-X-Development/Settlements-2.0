@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.UUID;
 
 import me.projectx.Settlements.Utils.DatabaseUtils;
 import me.projectx.Settlements.Utils.MessageType;
@@ -161,7 +160,7 @@ public class SettlementManager {
 	 * <p>
 	 * TODO
 	 * <p>
-	 * Still need to make database call to permanently save the settlement
+	 * -- Still need to make database call to permanently save the settlement -- DONE
 	 * 
 	 * @param name : The name of the new settlement
 	 * @param sender : Who issued the creation of the settlement
@@ -174,6 +173,7 @@ public class SettlementManager {
 				s.setLeader(sender.getName());
 				settlements.add(s);
 				
+				//Create in database
 				DatabaseUtils.query("INSERT INTO settlements (id, name, leader)"
 						+ "VALUES ('" + s.getId() + "','" + s.getName() + "','" + s.getLeader() + "');");
 				
@@ -204,8 +204,11 @@ public class SettlementManager {
 			if (s.isLeader(sender.getName())){
 				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully deleted " + ChatColor.AQUA + s.getName());
 				settlements.remove(s);
+				
+				//Remove from database - Checking leader for extra precaution
 				DatabaseUtils.query("DELETE FROM settlements"
 						+ "WHERE id='" + s.getId() + "' AND leader='" + s.getLeader() + "';");
+				
 			}else
 				sender.sendMessage(MessageType.DELETE_NOT_LEADER.getMsg());
 		}
@@ -222,6 +225,7 @@ public class SettlementManager {
 	 * @param player : The player to invite
 	 * @param sender : Who issued the invite
 	 */
+	@SuppressWarnings("deprecation")
 	public void inviteCitizen(String player, CommandSender sender){
 		if (!invitedPlayers.containsKey(player)){
 			if (!(getPlayerSettlement(sender.getName()) == null)){
@@ -249,6 +253,7 @@ public class SettlementManager {
 	 * @param player : The player who is accepting the invite
 	 * @throws SQLException 
 	 */
+	@SuppressWarnings("deprecation")
 	public void acceptInvite(String player) throws SQLException{
 		if (hasInvite(player)){
 			if (getPlayerSettlement(player) == null){
@@ -285,6 +290,7 @@ public class SettlementManager {
 	 * 
 	 * @param player : The player who is declining the invite
 	 */
+	@SuppressWarnings("deprecation")
 	public void declineInvite(String player){
 		if (hasInvite(player)){
 			Bukkit.getPlayer(player).sendMessage(MessageType.PREFIX.getMsg() + 
@@ -298,14 +304,21 @@ public class SettlementManager {
 	 * Remove a player from a Settlement
 	 * 
 	 * @param name : The player to remove from the Settlement
+	 * @throws SQLException 
 	 */
-	public void leaveSettlement(String name){
+	@SuppressWarnings("deprecation")
+	public void leaveSettlement(String name) throws SQLException{
 		if (!(getPlayerSettlement(name) == null)){
 			Settlement s = getPlayerSettlement(name);
 			if (!s.isLeader(name)){
 				Bukkit.getPlayer(name).sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully left " + s.getName());
 				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + name + ChatColor.GRAY + " left the Settlement :(");
 				s.revokeCitizenship(name);
+				
+				//Remove member form database
+				DatabaseUtils.query("UPDATE settlements"
+						+ "SET citizens='"+ s.getCitizens() +"'"
+						+ "WHERE id='" + s.getId() + "';");
 			}else
 				Bukkit.getPlayer(name).sendMessage(MessageType.MUST_APPOINT_NEW_LEADER.getMsg());
 		}else

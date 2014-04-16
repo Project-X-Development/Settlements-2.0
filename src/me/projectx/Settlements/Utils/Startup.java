@@ -1,9 +1,12 @@
 package me.projectx.Settlements.Utils;
 
+import java.sql.SQLException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
 import me.projectx.Settlements.Main;
+import me.projectx.Settlements.API.SettlementManager;
 import me.projectx.Settlements.Commands.CommandSettlementPlayer;
 import me.projectx.Settlements.Events.PlayerChat;
 import me.projectx.Settlements.Events.PlayerJoin;
@@ -33,7 +36,11 @@ public class Startup extends Thread {
 		new Thread() {
 			@Override
 			public void run() {
-				//TODO: loop through names in db & do something like "Settlement s = new Settlement(fromDB.toString())"
+				try {
+					SettlementManager.loadSettlmentsFromDB();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			}
 		}.start();
 	}

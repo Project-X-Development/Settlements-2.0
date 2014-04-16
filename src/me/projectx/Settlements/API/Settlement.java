@@ -37,6 +37,15 @@ public class Settlement {
 	}
 	
 	/**
+	 * Set the ID of the settlement
+	 * 
+	 * @param id : The ID to give the Settlement
+	 */
+	public void setId(long id){
+		this.id = id;
+	}
+	
+	/**
 	 * Set the name for the Settlement
 	 * 
 	 * @param name : The name for the settlement
