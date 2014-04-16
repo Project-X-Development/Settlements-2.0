@@ -50,8 +50,11 @@ public class SettlementManager {
 		ResultSet result = DatabaseUtils.query("SELECT * FROM settlements;");
 		ArrayList<Settlement> tempSet = new ArrayList<Settlement>();  
 		while (result.next()){
-			long set = result.getLong("id");
+			String name = result.getString("name");
+			Settlement set = new Settlement(name);
+			tempSet.add(set);
 		}
+		settlements = tempSet;
 	}
 	
 	/**
@@ -118,6 +121,21 @@ public class SettlementManager {
 		for (Settlement s : settlements){
 			if (s.getName().equalsIgnoreCase(name))
 				return s;
+		}	
+		return null;
+	}
+	
+	/**
+	 * Get a settlement by id
+	 * 
+	 * @param id : The id of the settlement to get
+	 * @return The designated settlement. Returns null if it doesn't exist
+	 */
+	public Settlement getSettlement(long id){
+		for (Settlement s : settlements){
+			if (s.getId() == id){
+				return s;
+			}
 		}	
 		return null;
 	}
