@@ -10,6 +10,7 @@ public class Main extends JavaPlugin {
 	public void onEnable(){
 		plugin = this;	
 		Startup.runStartup();
+		saveDefaultConfig();
 	}
 	
 	public void onDisable(){
