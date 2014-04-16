@@ -7,6 +7,7 @@ public enum MessageType {
 	PREFIX("&8[&bSettlements&8] "),
 	NO_INVITE(PREFIX.getMsg() + "&4You don't have any pending invites :("),
 	INVITE_NOT_RANK(PREFIX.getMsg() + "&4You must be an Officer or Leader in order to invite someone to your Settlement!"),
+	DESCRIPTION_NOT_RANK(PREFIX.getMsg() + "&4 You must be an Officer or Leader in order to change the Settlement's description!"),
 	DELETE_NOT_LEADER(PREFIX.getMsg() + "&4You must be the leader of a Settlement to delete it!"),
 	CURRENTLY_IN_SETTLEMENT(PREFIX.getMsg() + "&4You must leave your Settlement to join another one!"),
 	SETTLEMENT_EXISTS(PREFIX.getMsg() + "&4That Settlement already exists!"),

@@ -310,10 +310,31 @@ public class SettlementManager {
 				s.revokeCitizenship(name);
 
 				//Remove member form database
-				DatabaseUtils.queryOut("UPDATE settlements SET citizens='"+ s.getCitizens() +"'"+ "WHERE id=" + s.getId() + ";");
+				DatabaseUtils.queryOut("UPDATE settlements SET citizens='"+ s.getCitizens() +"'WHERE id=" + s.getId() + ";");
 			}else
 				Bukkit.getPlayer(name).sendMessage(MessageType.MUST_APPOINT_NEW_LEADER.getMsg());
 		}else 
 			Bukkit.getPlayer(name).sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
+	}
+	
+	/**
+	 * Set the description for a Settlement
+	 * 
+	 * @param sender : Who issued the command
+	 * @param desc : The description for the Settlement
+	 * @throws SQLException
+	 */
+	public void setDescription(CommandSender sender, String desc) throws SQLException{
+		if (!(getPlayerSettlement(sender.getName()) == null)){
+			Settlement s = getPlayerSettlement(sender.getName());
+			if (s.isOfficer(sender.getName()) || s.isLeader(sender.getName())){
+				s.setDescription(desc);
+				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Set your Settlement's description to " + desc);
+				
+				DatabaseUtils.queryOut("UPDATE settlements SET description='" + desc + "' WHERE id=" + s.getId() + ";");
+			}else
+				sender.sendMessage(MessageType.DESCRIPTION_NOT_RANK.getMsg());
+		}else
+			sender.sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
 	}
 }

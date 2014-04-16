@@ -29,6 +29,12 @@ public class CommandSettlementPlayer extends CommandModel {
 					SettlementManager.getManager().declineInvite(sender.getName());
 				if (args[0].equalsIgnoreCase("leave"))
 					SettlementManager.getManager().leaveSettlement(sender.getName());
+				if (args[0].equalsIgnoreCase("desc")){
+					StringBuilder str = new StringBuilder();
+					for (int i = 1; i < args.length; i++)
+						str.append(args[i] + " ");
+					SettlementManager.getManager().setDescription(sender, str.toString());
+				}
 			}else
 				CommandType.printList(sender);
 		}
