@@ -46,7 +46,7 @@ public class SettlementManager {
 	 * @throws SQLException 
 	 */
 	public static void loadSettlmentsFromDB() throws SQLException{
-		ResultSet result = DatabaseUtils.query("SELECT * FROM settlements;"); 
+		ResultSet result = DatabaseUtils.queryIn("SELECT * FROM settlements;"); 
 		while (result.next()){
 			String name = result.getString("name");
 			Settlement set = new Settlement(name);

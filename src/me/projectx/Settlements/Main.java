@@ -2,7 +2,6 @@ package me.projectx.Settlements;
 
 import java.sql.SQLException;
 
-import me.projectx.Settlements.Utils.DatabaseUtils;
 import me.projectx.Settlements.Utils.Startup;
 
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,8 +13,7 @@ public class Main extends JavaPlugin {
 		plugin = this;	
 		try {
 			Startup.runStartup();
-		} catch(SQLException e) {
-			// TODO Auto-generated catch block
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		saveDefaultConfig();
@@ -24,7 +22,6 @@ public class Main extends JavaPlugin {
 	public void onDisable(){
 		
 		plugin = null;
-		DatabaseUtils.closeConnection();
 	}
 	
 	public static Main getInstance(){
