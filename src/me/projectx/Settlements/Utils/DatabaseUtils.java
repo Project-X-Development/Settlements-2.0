@@ -14,6 +14,7 @@ import org.bukkit.plugin.Plugin;
 
 public class DatabaseUtils {
 	public static Connection con;
+	public static MySQL mysql;
 
 	public static void setupConnection(){
 		//Get database values from config
@@ -27,8 +28,7 @@ public class DatabaseUtils {
 		String pass = fc.getString("db.pass");
 
 		//Create SQL object for database
-		MySQL mysql = new MySQL(pl, host, port, db, user, pass);
-		mysql.openConnection();
+		mysql = new MySQL(pl, host, port, db, user, pass);
 		
 		if (mysql.checkConnection()){
 			//Connection successful....store in variable
@@ -40,8 +40,26 @@ public class DatabaseUtils {
 		}
 	}
 	
-	public static void setupMySQL(){
+	public static void setupMySQL() throws SQLException{
+		query("CREATE TABLE IF NOT EXISTS settlement"
+				+ "("
+				+ "id BIGINT,"
+				+ "name varchar(255),"
+				+ "leader varchar(255),"
+				+ "description varchar(255),"
+				+ "citizens LONGBLOB,"
+				+ "officers LONGBLOB"
+				+ ");");
 		
+		query("CREATE TABLE IF NOT EXISTS cache"
+				+ "("
+				+ "name varchar(255),"
+				+ "id varchar(255)"
+				+ ");");
+	}
+	
+	public static void closeConnection(){
+		mysql.closeConnection();
 	}
 
 	public static Connection getConnection(){

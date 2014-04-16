@@ -14,7 +14,7 @@ import me.projectx.Settlements.Events.PlayerQuit;
 
 public class Startup extends Thread {
 
-	public static void runStartup(){
+	public static void runStartup() throws SQLException{
 		PluginManager pm = Bukkit.getPluginManager();
 
 		pm.registerEvents(new PlayerJoin(), Main.getInstance());
@@ -29,6 +29,7 @@ public class Startup extends Thread {
 
 		//Setup database
 		DatabaseUtils.setupConnection();
+		DatabaseUtils.setupMySQL();
 
 	}
 

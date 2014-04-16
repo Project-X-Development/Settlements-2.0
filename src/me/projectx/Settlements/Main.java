@@ -14,6 +14,7 @@ public class Main extends JavaPlugin {
 	}
 	
 	public void onDisable(){
+		
 		plugin = null;
 	}
 	
