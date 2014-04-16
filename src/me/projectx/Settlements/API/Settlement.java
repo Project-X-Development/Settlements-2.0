@@ -7,12 +7,15 @@ import org.bukkit.entity.Player;
 
 public class Settlement {
 	
+	private long id;
 	private String leader, name, desc;
 	private ArrayList<String> officers = new ArrayList<String>();
 	private ArrayList<String> citizens = new ArrayList<String>();
 	
 	public Settlement(String name){
 		this.name = name;
+		SettlementManager.getManager();
+		this.id = SettlementManager.getSettlements().size();
 	}
 	
 	/**
@@ -22,6 +25,15 @@ public class Settlement {
 	 */
 	public String getName(){
 		return this.name;
+	}
+	
+	/**
+	 * Get the id of a settlement
+	 * 
+	 * @return The id of the settlement
+	 */
+	public long getId(){
+		return this.id;
 	}
 	
 	/**

@@ -1,8 +1,11 @@
 package me.projectx.Settlements.API;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import me.projectx.Settlements.Utils.DatabaseUtils;
 import me.projectx.Settlements.Utils.MessageType;
 
 import org.bukkit.Bukkit;
@@ -11,7 +14,7 @@ import org.bukkit.command.CommandSender;
 
 public class SettlementManager {
 	
-	private ArrayList<Settlement> settlements = new ArrayList<Settlement>();
+	private static ArrayList<Settlement> settlements = new ArrayList<Settlement>();
 	private HashMap<String, Settlement> invitedPlayers = new HashMap<String, Settlement>();
 	private static SettlementManager sm = new SettlementManager();
 	
@@ -23,6 +26,51 @@ public class SettlementManager {
 	public static SettlementManager getManager(){
 		return sm;
 	}
+	
+	/**
+	 * Get a list of all Settlment objects
+	 * 
+	 * @return Settlement class instance
+	 */
+	public static ArrayList<Settlement> getSettlements(){
+		return settlements;
+	}
+	
+	
+	//Database methods for saving and loading Settlements//
+	
+	/**
+	 * Load settlements (Call onEnable)
+	 * 
+	 * @return Returns true if successful, false otherwise
+	 */
+	public static void loadSettlments() throws SQLException{
+		ResultSet result = DatabaseUtils.query("SELECT * FROM settlements;");
+	}
+	
+	/**
+	 * Save settlements (Call onDisable)
+	 * 
+	 * @return Returns true if successful, false otherwise
+	 */
+	public static void saveSettlements() throws SQLException{
+		for (Settlement set : settlements){
+			String tempName = set.getName();
+			String tempLeader = set.getLeader();
+			String tempDesc = set.getDescription();
+			ArrayList<String> tempCits = set.getCitizens();
+			ArrayList<String> tempOffs = set.getOfficers();
+			DatabaseUtils.query("UPDATE settlements"
+					+ "SET name='"+ tempName + "'"
+					+ ", leader='"+ tempLeader +"'"
+					+ ", description='"+ tempDesc +"'"
+					+ ", leader='"+ tempLeader +"'"
+					+ ", description='"+ tempDesc +"'"
+					+ "WHERE CustomerName='Alfreds Futterkiste';");
+		}
+	}
+	
+	//End database stuff//
 	
 	/**
 	 * Get the settlement of a player
