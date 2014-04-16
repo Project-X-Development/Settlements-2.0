@@ -8,7 +8,6 @@ import java.sql.Statement;
 import me.projectx.Settlements.Main;
 import me.projectx.Settlements.MySQL.MySQL;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 
@@ -29,14 +28,14 @@ public class DatabaseUtils {
 
 		//Create SQL object for database
 		mysql = new MySQL(pl, host, port, db, user, pass);
-		
-			//Connection successful....store in variable
+
+		//Connection successful....store in variable
 		mysql.openConnection();
 		con = mysql.getConnection();
 	}
-	
+
 	public static void setupMySQL() throws SQLException{
-		query("CREATE TABLE IF NOT EXISTS settlement"
+		queryOut("CREATE TABLE IF NOT EXISTS settlement"
 				+ "("
 				+ "id BIGINT,"
 				+ "name varchar(255),"
@@ -45,14 +44,14 @@ public class DatabaseUtils {
 				+ "citizens LONGBLOB,"
 				+ "officers LONGBLOB"
 				+ ");");
-		
-		query("CREATE TABLE IF NOT EXISTS cache"
+
+		queryOut("CREATE TABLE IF NOT EXISTS cache"
 				+ "("
 				+ "name varchar(255),"
 				+ "id varchar(255)"
 				+ ");");
 	}
-	
+
 	public static void closeConnection(){
 		mysql.closeConnection();
 	}
@@ -60,15 +59,20 @@ public class DatabaseUtils {
 	public static Connection getConnection(){
 		return con;
 	}
-	
+
 	public static void openConnection(){
 		mysql.openConnection();
 	}
 
 	//Query database using SQL Syntax
-	public static ResultSet query(String query) throws SQLException{
+	public static ResultSet queryIn(String query) throws SQLException{
 		Statement statement = con.createStatement();
 		ResultSet result = statement.executeQuery(query);
 		return result;
+	}
+
+	public static void queryOut(String query) throws SQLException{
+		Statement statement = con.createStatement();
+		statement.executeUpdate(query);
 	}
 }

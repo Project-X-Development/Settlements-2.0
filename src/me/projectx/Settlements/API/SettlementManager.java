@@ -13,11 +13,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public class SettlementManager {
-	
+
 	private static ArrayList<Settlement> settlements = new ArrayList<Settlement>();
-	private HashMap<String, Settlement> invitedPlayers = new HashMap<String, Settlement>();
+	private final HashMap<String, Settlement> invitedPlayers = new HashMap<String, Settlement>();
 	private static SettlementManager sm = new SettlementManager();
-	
+
 	/**
 	 * Get an instance of the SettlementManager class
 	 * 
@@ -26,7 +26,7 @@ public class SettlementManager {
 	public static SettlementManager getManager(){
 		return sm;
 	}
-	
+
 	/**
 	 * Get a list of all Settlment objects
 	 * 
@@ -35,10 +35,10 @@ public class SettlementManager {
 	public static ArrayList<Settlement> getSettlements(){
 		return settlements;
 	}
-	
-	
+
+
 	//Database methods for saving and loading Settlements//
-	
+
 	/**
 	 * Load settlements (Call onEnable)
 	 * 
@@ -57,7 +57,7 @@ public class SettlementManager {
 			settlements.add(set);
 		}
 	}
-	
+
 	/**
 	 * Save settlements (Call onDisable)
 	 * 
@@ -72,7 +72,7 @@ public class SettlementManager {
 			String tempDesc = set.getDescription();
 			ArrayList<String> tempCits = set.getCitizens();
 			ArrayList<String> tempOffs = set.getOfficers();
-			DatabaseUtils.query("UPDATE settlements"
+			DatabaseUtils.queryOut("UPDATE settlements"
 					+ "SET name='"+ tempName + "'"
 					+ ", leader='"+ tempLeader +"'"
 					+ ", description='"+ tempDesc +"'"
@@ -81,7 +81,7 @@ public class SettlementManager {
 					+ "WHERE id='" + tempId + "';");
 		}
 	}
-	
+
 	/**
 	 * Get the settlement of a player
 	 * 
@@ -90,12 +90,13 @@ public class SettlementManager {
 	 */
 	public Settlement getPlayerSettlement(String name){
 		for (Settlement s : settlements){
-			if (s.isCitizen(name) || s.isOfficer(name) || s.isLeader(name))
+			if (s.isCitizen(name) || s.isOfficer(name) || s.isLeader(name)) {
 				return s;
+			}
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Determine if a settlement exists
 	 * 
@@ -104,12 +105,13 @@ public class SettlementManager {
 	 */
 	public boolean settlementExists(String name){
 		for (Settlement s : settlements){
-			if (s.getName().equalsIgnoreCase(name))
+			if (s.getName().equalsIgnoreCase(name)) {
 				return true;
+			}
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Get a settlement by name
 	 * 
@@ -118,12 +120,13 @@ public class SettlementManager {
 	 */
 	public Settlement getSettlement(String name){
 		for (Settlement s : settlements){
-			if (s.getName().equalsIgnoreCase(name))
+			if (s.getName().equalsIgnoreCase(name)) {
 				return s;
+			}
 		}	
 		return null;
 	}
-	
+
 	/**
 	 * Get a settlement by id
 	 * 
@@ -138,7 +141,7 @@ public class SettlementManager {
 		}	
 		return null;
 	}
-	
+
 	/**
 	 * Determine if a player is a citezen of a settlement
 	 * 
@@ -147,12 +150,13 @@ public class SettlementManager {
 	 */
 	public boolean isCitizenOfSettlement(String name){
 		for (Settlement s : settlements){
-			if (s.getCitizens().contains(name))
+			if (s.getCitizens().contains(name)) {
 				return true;
+			}
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Create a new settlement. The settlement will only get created if the settlement 
 	 * doesn't already exist and if the sender isn't a member of a different settlement
@@ -171,20 +175,22 @@ public class SettlementManager {
 				Settlement s = new Settlement(name);
 				s.setLeader(sender.getName());
 				settlements.add(s);
-				
+
 				//Create in database
-				DatabaseUtils.query("INSERT INTO settlements (id, name, leader)"
+				DatabaseUtils.queryOut("INSERT INTO settlements (id, name, leader)"
 						+ "VALUES ('" + s.getId() + "','" + s.getName() + "','" + s.getLeader() + "');");
-				
+
 				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully created " + ChatColor.AQUA + s.getName());
 				sender.sendMessage(ChatColor.GREEN + "You can now set a description by doing " + ChatColor.RED + "/s desc <description>");
 				sender.sendMessage(ChatColor.GREEN + "For more things you can do, type " + ChatColor.RED + "/s");
-			}else
+			} else {
 				sender.sendMessage(MessageType.CREATE_IN_SETTLEMENT.getMsg());
-		}else
+			}
+		} else {
 			sender.sendMessage(MessageType.SETTLEMENT_EXISTS.getMsg());
+		}
 	}
-	
+
 	/**
 	 * Delete a settlement. Only works if the settlement exists and the sender is the leader of the settlement
 	 * 
@@ -202,16 +208,17 @@ public class SettlementManager {
 			if (s.isLeader(sender.getName())){
 				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully deleted " + ChatColor.AQUA + s.getName());
 				settlements.remove(s);
-				
+
 				//Remove from database - Checking leader for extra precaution
-				DatabaseUtils.query("DELETE FROM settlements"
+				DatabaseUtils.queryOut("DELETE FROM settlements"
 						+ "WHERE id='" + s.getId() + "' AND leader='" + s.getLeader() + "';");
-				
-			}else
+
+			} else {
 				sender.sendMessage(MessageType.DELETE_NOT_LEADER.getMsg());
+			}
 		}
 	}
-	
+
 	/**
 	 * Invite a player to join the Settlement. The command sender must be an Officer or higher in the Settlement
 	 * 
@@ -236,15 +243,18 @@ public class SettlementManager {
 						Bukkit.getPlayer(player).sendMessage(MessageType.PREFIX.getMsg() + 
 								ChatColor.AQUA + sender.getName() + ChatColor.GRAY + " invited you to join " + 
 								ChatColor.AQUA + getPlayerSettlement(sender.getName()).getName()); //throws NPE if player is null/not online
-					}else
+					} else {
 						sender.sendMessage(MessageType.INVITE_NOT_RANK.getMsg());
-				}else
+					}
+				} else {
 					sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + player + ChatColor.GRAY + " is already in your Settlement!");
-			}else
+				}
+			} else {
 				sender.sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
+			}
 		}
 	}
-	
+
 	/**
 	 * Accept an invite to a Settlement. Will only work if the player has a pending invite
 	 * 
@@ -258,21 +268,23 @@ public class SettlementManager {
 				Settlement s = invitedPlayers.get(player);
 				s.giveCitizenship(player);
 				invitedPlayers.remove(player);
-				
-				DatabaseUtils.query("UPDATE settlements"
+
+				DatabaseUtils.queryOut("UPDATE settlements"
 						+ "SET citizens='"+ s.getCitizens() +"'"
 						+ "WHERE id='" + s.getId() + "';");
-				
+
 				Bukkit.getPlayer(player).sendMessage(MessageType.PREFIX.getMsg() + 
 						ChatColor.GRAY + "Successfully joined " + ChatColor.AQUA + getPlayerSettlement(player).getName()); 
-						//getPlayerSettlement() to confirm their settlement instead of s.getName()
+				//getPlayerSettlement() to confirm their settlement instead of s.getName()
 				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + player + ChatColor.GRAY + " joined the Settlement!");	
-			}else
+			} else {
 				Bukkit.getPlayer(player).sendMessage(MessageType.CURRENTLY_IN_SETTLEMENT.getMsg());
-		}else
+			}
+		} else {
 			Bukkit.getPlayer(player).sendMessage(MessageType.NO_INVITE.getMsg());
+		}
 	}
-	
+
 	/**
 	 * Determine if a player has a pending invite
 	 * 
@@ -282,7 +294,7 @@ public class SettlementManager {
 	public boolean hasInvite(String player){
 		return invitedPlayers.containsKey(player);
 	}
-	
+
 	/**
 	 * Decline an invite to a Settlement. Player must have a valid invite
 	 * 
@@ -294,10 +306,11 @@ public class SettlementManager {
 			Bukkit.getPlayer(player).sendMessage(MessageType.PREFIX.getMsg() + 
 					ChatColor.GRAY + "You declined an invite to join " + ChatColor.AQUA + invitedPlayers.get(player).getName());
 			invitedPlayers.remove(player);
-		}else
+		} else {
 			Bukkit.getPlayer(player).sendMessage(MessageType.NO_INVITE.getMsg());
+		}
 	}
-	
+
 	/**
 	 * Remove a player from a Settlement
 	 * 
@@ -312,14 +325,16 @@ public class SettlementManager {
 				Bukkit.getPlayer(name).sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully left " + s.getName());
 				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + name + ChatColor.GRAY + " left the Settlement :(");
 				s.revokeCitizenship(name);
-				
+
 				//Remove member form database
-				DatabaseUtils.query("UPDATE settlements"
+				DatabaseUtils.queryOut("UPDATE settlements"
 						+ "SET citizens='"+ s.getCitizens() +"'"
 						+ "WHERE id='" + s.getId() + "';");
-			}else
+			} else {
 				Bukkit.getPlayer(name).sendMessage(MessageType.MUST_APPOINT_NEW_LEADER.getMsg());
-		}else
+			}
+		} else {
 			Bukkit.getPlayer(name).sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
+		}
 	}
 }
