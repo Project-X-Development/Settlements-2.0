@@ -82,8 +82,6 @@ public class SettlementManager {
 		}
 	}
 	
-	//End database stuff//
-	
 	/**
 	 * Get the settlement of a player
 	 * 
@@ -162,7 +160,6 @@ public class SettlementManager {
 	 * <p>
 	 * TODO
 	 * <p>
-	 * -- Still need to make database call to permanently save the settlement -- DONE
 	 * 
 	 * @param name : The name of the new settlement
 	 * @param sender : Who issued the creation of the settlement
@@ -194,7 +191,6 @@ public class SettlementManager {
 	 *  <p>
 	 * TODO
 	 * <p>
-	 * -- Still need to make database call to permanently save the settlement -- (DONE)
 	 * 
 	 * @param name : The name of the settlement to delete
 	 * @param sender : Who issued the deletion of the settlement
