@@ -90,9 +90,8 @@ public class SettlementManager {
 	 */
 	public Settlement getPlayerSettlement(String name){
 		for (Settlement s : settlements){
-			if (s.isCitizen(name) || s.isOfficer(name) || s.isLeader(name)) {
+			if (s.isCitizen(name) || s.isOfficer(name) || s.isLeader(name)) 
 				return s;
-			}
 		}
 		return null;
 	}
@@ -105,9 +104,8 @@ public class SettlementManager {
 	 */
 	public boolean settlementExists(String name){
 		for (Settlement s : settlements){
-			if (s.getName().equalsIgnoreCase(name)) {
+			if (s.getName().equalsIgnoreCase(name)) 
 				return true;
-			}
 		}
 		return false;
 	}
@@ -120,9 +118,8 @@ public class SettlementManager {
 	 */
 	public Settlement getSettlement(String name){
 		for (Settlement s : settlements){
-			if (s.getName().equalsIgnoreCase(name)) {
+			if (s.getName().equalsIgnoreCase(name)) 
 				return s;
-			}
 		}	
 		return null;
 	}
@@ -135,9 +132,8 @@ public class SettlementManager {
 	 */
 	public Settlement getSettlement(long id){
 		for (Settlement s : settlements){
-			if (s.getId() == id){
+			if (s.getId() == id)
 				return s;
-			}
 		}	
 		return null;
 	}
@@ -150,9 +146,8 @@ public class SettlementManager {
 	 */
 	public boolean isCitizenOfSettlement(String name){
 		for (Settlement s : settlements){
-			if (s.getCitizens().contains(name)) {
+			if (s.getCitizens().contains(name))
 				return true;
-			}
 		}
 		return false;
 	}
@@ -183,12 +178,10 @@ public class SettlementManager {
 				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully created " + ChatColor.AQUA + s.getName());
 				sender.sendMessage(ChatColor.GREEN + "You can now set a description by doing " + ChatColor.RED + "/s desc <description>");
 				sender.sendMessage(ChatColor.GREEN + "For more things you can do, type " + ChatColor.RED + "/s");
-			} else {
+			}else 
 				sender.sendMessage(MessageType.CREATE_IN_SETTLEMENT.getMsg());
-			}
-		} else {
+		}else
 			sender.sendMessage(MessageType.SETTLEMENT_EXISTS.getMsg());
-		}
 	}
 
 	/**
@@ -210,12 +203,10 @@ public class SettlementManager {
 				settlements.remove(s);
 
 				//Remove from database - Checking leader for extra precaution
-				DatabaseUtils.queryOut("DELETE FROM settlements"
-						+ "WHERE id=" + s.getId() + " AND leader='" + s.getLeader() + "';");
+				DatabaseUtils.queryOut("DELETE FROM settlements WHERE id=" + s.getId() + ";");
 
-			} else {
+			}else 
 				sender.sendMessage(MessageType.DELETE_NOT_LEADER.getMsg());
-			}
 		}
 	}
 
@@ -243,15 +234,12 @@ public class SettlementManager {
 						Bukkit.getPlayer(player).sendMessage(MessageType.PREFIX.getMsg() + 
 								ChatColor.AQUA + sender.getName() + ChatColor.GRAY + " invited you to join " + 
 								ChatColor.AQUA + getPlayerSettlement(sender.getName()).getName()); //throws NPE if player is null/not online
-					} else {
+					}else 
 						sender.sendMessage(MessageType.INVITE_NOT_RANK.getMsg());
-					}
-				} else {
+				}else
 					sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + player + ChatColor.GRAY + " is already in your Settlement!");
-				}
-			} else {
+			}else
 				sender.sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
-			}
 		}
 	}
 
@@ -269,20 +257,16 @@ public class SettlementManager {
 				s.giveCitizenship(player);
 				invitedPlayers.remove(player);
 
-				DatabaseUtils.queryOut("UPDATE settlements"
-						+ "SET citizens='"+ s.getCitizens() +"'"
-						+ "WHERE id='" + s.getId() + "';");
+				DatabaseUtils.queryOut("UPDATE settlements SET citizens='"+ s.getCitizens() +"'WHERE id='" + s.getId() + "';");
 
 				Bukkit.getPlayer(player).sendMessage(MessageType.PREFIX.getMsg() + 
 						ChatColor.GRAY + "Successfully joined " + ChatColor.AQUA + getPlayerSettlement(player).getName()); 
 				//getPlayerSettlement() to confirm their settlement instead of s.getName()
 				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + player + ChatColor.GRAY + " joined the Settlement!");	
-			} else {
+			}else 
 				Bukkit.getPlayer(player).sendMessage(MessageType.CURRENTLY_IN_SETTLEMENT.getMsg());
-			}
-		} else {
+		}else
 			Bukkit.getPlayer(player).sendMessage(MessageType.NO_INVITE.getMsg());
-		}
 	}
 
 	/**
@@ -306,9 +290,8 @@ public class SettlementManager {
 			Bukkit.getPlayer(player).sendMessage(MessageType.PREFIX.getMsg() + 
 					ChatColor.GRAY + "You declined an invite to join " + ChatColor.AQUA + invitedPlayers.get(player).getName());
 			invitedPlayers.remove(player);
-		} else {
+		}else
 			Bukkit.getPlayer(player).sendMessage(MessageType.NO_INVITE.getMsg());
-		}
 	}
 
 	/**
@@ -327,14 +310,10 @@ public class SettlementManager {
 				s.revokeCitizenship(name);
 
 				//Remove member form database
-				DatabaseUtils.queryOut("UPDATE settlements"
-						+ "SET citizens='"+ s.getCitizens() +"'"
-						+ "WHERE id='" + s.getId() + "';");
-			} else {
+				DatabaseUtils.queryOut("UPDATE settlements SET citizens='"+ s.getCitizens() +"'"+ "WHERE id=" + s.getId() + ";");
+			}else
 				Bukkit.getPlayer(name).sendMessage(MessageType.MUST_APPOINT_NEW_LEADER.getMsg());
-			}
-		} else {
+		}else 
 			Bukkit.getPlayer(name).sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
-		}
 	}
 }
