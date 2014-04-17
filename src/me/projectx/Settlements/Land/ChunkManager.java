@@ -20,8 +20,7 @@ public class ChunkManager {
 	}
 
 	//Temporary return value, eventually will be an enum
-
-	public static int claimChunk(String player, int x, int z, World world){
+	public int claimChunk(String player, int x, int z, World world){
 		if (!(SettlementManager.getManager().getPlayerSettlement(player) == null)){
 			Settlement set = SettlementManager.getManager().getPlayerSettlement(player);
 			if (!ClaimedChunk.isClaimed(x, z)){
@@ -38,7 +37,7 @@ public class ChunkManager {
 	}
 
 	//Temporary return value, eventually will be an enum
-	public static int claimChunk(String player, double x, double z, World world) {
+	public int claimChunk(String player, double x, double z, World world) {
 		if (!(SettlementManager.getManager().getPlayerSettlement(player) == null)){
 			Settlement set = SettlementManager.getManager().getPlayerSettlement(player);
 			if (!ClaimedChunk.isClaimed((int) x, (int) z)){
