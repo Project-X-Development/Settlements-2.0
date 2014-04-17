@@ -7,8 +7,18 @@ import org.bukkit.World;
 
 public class ChunkManager {
 
+	public static ChunkManager instance;
+
+	public ChunkManager(){
+		instance = this;
+	}
+
+	public static ChunkManager getInstance(){
+		return instance;
+	}
+
 	//Temporary return value, eventually will be an enum
-	public static int claimChunk(String player, int x, int z, World world){
+	public int claimChunk(String player, int x, int z, World world){
 		if (SettlementManager.getManager().isCitizenOfSettlement(player)){
 			Settlement set = SettlementManager.getManager().getPlayerSettlement(player);
 			if (!ClaimedChunk.isClaimed(x, z)){
@@ -25,7 +35,7 @@ public class ChunkManager {
 	}
 
 	//Temporary return value, eventually will be an enum
-	public static int claimChunk(String player, double x, double z, World world) {
+	public int claimChunk(String player, double x, double z, World world) {
 		if (SettlementManager.getManager().isCitizenOfSettlement(player)){
 			Settlement set = SettlementManager.getManager().getPlayerSettlement(player);
 			if (!ClaimedChunk.isClaimed((int) x, (int) z)){
@@ -42,7 +52,7 @@ public class ChunkManager {
 
 	}
 
-	public static boolean unclaimChunk(int x, int z){
+	public boolean unclaimChunk(int x, int z){
 		if (ClaimedChunk.isClaimed(x, z)){
 			ClaimedChunk chunk = ClaimedChunk.getChunk(x, z);
 			ClaimedChunk.getInstances().remove(chunk);
@@ -53,7 +63,7 @@ public class ChunkManager {
 		}
 	}
 
-	public static ClaimedChunk changeChunkOwnership(ClaimedChunk chunk, String player){
+	public ClaimedChunk changeChunkOwnership(ClaimedChunk chunk, String player){
 		chunk.setOwner(player);
 		Settlement set = SettlementManager.getManager().getPlayerSettlement(player);
 		chunk.setSettlement(set);

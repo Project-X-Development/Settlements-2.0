@@ -46,7 +46,7 @@ public class CommandSettlementPlayer extends CommandModel {
 					SettlementManager.getManager().setDescription(sender, str.toString());
 				}
 				if (args[0].equalsIgnoreCase("claim")){
-					int status = ChunkManager.claimChunk(sender.getName(), ((Player) sender).getLocation().getChunk().getX(), ((Player) sender).getLocation().getChunk().getZ(), ((Player) sender).getLocation().getWorld());
+					int status = ChunkManager.getInstance().claimChunk(sender.getName(), ((Player) sender).getLocation().getChunk().getX(), ((Player) sender).getLocation().getChunk().getZ(), ((Player) sender).getLocation().getWorld());
 					if (status == 2){
 						sender.sendMessage(MessageType.PREFIX + "Claimed this chunk!");
 					}

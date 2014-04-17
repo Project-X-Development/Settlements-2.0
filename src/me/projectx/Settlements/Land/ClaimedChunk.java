@@ -43,7 +43,7 @@ public class ClaimedChunk {
 	}
 
 	public static boolean isClaimed(int chunkx, int chunkz){
-		for (ClaimedChunk tempChunk : instances){
+		for (ClaimedChunk tempChunk : ClaimedChunk.instances){
 			if (tempChunk.getX() == chunkx && tempChunk.getZ() == chunkz){
 				return true;
 			}
