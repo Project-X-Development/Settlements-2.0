@@ -61,7 +61,7 @@ public class ChunkManager extends Thread{
 	public boolean unclaimChunk(int x, int z){
 		if (isClaimed(x, z)){
 			ClaimedChunk chunk = getChunk(x, z);
-			ClaimedChunk.getCC().getChunks().remove(chunk);
+			ClaimedChunk.instances.remove(chunk);
 			return true;
 		}
 		else{
@@ -77,7 +77,7 @@ public class ChunkManager extends Thread{
 	}
 
 	public boolean isClaimed(int chunkx, int chunkz){
-		for (ClaimedChunk tempChunk : ClaimedChunk.getCC().getChunks()){
+		for (ClaimedChunk tempChunk : ClaimedChunk.instances){
 			if (tempChunk.getX() == chunkx && tempChunk.getZ() == chunkz){
 				return true;
 			}
@@ -86,7 +86,7 @@ public class ChunkManager extends Thread{
 	}
 
 	public static ClaimedChunk getChunk(int chunkx, int chunkz){
-		for (ClaimedChunk tempChunk : ClaimedChunk.getCC().getChunks()){
+		for (ClaimedChunk tempChunk : ClaimedChunk.instances){
 			if (tempChunk.getX() == chunkx && tempChunk.getZ() == chunkz){
 				return tempChunk;
 			}
@@ -102,14 +102,14 @@ public class ChunkManager extends Thread{
 			public void run() {
 				for (int x = -7; x < 7; x++){
 					String send = null;
-					for (int z = -7; z < 7; z++){
+					for (int z = -7; z < 7; x++){
 						if (isClaimed(playerx + x, playerz + z)){
-							send = send + ChatColor.GREEN+"+";                                      
+							send = ChatColor.GREEN+"+";                                      
 						}else{
-							send = send + ChatColor.RED + "-";
+							send = ChatColor.RED + "-";
 						}
+						player.sendMessage(send);
 					}
-					player.sendMessage(send);
 				}	
 			}
 		}.start();
