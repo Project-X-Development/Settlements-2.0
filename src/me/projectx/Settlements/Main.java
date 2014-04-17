@@ -22,9 +22,9 @@ public class Main extends JavaPlugin {
 	}
 	
 	public void onDisable(){
-		try {
+		/*try {
 			SettlementManager.saveSettlements();
-		} catch(SQLException e) {e.printStackTrace();}
+		} catch(SQLException e) {e.printStackTrace();}*/
 		DatabaseUtils.closeConnection();
 		plugin = null;
 	}

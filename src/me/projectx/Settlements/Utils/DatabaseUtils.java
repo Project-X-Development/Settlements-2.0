@@ -11,7 +11,7 @@ import me.projectx.Settlements.MySQL.MySQL;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 
-public class DatabaseUtils {
+public class DatabaseUtils extends Thread{
 	public static Connection con;
 	public static MySQL mysql;
 
@@ -30,26 +30,17 @@ public class DatabaseUtils {
 		mysql = new MySQL(pl, host, port, db, user, pass);
 
 		//Connection successful....store in variable
+		System.out.println("[Settlements] Attempting database connection...");
 		mysql.openConnection();
 		con = mysql.getConnection();
+		if (mysql.checkConnection())
+			System.out.println("[Settlements] Success!");		
 	}
 
 	public static void setupMySQL() throws SQLException{
-		queryOut("CREATE TABLE IF NOT EXISTS settlements"
-				+ "("
-				+ "id BIGINT,"
-				+ "name varchar(255),"
-				+ "leader varchar(255),"
-				+ "description varchar(255),"
-				+ "citizens LONGBLOB,"
-				+ "officers LONGBLOB"
-				+ ");");
-
-		queryOut("CREATE TABLE IF NOT EXISTS cache"
-				+ "("
-				+ "name varchar(255),"
-				+ "id varchar(255)"
-				+ ");");
+		queryOut("CREATE TABLE IF NOT EXISTS settlements(id BIGINT, name varchar(255), "
+				+ "leader varchar(255), description varchar(255), citizens LONGBLOB, officers LONGBLOB);");
+		queryOut("CREATE TABLE IF NOT EXISTS cache(name varchar(255), id varchar(255));");
 	}
 
 	public static void closeConnection(){
@@ -61,7 +52,12 @@ public class DatabaseUtils {
 	}
 
 	public static void openConnection(){
-		mysql.openConnection();
+		new Thread() {
+			@Override
+			public void run() {
+				mysql.openConnection();
+			}
+		}.start();
 	}
 
 	//Query database using SQL Syntax
@@ -71,8 +67,18 @@ public class DatabaseUtils {
 		return result;
 	}
 
-	public static void queryOut(String query) throws SQLException{
-		Statement statement = con.createStatement();
-		statement.executeUpdate(query);
+	public static void queryOut(final String query) throws SQLException{
+		new Thread() {
+			@Override
+			public void run() {
+				Statement statement;
+				try {
+					statement = con.createStatement();
+					statement.executeUpdate(query);
+				} catch(SQLException e) {
+					e.printStackTrace();
+				}	
+			}
+		}.start();
 	}
 }

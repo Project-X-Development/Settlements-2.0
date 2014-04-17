@@ -12,7 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-public class SettlementManager {
+public class SettlementManager extends Thread {
 
 	private static ArrayList<Settlement> settlements = new ArrayList<Settlement>();
 	private final HashMap<String, Settlement> invitedPlayers = new HashMap<String, Settlement>();
@@ -46,16 +46,24 @@ public class SettlementManager {
 	 * @throws SQLException 
 	 */
 	public static void loadSettlmentsFromDB() throws SQLException{
-		ResultSet result = DatabaseUtils.queryIn("SELECT * FROM settlements;"); 
-		while (result.next()){
-			String name = result.getString("name");
-			Settlement set = new Settlement(name);
-			set.setLeader(result.getString("leader"));
-			set.setDescription(result.getString("description"));
-			set.setOfficer(result.getString("officers"));
-			set.giveCitizenship(result.getString("citizens"));
-			settlements.add(set);
-		}
+		new Thread() {
+			@Override
+			public void run() {
+				ResultSet result = null;
+				try {
+					result = DatabaseUtils.queryIn("SELECT * FROM settlements;");
+					while (result.next()){
+						String name = result.getString("name");
+						Settlement set = new Settlement(name);
+						set.setLeader(result.getString("leader"));
+						set.setDescription(result.getString("description"));
+						set.setOfficer(result.getString("officers"));
+						set.giveCitizenship(result.getString("citizens"));
+						settlements.add(set);
+					}
+				} catch(SQLException e) {e.printStackTrace();}
+			}
+		}.start();
 	}
 
 	/**
@@ -65,21 +73,25 @@ public class SettlementManager {
 	 * @throws SQLException 
 	 */
 	public static void saveSettlements() throws SQLException{
-		for (Settlement set : settlements){
-			String tempName = set.getName();
-			long tempId = set.getId();
-			String tempLeader = set.getLeader();
-			String tempDesc = set.getDescription();
-			ArrayList<String> tempCits = set.getCitizens();
-			ArrayList<String> tempOffs = set.getOfficers();
-			DatabaseUtils.queryOut("UPDATE settlements"
-					+ "SET name='"+ tempName + "'"
-					+ ", leader='"+ tempLeader +"'"
-					+ ", description='"+ tempDesc +"'"
-					+ ", citizens='"+ tempCits +"'"
-					+ ", officers='"+ tempOffs +"'"
-					+ "WHERE id='" + tempId + "';");
-		}
+		new Thread() {
+			@Override
+			public void run() {
+				for (Settlement set : settlements){
+					String tempName = set.getName();
+					long tempId = set.getId();
+					String tempLeader = set.getLeader();
+					String tempDesc = set.getDescription();
+					ArrayList<String> tempCits = set.getCitizens();
+					ArrayList<String> tempOffs = set.getOfficers();
+					try {
+						DatabaseUtils.queryOut("UPDATE settlements"
+								+ "SET name='"+ tempName + "', leader='"+ tempLeader 
+								+ "', description='"+ tempDesc +"', citizens='"+ tempCits 
+								+ "', officers='"+ tempOffs +"'WHERE id='" + tempId + "';");
+					} catch(SQLException e) {e.printStackTrace();}
+				}
+			}
+		}.start();
 	}
 
 	/**
@@ -163,11 +175,19 @@ public class SettlementManager {
 	public void createSettlement(String name, CommandSender sender) throws SQLException{
 		if (!settlementExists(name)){
 			if (getPlayerSettlement(sender.getName()) == null){
-				Settlement s = new Settlement(name);
+				final Settlement s = new Settlement(name);
 				s.setLeader(sender.getName());
 				settlements.add(s);
-				DatabaseUtils.queryOut("INSERT INTO settlements (id, name, leader)"
-						+ "VALUES ('" + s.getId() + "','" + s.getName() + "','" + s.getLeader() + "');");
+				new Thread() {
+					@Override
+					public void run() {
+						settlements.add(s);
+						try {
+							DatabaseUtils.queryOut("INSERT INTO settlements (id, name, leader)"
+							+ "VALUES ('" + s.getId() + "','" + s.getName() + "','" + s.getLeader() + "');");
+						} catch(SQLException e) {e.printStackTrace();}
+					}
+				}.start();
 				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully created " + ChatColor.AQUA + s.getName());
 				sender.sendMessage(ChatColor.GREEN + "You can now set a description by doing " + ChatColor.RED + "/s desc <description>");
 				sender.sendMessage(ChatColor.GREEN + "For more things you can do, type " + ChatColor.RED + "/s");
@@ -186,14 +206,23 @@ public class SettlementManager {
 	 */
 	public void deleteSettlement(CommandSender sender) throws SQLException{
 		if (settlementExists(getPlayerSettlement(sender.getName()).getName())){
-			Settlement s = getPlayerSettlement(sender.getName());
+			final Settlement s = getPlayerSettlement(sender.getName());
 			if (s.isLeader(sender.getName())){
 				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully deleted " + ChatColor.AQUA + s.getName());
-				settlements.remove(s);
-				DatabaseUtils.queryOut("DELETE FROM settlements WHERE id=" + s.getId() + ";");
+				new Thread() {
+					@Override
+					public void run() {
+						settlements.remove(s);
+						try {
+							DatabaseUtils.queryOut("DELETE FROM settlements WHERE id=" + s.getId() + ";");
+						} catch(SQLException e) {e.printStackTrace();}	
+					}
+				}.start();
+
 			}else 
 				sender.sendMessage(MessageType.DELETE_NOT_LEADER.getMsg());
-		}
+		}else
+			sender.sendMessage(MessageType.SETTLEMENT_NOT_EXIST.getMsg());
 	}
 
 	/**
@@ -231,18 +260,22 @@ public class SettlementManager {
 	 * @throws SQLException 
 	 */
 	@SuppressWarnings("deprecation")
-	public void acceptInvite(String player) throws SQLException{
+	public void acceptInvite(final String player) throws SQLException{
 		if (hasInvite(player)){
 			if (getPlayerSettlement(player) == null){
-				Settlement s = invitedPlayers.get(player);
+				final Settlement s = invitedPlayers.get(player);
 				s.giveCitizenship(player);
-				invitedPlayers.remove(player);
-
-				DatabaseUtils.queryOut("UPDATE settlements SET citizens='"+ s.getCitizens() +"'WHERE id='" + s.getId() + "';");
-
+				new Thread() {
+					@Override
+					public void run() {
+						invitedPlayers.remove(player);
+						try {
+							DatabaseUtils.queryOut("UPDATE settlements SET citizens='"+ s.getCitizens() +"'WHERE id='" + s.getId() + "';");
+						} catch(SQLException e) {e.printStackTrace();}
+					}
+				}.start();
 				Bukkit.getPlayer(player).sendMessage(MessageType.PREFIX.getMsg() + 
 						ChatColor.GRAY + "Successfully joined " + ChatColor.AQUA + getPlayerSettlement(player).getName()); 
-				//getPlayerSettlement() to confirm their settlement instead of s.getName()
 				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + player + ChatColor.GRAY + " joined the Settlement!");	
 			}else 
 				Bukkit.getPlayer(player).sendMessage(MessageType.CURRENTLY_IN_SETTLEMENT.getMsg());
@@ -284,14 +317,19 @@ public class SettlementManager {
 	@SuppressWarnings("deprecation")
 	public void leaveSettlement(String name) throws SQLException{
 		if (!(getPlayerSettlement(name) == null)){
-			Settlement s = getPlayerSettlement(name);
+			final Settlement s = getPlayerSettlement(name);
 			if (!s.isLeader(name)){
 				Bukkit.getPlayer(name).sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully left " + s.getName());
 				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + name + ChatColor.GRAY + " left the Settlement :(");
 				s.revokeCitizenship(name);
-
-				//Remove member form database
-				DatabaseUtils.queryOut("UPDATE settlements SET citizens='"+ s.getCitizens() +"'WHERE id=" + s.getId() + ";");
+				new Thread() {
+					@Override
+					public void run() {
+						try {
+							DatabaseUtils.queryOut("UPDATE settlements SET citizens='"+ s.getCitizens() +"'WHERE id=" + s.getId() + ";");
+						} catch(SQLException e) {e.printStackTrace();}
+					}
+				}.start();	
 			}else
 				Bukkit.getPlayer(name).sendMessage(MessageType.MUST_APPOINT_NEW_LEADER.getMsg());
 		}else 
@@ -305,14 +343,21 @@ public class SettlementManager {
 	 * @param desc : The description for the Settlement
 	 * @throws SQLException
 	 */
-	public void setDescription(CommandSender sender, String desc) throws SQLException{
+	public void setDescription(CommandSender sender, final String desc) throws SQLException{
 		if (!(getPlayerSettlement(sender.getName()) == null)){
-			Settlement s = getPlayerSettlement(sender.getName());
+			final Settlement s = getPlayerSettlement(sender.getName());
 			if (s.isOfficer(sender.getName()) || s.isLeader(sender.getName())){
 				s.setDescription(desc);
 				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Set your Settlement's description to " + desc);
+				new Thread() {
+					@Override
+					public void run() {
+						try {
+							DatabaseUtils.queryOut("UPDATE settlements SET description='" + desc + "' WHERE id=" + s.getId() + ";");
+						} catch(SQLException e) {e.printStackTrace();}
+					}
+				}.start();
 				
-				DatabaseUtils.queryOut("UPDATE settlements SET description='" + desc + "' WHERE id=" + s.getId() + ";");
 			}else
 				sender.sendMessage(MessageType.DESCRIPTION_NOT_RANK.getMsg());
 		}else

@@ -26,14 +26,12 @@ public class Startup extends Thread {
 
 		CommandType.prepareCommandList();
 
-		//Setup database
 		DatabaseUtils.setupConnection();
 		DatabaseUtils.setupMySQL();
 
 		loadSettlements();
-
+		
 		new ChunkManager(); 
-
 	}
 
 	private static void loadSettlements() {
