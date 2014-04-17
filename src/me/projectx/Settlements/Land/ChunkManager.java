@@ -3,12 +3,14 @@ package me.projectx.Settlements.Land;
 import me.projectx.Settlements.API.Settlement;
 import me.projectx.Settlements.API.SettlementManager;
 
+import org.bukkit.World;
+
 public class ChunkManager {
 
-	public static boolean claimChunk(String player, int x, int z){
+	public static boolean claimChunk(String player, int x, int z, World world){
 		if (SettlementManager.getManager().isCitizenOfSettlement(player)){
 			Settlement set = SettlementManager.getManager().getPlayerSettlement(player);
-			new ClaimedChunk(x, z, player, set);
+			new ClaimedChunk(x, z, player, set, world);
 			return true;
 		}
 		else{
