@@ -3,7 +3,11 @@ package me.projectx.Settlements.Land;
 import me.projectx.Settlements.API.Settlement;
 import me.projectx.Settlements.API.SettlementManager;
 
+import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class ChunkManager {
 
@@ -18,8 +22,13 @@ public class ChunkManager {
 	}
 
 	//Temporary return value, eventually will be an enum
+<<<<<<< HEAD
 	public int claimChunk(String player, int x, int z, World world){
 		if (SettlementManager.getManager().isCitizenOfSettlement(player)){
+=======
+	public static int claimChunk(String player, int x, int z, World world){
+		if (!(SettlementManager.getManager().getPlayerSettlement(player) == null)){
+>>>>>>> 6e5e49be3da750bcad9a4ac0cc9413a75c0d571b
 			Settlement set = SettlementManager.getManager().getPlayerSettlement(player);
 			if (!ClaimedChunk.isClaimed(x, z)){
 				new ClaimedChunk(x, z, player, set, world);
@@ -35,8 +44,13 @@ public class ChunkManager {
 	}
 
 	//Temporary return value, eventually will be an enum
+<<<<<<< HEAD
 	public int claimChunk(String player, double x, double z, World world) {
 		if (SettlementManager.getManager().isCitizenOfSettlement(player)){
+=======
+	public static int claimChunk(String player, double x, double z, World world) {
+		if (!(SettlementManager.getManager().getPlayerSettlement(player) == null)){
+>>>>>>> 6e5e49be3da750bcad9a4ac0cc9413a75c0d571b
 			Settlement set = SettlementManager.getManager().getPlayerSettlement(player);
 			if (!ClaimedChunk.isClaimed((int) x, (int) z)){
 				new ClaimedChunk((int) x, (int) z, player, set, world);
@@ -49,7 +63,6 @@ public class ChunkManager {
 		else{
 			return 0;
 		}
-
 	}
 
 	public boolean unclaimChunk(int x, int z){
@@ -69,5 +82,18 @@ public class ChunkManager {
 		chunk.setSettlement(set);
 		return chunk;
 	}
-
+	
+    public static void printMap(Player player){
+    	for (int x = -7; x < 7; x++){
+    		String send = null;
+    		for (int z = -7; z < 7; x++){
+    			if (ClaimedChunk.isClaimed(x, z)){
+    				send = send + ChatColor.GREEN+"+";                                      
+    				}else{
+    					send = send + ChatColor.RED + "-";
+    				}
+    		}
+            player.sendMessage(send);
+    	}
+    }
 }

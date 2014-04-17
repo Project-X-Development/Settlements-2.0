@@ -57,6 +57,11 @@ public class CommandSettlementPlayer extends CommandModel {
 						sender.sendMessage(MessageType.PREFIX + "You must be part of a settlement to claim land!");
 					}
 				}
+				
+				if (args[0].equalsIgnoreCase("map")){
+					Player p = (Player) sender; //temp
+					ChunkManager.printMap(p);
+				}
 
 			} else {
 				CommandType.printList(sender);
