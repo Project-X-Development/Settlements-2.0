@@ -26,31 +26,6 @@ public class ClaimedChunk {
 		instances.add(this);
 	}
 
-
-	//Static methods//
-
-	public static List<ClaimedChunk> getInstances(){
-		return instances;
-	}
-
-	public static ClaimedChunk getChunk(int chunkx, int chunkz){
-		for (ClaimedChunk tempChunk : instances){
-			if (tempChunk.getX() == chunkx && tempChunk.getZ() == chunkz){
-				return tempChunk;
-			}
-		}
-		return null;
-	}
-
-	public static boolean isClaimed(int chunkx, int chunkz){
-		for (ClaimedChunk tempChunk : ClaimedChunk.instances){
-			if (tempChunk.getX() == chunkx && tempChunk.getZ() == chunkz){
-				return true;
-			}
-		}
-		return false;
-	}
-
 	//Local methods//
 
 	public int getX(){

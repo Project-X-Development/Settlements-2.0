@@ -23,7 +23,7 @@ public class ChunkManager {
 	public int claimChunk(String player, int x, int z, World world){
 		if (!(SettlementManager.getManager().getPlayerSettlement(player) == null)){
 			Settlement set = SettlementManager.getManager().getPlayerSettlement(player);
-			if (!ClaimedChunk.isClaimed(x, z)){
+			if (!isClaimed(x, z)){
 				new ClaimedChunk(x, z, player, set, world);
 				return 2;
 			}
@@ -40,7 +40,7 @@ public class ChunkManager {
 	public int claimChunk(String player, double x, double z, World world) {
 		if (!(SettlementManager.getManager().getPlayerSettlement(player) == null)){
 			Settlement set = SettlementManager.getManager().getPlayerSettlement(player);
-			if (!ClaimedChunk.isClaimed((int) x, (int) z)){
+			if (!isClaimed((int) x, (int) z)){
 				new ClaimedChunk((int) x, (int) z, player, set, world);
 				return 2;
 			}
@@ -54,9 +54,9 @@ public class ChunkManager {
 	}
 
 	public boolean unclaimChunk(int x, int z){
-		if (ClaimedChunk.isClaimed(x, z)){
-			ClaimedChunk chunk = ClaimedChunk.getChunk(x, z);
-			ClaimedChunk.getInstances().remove(chunk);
+		if (isClaimed(x, z)){
+			ClaimedChunk chunk = getChunk(x, z);
+			ClaimedChunk.instances.remove(chunk);
 			return true;
 		}
 		else{
@@ -71,11 +71,31 @@ public class ChunkManager {
 		return chunk;
 	}
 
+	public boolean isClaimed(int chunkx, int chunkz){
+		for (ClaimedChunk tempChunk : ClaimedChunk.instances){
+			if (tempChunk.getX() == chunkx && tempChunk.getZ() == chunkz){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static ClaimedChunk getChunk(int chunkx, int chunkz){
+		for (ClaimedChunk tempChunk : ClaimedChunk.instances){
+			if (tempChunk.getX() == chunkx && tempChunk.getZ() == chunkz){
+				return tempChunk;
+			}
+		}
+		return null;
+	}
+
 	public void printMap(Player player){
+		int playerx = player.getLocation().getChunk().getX();
+		int playerz = player.getLocation().getChunk().getZ();
 		for (int x = -7; x < 7; x++){
 			String send = null;
 			for (int z = -7; z < 7; x++){
-				if (ClaimedChunk.isClaimed(x, z)){
+				if (isClaimed(playerx + x, playerz + z)){
 					send = send + ChatColor.GREEN+"+";                                      
 				}else{
 					send = send + ChatColor.RED + "-";
