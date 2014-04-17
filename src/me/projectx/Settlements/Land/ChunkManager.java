@@ -7,8 +7,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-public class ChunkManager {
+public class ChunkManager extends Thread{
 
+	/*
+	 * TODO
+	 * Multithread as much of this as possible, especially DB calls & loops
+	 * 
+	 */
 	public static ChunkManager instance;
 
 	public ChunkManager(){
@@ -89,19 +94,24 @@ public class ChunkManager {
 		return null;
 	}
 
-	public void printMap(Player player){
-		int playerx = player.getLocation().getChunk().getX();
-		int playerz = player.getLocation().getChunk().getZ();
-		for (int x = -7; x < 7; x++){
-			String send = null;
-			for (int z = -7; z < 7; x++){
-				if (isClaimed(playerx + x, playerz + z)){
-					send = send + ChatColor.GREEN+"+";                                      
-				}else{
-					send = send + ChatColor.RED + "-";
-				}
+	public void printMap(final Player player){
+		final int playerx = player.getLocation().getChunk().getX();
+		final int playerz = player.getLocation().getChunk().getZ();
+		new Thread() {
+			@Override
+			public void run() {
+				for (int x = -7; x < 7; x++){
+					String send = null;
+					for (int z = -7; z < 7; x++){
+						if (isClaimed(playerx + x, playerz + z)){
+							send = send + ChatColor.GREEN+"+";                                      
+						}else{
+							send = send + ChatColor.RED + "-";
+						}
+					}
+					player.sendMessage(send);
+				}	
 			}
-			player.sendMessage(send);
-		}
+		}.start();
 	}
 }

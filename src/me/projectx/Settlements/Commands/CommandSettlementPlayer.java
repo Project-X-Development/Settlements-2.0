@@ -45,16 +45,16 @@ public class CommandSettlementPlayer extends CommandModel {
 					}
 					SettlementManager.getManager().setDescription(sender, str.toString());
 				}
-				if (args[0].equalsIgnoreCase("claim")){
+				if (args[0].equalsIgnoreCase("claim")){ //temporary
 					int status = ChunkManager.getInstance().claimChunk(sender.getName(), ((Player) sender).getLocation().getChunk().getX(), ((Player) sender).getLocation().getChunk().getZ(), ((Player) sender).getLocation().getWorld());
 					if (status == 2){
-						sender.sendMessage(MessageType.PREFIX + "Claimed this chunk!");
+						sender.sendMessage(MessageType.PREFIX.getMsg() + "Claimed this chunk!");
 					}
 					else if (status == 1){
-						sender.sendMessage(MessageType.PREFIX + "Someone has already claimed this land!");
+						sender.sendMessage(MessageType.PREFIX.getMsg() + "Someone has already claimed this land!");
 					}
 					else if (status == 0){
-						sender.sendMessage(MessageType.PREFIX + "You must be part of a settlement to claim land!");
+						sender.sendMessage(MessageType.PREFIX.getMsg() + "You must be part of a settlement to claim land!");
 					}
 				}
 
