@@ -2,15 +2,16 @@ package me.projectx.Settlements.Utils;
 
 import java.sql.SQLException;
 
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.PluginManager;
-
 import me.projectx.Settlements.Main;
 import me.projectx.Settlements.API.SettlementManager;
 import me.projectx.Settlements.Commands.CommandSettlementPlayer;
 import me.projectx.Settlements.Events.PlayerChat;
 import me.projectx.Settlements.Events.PlayerJoin;
 import me.projectx.Settlements.Events.PlayerQuit;
+import me.projectx.Settlements.Land.ChunkManager;
+
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.PluginManager;
 
 public class Startup extends Thread {
 
@@ -28,8 +29,10 @@ public class Startup extends Thread {
 		//Setup database
 		DatabaseUtils.setupConnection();
 		DatabaseUtils.setupMySQL();
-		
+
 		loadSettlements();
+
+		new ChunkManager(); 
 
 	}
 
