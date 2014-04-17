@@ -103,7 +103,7 @@ public class ChunkManager extends Thread{
 				for (int x = -7; x < 7; x++){
 					String send = null;
 					for (int z = -7; z < 7; x++){
-						if (isClaimed(playerx + x, playerz + z)){
+						if (isClaimed(playerx + (int)player.getLocation().getX(), playerz + (int)player.getLocation().getBlockZ())){
 							send = ChatColor.GREEN+"+";                                      
 						}else{
 							send = ChatColor.RED + "-";
