@@ -156,10 +156,6 @@ public class SettlementManager {
 	 * Create a new settlement. The settlement will only get created if the settlement 
 	 * doesn't already exist and if the sender isn't a member of a different settlement
 	 * 
-	 * <p>
-	 * TODO
-	 * <p>
-	 * 
 	 * @param name : The name of the new settlement
 	 * @param sender : Who issued the creation of the settlement
 	 * @throws SQLException 
@@ -170,11 +166,8 @@ public class SettlementManager {
 				Settlement s = new Settlement(name);
 				s.setLeader(sender.getName());
 				settlements.add(s);
-
-				//Create in database
 				DatabaseUtils.queryOut("INSERT INTO settlements (id, name, leader)"
 						+ "VALUES ('" + s.getId() + "','" + s.getName() + "','" + s.getLeader() + "');");
-
 				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully created " + ChatColor.AQUA + s.getName());
 				sender.sendMessage(ChatColor.GREEN + "You can now set a description by doing " + ChatColor.RED + "/s desc <description>");
 				sender.sendMessage(ChatColor.GREEN + "For more things you can do, type " + ChatColor.RED + "/s");
@@ -187,10 +180,6 @@ public class SettlementManager {
 	/**
 	 * Delete a settlement. Only works if the settlement exists and the sender is the leader of the settlement
 	 * 
-	 *  <p>
-	 * TODO
-	 * <p>
-	 * 
 	 * @param name : The name of the settlement to delete
 	 * @param sender : Who issued the deletion of the settlement
 	 * @throws SQLException 
@@ -201,10 +190,7 @@ public class SettlementManager {
 			if (s.isLeader(sender.getName())){
 				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully deleted " + ChatColor.AQUA + s.getName());
 				settlements.remove(s);
-
-				//Remove from database - Checking leader for extra precaution
 				DatabaseUtils.queryOut("DELETE FROM settlements WHERE id=" + s.getId() + ";");
-
 			}else 
 				sender.sendMessage(MessageType.DELETE_NOT_LEADER.getMsg());
 		}
@@ -212,11 +198,6 @@ public class SettlementManager {
 
 	/**
 	 * Invite a player to join the Settlement. The command sender must be an Officer or higher in the Settlement
-	 * 
-	 * <p>
-	 * TODO
-	 * <p>
-	 * Add notification system incase player is offline
 	 * 
 	 * @param player : The player to invite
 	 * @param sender : Who issued the invite
@@ -336,5 +317,28 @@ public class SettlementManager {
 				sender.sendMessage(MessageType.DESCRIPTION_NOT_RANK.getMsg());
 		}else
 			sender.sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
+	}
+	
+	/**
+	 * List all the members of a given Settlement
+	 * 
+	 * @param sender : Who sent the command and will receive the list
+	 * @param settlement : The Settlement
+	 */
+	public void listMembers(CommandSender sender, Settlement settlement){
+		if (settlementExists(settlement.getName())){
+			sender.sendMessage(MessageType.PREFIX.getMsg() + 
+					ChatColor.GRAY + "All members in the Settlement " + 
+					ChatColor.AQUA + settlement.getName() + ": " + settlement.memberSize());
+			sender.sendMessage(ChatColor.GREEN + "Leader:");
+			sender.sendMessage(ChatColor.DARK_AQUA + "-" + settlement.getLeader());
+			sender.sendMessage(ChatColor.GREEN + "Officers:");
+			for (String s : settlement.getOfficers())
+				sender.sendMessage(ChatColor.DARK_AQUA + "-" + s);
+			sender.sendMessage(ChatColor.GREEN + "Citizens");
+			for (String s : settlement.getCitizens())
+				sender.sendMessage(ChatColor.DARK_AQUA + "-" +  s);
+		}else
+			sender.sendMessage(MessageType.SETTLEMENT_NOT_EXIST.getMsg());
 	}
 }

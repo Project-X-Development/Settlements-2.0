@@ -11,6 +11,7 @@ public enum MessageType {
 	DELETE_NOT_LEADER(PREFIX.getMsg() + "&4You must be the leader of a Settlement to delete it!"),
 	CURRENTLY_IN_SETTLEMENT(PREFIX.getMsg() + "&4You must leave your Settlement to join another one!"),
 	SETTLEMENT_EXISTS(PREFIX.getMsg() + "&4That Settlement already exists!"),
+	SETTLEMENT_NOT_EXIST(PREFIX.getMsg() + "&4That Settlement could not be found :("),
 	CREATE_IN_SETTLEMENT(PREFIX.getMsg() + "&4You cannot be a member a Settlement when creating a new one!"),
 	NOT_IN_SETTLEMENT(PREFIX.getMsg() + "&4You are not in a Settlement!"),
 	MUST_APPOINT_NEW_LEADER(PREFIX.getMsg() + "&7You must appoint a new leader before leaving!"),

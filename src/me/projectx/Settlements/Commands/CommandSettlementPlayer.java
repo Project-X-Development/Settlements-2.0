@@ -35,6 +35,12 @@ public class CommandSettlementPlayer extends CommandModel {
 						str.append(args[i] + " ");
 					SettlementManager.getManager().setDescription(sender, str.toString());
 				}
+				
+				if (args[0].equalsIgnoreCase("members"))
+					if (args.length == 1)
+						SettlementManager.getManager().listMembers(sender, SettlementManager.getManager().getPlayerSettlement(sender.getName()));
+					else
+						SettlementManager.getManager().listMembers(sender, SettlementManager.getManager().getSettlement(args[1]));
 			}else
 				CommandType.printList(sender);
 		}
