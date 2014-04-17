@@ -61,7 +61,7 @@ public class ChunkManager extends Thread{
 	public boolean unclaimChunk(int x, int z){
 		if (isClaimed(x, z)){
 			ClaimedChunk chunk = getChunk(x, z);
-			ClaimedChunk.instances.remove(chunk);
+			ClaimedChunk.getCC().getChunks().remove(chunk);
 			return true;
 		}
 		else{
@@ -77,7 +77,7 @@ public class ChunkManager extends Thread{
 	}
 
 	public boolean isClaimed(int chunkx, int chunkz){
-		for (ClaimedChunk tempChunk : ClaimedChunk.instances){
+		for (ClaimedChunk tempChunk : ClaimedChunk.getCC().getChunks()){
 			if (tempChunk.getX() == chunkx && tempChunk.getZ() == chunkz){
 				return true;
 			}
@@ -86,7 +86,7 @@ public class ChunkManager extends Thread{
 	}
 
 	public static ClaimedChunk getChunk(int chunkx, int chunkz){
-		for (ClaimedChunk tempChunk : ClaimedChunk.instances){
+		for (ClaimedChunk tempChunk : ClaimedChunk.getCC().getChunks()){
 			if (tempChunk.getX() == chunkx && tempChunk.getZ() == chunkz){
 				return tempChunk;
 			}

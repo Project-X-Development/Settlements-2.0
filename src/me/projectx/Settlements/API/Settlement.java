@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 public class Settlement {
 	
 	private long id;
+	private int power;
 	private String leader, name, desc;
 	private ArrayList<String> officers = new ArrayList<String>();
 	private ArrayList<String> citizens = new ArrayList<String>();
@@ -43,6 +44,24 @@ public class Settlement {
 	 */
 	public void setId(long id){
 		this.id = id;
+	}
+	
+	/**
+	 * Get the power of the Settlement
+	 * 
+	 * @return The power of the Settlement
+	 */
+	public int getPower(){
+		return this.power;
+	}
+	
+	/**
+	 * Set the power of the Settlement
+	 * 
+	 * @param value : The value to set it to
+	 */
+	public void setPower(int value){
+		this.power = value;
 	}
 	
 	/**

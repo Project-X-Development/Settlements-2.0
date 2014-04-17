@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import me.projectx.Settlements.Land.ChunkManager;
+import me.projectx.Settlements.Land.ClaimedChunk;
 import me.projectx.Settlements.Utils.DatabaseUtils;
 import me.projectx.Settlements.Utils.MessageType;
 
@@ -385,5 +387,12 @@ public class SettlementManager extends Thread {
 				sender.sendMessage(ChatColor.DARK_AQUA + "-" +  s);
 		}else
 			sender.sendMessage(MessageType.SETTLEMENT_NOT_EXIST.getMsg());
+	}
+	
+	public void calculatePower(Settlement s){
+		int citizens = s.getCitizens().size();
+		int officers = s.getOfficers().size();
+		
+		//s.setPower( ((citizens + officers)/ClaimedChunk.getCC().getChunks().size()) );
 	}
 }

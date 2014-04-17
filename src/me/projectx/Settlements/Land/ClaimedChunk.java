@@ -10,12 +10,13 @@ import org.bukkit.World;
 
 public class ClaimedChunk {
 
-	public static List<ClaimedChunk> instances = new ArrayList<ClaimedChunk>(); 
+	public List<ClaimedChunk> instances = new ArrayList<ClaimedChunk>(); //HashMap<Settlement, ClaimedChunk> ?
 	private final int x ;
 	private final int z;
 	private World w;
 	private String owner;
 	private Settlement set;
+	private static ClaimedChunk cc;
 
 	public ClaimedChunk(int x, int z, String owner, Settlement set, World w){
 		this.x = x;
@@ -24,6 +25,7 @@ public class ClaimedChunk {
 		this.owner = owner;
 		this.set = set;
 		instances.add(this);
+		cc = this;
 	}
 
 	//Local methods//
@@ -38,6 +40,14 @@ public class ClaimedChunk {
 
 	public World getWorld(){
 		return this.w;
+	}
+	
+	public static ClaimedChunk getCC(){
+		return cc;
+	}
+	
+	public List<ClaimedChunk> getChunks(){
+		return this.instances;
 	}
 
 	public void setWorld(String world){
