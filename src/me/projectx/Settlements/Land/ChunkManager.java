@@ -7,15 +7,39 @@ import org.bukkit.World;
 
 public class ChunkManager {
 
-	public static boolean claimChunk(String player, int x, int z, World world){
+	//Temporary return value, eventually will be an enum
+	public static int claimChunk(String player, int x, int z, World world){
 		if (SettlementManager.getManager().isCitizenOfSettlement(player)){
 			Settlement set = SettlementManager.getManager().getPlayerSettlement(player);
-			new ClaimedChunk(x, z, player, set, world);
-			return true;
+			if (!ClaimedChunk.isClaimed(x, z)){
+				new ClaimedChunk(x, z, player, set, world);
+				return 2;
+			}
+			else{
+				return 1;
+			}
 		}
 		else{
-			return false;
+			return 0;
 		}
+	}
+
+	//Temporary return value, eventually will be an enum
+	public static int claimChunk(String player, double x, double z, World world) {
+		if (SettlementManager.getManager().isCitizenOfSettlement(player)){
+			Settlement set = SettlementManager.getManager().getPlayerSettlement(player);
+			if (!ClaimedChunk.isClaimed((int) x, (int) z)){
+				new ClaimedChunk((int) x, (int) z, player, set, world);
+				return 2;
+			}
+			else{
+				return 1;
+			}
+		}
+		else{
+			return 0;
+		}
+
 	}
 
 	public static boolean unclaimChunk(int x, int z){
@@ -35,4 +59,5 @@ public class ChunkManager {
 		chunk.setSettlement(set);
 		return chunk;
 	}
+
 }
