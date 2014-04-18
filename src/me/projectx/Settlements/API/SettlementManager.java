@@ -414,10 +414,18 @@ public class SettlementManager extends Thread {
 			sender.sendMessage(MessageType.SETTLEMENT_NOT_EXIST.getMsg());
 	}
 	
+	/**
+	 * Calculate the power for a Settlement
+	 * 
+	 * @param s : The settlement to calculate the power for
+	 */
 	public void calculatePower(Settlement s){
 		int citizens = s.getCitizens().size();
 		int officers = s.getOfficers().size();
-		
-		//s.setPower( ((citizens + officers)/ClaimedChunk.getCC().getChunks().size()) );
+		for (ClaimedChunk cc : ClaimedChunk.instances){
+			if (cc.getSettlement().equals(s)){
+				s.setPower( /*((citizens + officers + 1)/*/cc.map.get(s).size()); //will readd members after more testing
+			}
+		} 
 	}
 }

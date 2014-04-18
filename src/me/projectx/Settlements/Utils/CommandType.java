@@ -9,7 +9,7 @@ public enum CommandType {
 	
 	SETTLEMENT_CREATE("/s create <name>", "Create a new Settlement", "settlements.player.create"),
 	SETTLEMENT_DELETE("/s delete <name>", "Delete a Settlement", "settlements.player.delete"),
-	SETTLEMENT_DESC("/s desc <description", "Set a description for the Settlement", "settlements.player.desc"),
+	SETTLEMENT_DESC("/s desc <description>", "Set a description for the Settlement", "settlements.player.desc"),
 	SETTLEMENT_MEMBER_ADD("/s invite <player>", "Invite a player to join the Settlement", "settlements.player.invite"),
 	SETTLEMENT_MEMBER_LIST("/s members", "List all of the players in a Settlement", "settlements.player.list"),
 	SETTLEMENT_INVITE_ACCEPT("/s accept", "Accept an invitation to join a Settlement", "settlements.player.accept"),

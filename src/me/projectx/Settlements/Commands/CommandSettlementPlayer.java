@@ -73,9 +73,15 @@ public class CommandSettlementPlayer extends CommandModel {
 						SettlementManager.getManager().listMembers(sender, SettlementManager.getManager().getSettlement(args[1]));
 				}
 				
-				if (args[0].equalsIgnoreCase("kick"))
+				if (args[0].equalsIgnoreCase("kick")){
 					if (args.length == 2)
 						SettlementManager.getManager().kickPlayer(sender, args[1]);
+				}
+				
+				if (args[0].equalsIgnoreCase("power")){//temporary
+					SettlementManager.getManager().calculatePower(SettlementManager.getManager().getPlayerSettlement(sender.getName()));
+					sender.sendMessage("Your settlement power: " + SettlementManager.getManager().getPlayerSettlement(sender.getName()).getPower());
+				}
 
 			} else {
 				CommandType.printList(sender);

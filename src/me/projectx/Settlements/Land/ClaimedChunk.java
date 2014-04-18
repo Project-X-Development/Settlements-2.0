@@ -1,6 +1,7 @@
 package me.projectx.Settlements.Land;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import me.projectx.Settlements.API.Settlement;
@@ -11,12 +12,12 @@ import org.bukkit.World;
 public class ClaimedChunk {
 
 	public static List<ClaimedChunk> instances = new ArrayList<ClaimedChunk>(); //HashMap<Settlement, ClaimedChunk> ?
+	public HashMap<Settlement, List<ClaimedChunk>> map = new HashMap<Settlement, List<ClaimedChunk>>();
 	private final int x ;
 	private final int z;
 	private World w;
 	private String owner;
 	private Settlement set;
-	private static ClaimedChunk cc;
 
 	public ClaimedChunk(int x, int z, String owner, Settlement set, World w){
 		this.x = x;
@@ -25,7 +26,7 @@ public class ClaimedChunk {
 		this.owner = owner;
 		this.set = set;
 		instances.add(this);
-		cc = this;
+		map.put(set, instances);
 	}
 
 	//Local methods//
