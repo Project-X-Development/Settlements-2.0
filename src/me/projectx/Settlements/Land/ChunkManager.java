@@ -100,18 +100,36 @@ public class ChunkManager extends Thread{
 		new Thread() {
 			@Override
 			public void run() {
-				for (int x = -7; x < 7; x++){
-					String send = null;
-					for (int z = -7; z < 7; x++){
-						if (isClaimed(playerx + (int)player.getLocation().getX(), playerz + (int)player.getLocation().getBlockZ())){
-							send = ChatColor.GREEN+"+";                                      
-						}else{
-							send = ChatColor.RED + "-";
-						}
-						player.sendMessage(send);
+				for (int x = 0; x < 5; x++){
+					String send = "";
+					for (int z = -7; z < 8; z++){
+						int xx = playerx + x;
+						int zz = playerz + z;
+						if (isClaimed(xx, zz)){ 
+							/*if (xx == player.getLocation().getChunk().getX() && zz == player.getLocation().getChunk().getZ())
+								send = send + ChatColor.YELLOW + "+";
+							else*/
+								send = send + ChatColor.GREEN + "+"; 
+						}else
+							send = send + ChatColor.RED + "-";
+						
 					}
+					player.sendMessage(send);
 				}	
 			}
 		}.start();
+	}
+	
+	public boolean isInChunk(Player player){
+		if (isClaimed(player.getLocation().getChunk().getX(), player.getLocation().getChunk().getZ()))
+			return true;
+		return false;
+	}
+	
+	public void sendInChunkMsg(Player player){
+		if (isInChunk(player)){
+			//player.sendMessage(); TODO need method to get the settlement that owns the chunk
+			//Example msg: <Settlement Name> ~ <Settlement Description>
+		}	
 	}
 }
