@@ -100,6 +100,9 @@ public class ChunkManager extends Thread{
 		new Thread() {
 			@Override
 			public void run() {
+				player.sendMessage(ChatColor.GRAY + "-------------------" + ChatColor.DARK_GRAY + 
+						" [" + ChatColor.AQUA + "Settlement Map" + ChatColor.DARK_GRAY + "] " + ChatColor.GRAY + "-------------------");
+				player.sendMessage("Temporary reference: you are always in the middle of the top row");
 				for (int x = 0; x < 5; x++){
 					String send = "";
 					for (int z = -7; z < 8; z++){
@@ -111,8 +114,7 @@ public class ChunkManager extends Thread{
 							else*/
 								send = send + ChatColor.GREEN + "+"; 
 						}else
-							send = send + ChatColor.RED + "-";
-						
+							send = send + ChatColor.RED + "-";	
 					}
 					player.sendMessage(send);
 				}	

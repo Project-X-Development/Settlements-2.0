@@ -38,9 +38,6 @@ public class SettlementManager extends Thread {
 		return settlements;
 	}
 
-
-	//Database methods for saving and loading Settlements//
-
 	/**
 	 * Load settlements (Call onEnable)
 	 * 
@@ -191,8 +188,8 @@ public class SettlementManager extends Thread {
 					}
 				}.start();
 				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully created " + ChatColor.AQUA + s.getName());
-				sender.sendMessage(ChatColor.GREEN + "You can now set a description by doing " + ChatColor.RED + "/s desc <description>");
-				sender.sendMessage(ChatColor.GREEN + "For more things you can do, type " + ChatColor.RED + "/s");
+				sender.sendMessage(ChatColor.GRAY + "You can now set a description by doing " + ChatColor.AQUA + "/s desc <description>");
+				sender.sendMessage(ChatColor.GRAY + "For more things you can do, type " + ChatColor.AQUA + "/s");
 			}else 
 				sender.sendMessage(MessageType.CREATE_IN_SETTLEMENT.getMsg());
 		}else
@@ -272,7 +269,7 @@ public class SettlementManager extends Thread {
 					public void run() {
 						invitedPlayers.remove(player);
 						try {
-							DatabaseUtils.queryOut("UPDATE settlements SET citizens='"+ s.getCitizens() +"'WHERE id='" + s.getId() + "';");
+							DatabaseUtils.queryOut("UPDATE settlements SET citizens='"+ s.getCitizens() +"' WHERE id='" + s.getId() + "';");
 						} catch(SQLException e) {e.printStackTrace();}
 					}
 				}.start();
@@ -321,14 +318,14 @@ public class SettlementManager extends Thread {
 		if (!(getPlayerSettlement(name) == null)){
 			final Settlement s = getPlayerSettlement(name);
 			if (!s.isLeader(name)){
-				Bukkit.getPlayer(name).sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully left " + s.getName());
+				Bukkit.getPlayer(name).sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully left " + ChatColor.AQUA + s.getName());
 				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + name + ChatColor.GRAY + " left the Settlement :(");
 				s.revokeCitizenship(name);
 				new Thread() {
 					@Override
 					public void run() {
 						try {
-							DatabaseUtils.queryOut("UPDATE settlements SET citizens='"+ s.getCitizens() +"'WHERE id=" + s.getId() + ";");
+							DatabaseUtils.queryOut("UPDATE settlements SET citizens='"+ s.getCitizens() +"' WHERE id=" + s.getId() + ";");
 						} catch(SQLException e) {e.printStackTrace();}
 					}
 				}.start();	
@@ -336,6 +333,37 @@ public class SettlementManager extends Thread {
 				Bukkit.getPlayer(name).sendMessage(MessageType.MUST_APPOINT_NEW_LEADER.getMsg());
 		}else 
 			Bukkit.getPlayer(name).sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
+	}
+	
+	@SuppressWarnings("deprecation")
+	public void kickPlayer(CommandSender sender, String name){
+		if (!(getPlayerSettlement(sender.getName()) == null)){
+			final Settlement s = getPlayerSettlement(sender.getName());
+			if (s.hasMember(name)){
+				if (!s.isLeader(name)){
+					s.revokeCitizenship(name);
+					if (Bukkit.getPlayer(name).isOnline()){
+						Bukkit.getPlayer(name).sendMessage(MessageType.PREFIX.getMsg() + 
+								ChatColor.GRAY + "You have been kicked from " + ChatColor.AQUA + s.getName());
+						s.sendSettlementMessage(MessageType.PREFIX.getMsg() + 
+								ChatColor.AQUA + sender.getName() + ChatColor.GRAY + " kicked " + 
+								ChatColor.AQUA + name + ChatColor.GRAY + " from the Settlement!");
+						new Thread() {
+							@Override
+							public void run() {
+								try {
+									DatabaseUtils.queryOut("UPDATE settlements SET citizens='"+ s.getCitizens() +"' WHERE id=" + s.getId() + ";");
+									DatabaseUtils.queryOut("UPDATE settlements SET officers='" + s.getOfficers() + "' WHERE id=" + s.getId() + ";");
+								} catch(SQLException e) {e.printStackTrace();}
+							}
+						}.start();
+					}
+				}else
+					sender.sendMessage(MessageType.KICK_NOT_LEADER.getMsg());
+			}else
+				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.DARK_RED + "That player is not in your Settlement!");
+		}else
+			sender.sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
 	}
 	
 	/**
@@ -374,17 +402,14 @@ public class SettlementManager extends Thread {
 	 */
 	public void listMembers(CommandSender sender, Settlement settlement){
 		if (settlementExists(settlement.getName())){
-			sender.sendMessage(MessageType.PREFIX.getMsg() + 
-					ChatColor.GRAY + "All members in the Settlement " + 
-					ChatColor.AQUA + settlement.getName() + ": " + settlement.memberSize());
+			sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "All members in the Settlement");
+			sender.sendMessage(ChatColor.GRAY + "Size: " + ChatColor.AQUA + settlement.memberSize());
 			sender.sendMessage(ChatColor.GREEN + "Leader:");
-			sender.sendMessage(ChatColor.DARK_AQUA + "-" + settlement.getLeader());
+			sender.sendMessage(ChatColor.RED + "-" + settlement.getLeader());
 			sender.sendMessage(ChatColor.GREEN + "Officers:");
-			for (String s : settlement.getOfficers())
-				sender.sendMessage(ChatColor.DARK_AQUA + "-" + s);
-			sender.sendMessage(ChatColor.GREEN + "Citizens");
-			for (String s : settlement.getCitizens())
-				sender.sendMessage(ChatColor.DARK_AQUA + "-" +  s);
+			sender.sendMessage(ChatColor.RED + settlement.getOfficers().toString().replace("[", "").replace("]", " "));
+			sender.sendMessage(ChatColor.GREEN + "Citizens:");
+			sender.sendMessage(ChatColor.RED +  settlement.getCitizens().toString().replace("[", "").replace("]", " "));
 		}else
 			sender.sendMessage(MessageType.SETTLEMENT_NOT_EXIST.getMsg());
 	}

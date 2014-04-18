@@ -59,9 +59,23 @@ public class CommandSettlementPlayer extends CommandModel {
 				}
 
 				if (args[0].equalsIgnoreCase("map")){
-					Player p = (Player) sender; //temp
-					ChunkManager.getInstance().printMap(p);
+					if (sender instanceof Player){
+						Player p = (Player) sender;
+						ChunkManager.getInstance().printMap(p);
+					}else
+						sender.sendMessage(MessageType.NOT_PLAYER.getMsg());
 				}
+				
+				if (args[0].equalsIgnoreCase("members")){
+					if (args.length == 1)
+						SettlementManager.getManager().listMembers(sender, SettlementManager.getManager().getPlayerSettlement(sender.getName()));
+					else if (args.length == 2)
+						SettlementManager.getManager().listMembers(sender, SettlementManager.getManager().getSettlement(args[1]));
+				}
+				
+				if (args[0].equalsIgnoreCase("kick"))
+					if (args.length == 2)
+						SettlementManager.getManager().kickPlayer(sender, args[1]);
 
 			} else {
 				CommandType.printList(sender);
