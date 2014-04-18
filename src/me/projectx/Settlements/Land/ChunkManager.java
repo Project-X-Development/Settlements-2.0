@@ -132,6 +132,12 @@ public class ChunkManager extends Thread{
 		if (isInChunk(player)){
 			//player.sendMessage(); TODO need method to get the settlement that owns the chunk
 			//Example msg: <Settlement Name> ~ <Settlement Description>
+			for (ClaimedChunk cc : ClaimedChunk.instances){
+				if (cc.getX() == player.getLocation().getChunk().getX() 
+						&& cc.getZ() == player.getLocation().getChunk().getZ() && cc.getWorld() == player.getLocation().getWorld()){
+					player.sendMessage(cc.getSettlement().getName() + " ~ " + cc.getSettlement().getDescription());
+				}
+			}
 		}	
 	}
 }

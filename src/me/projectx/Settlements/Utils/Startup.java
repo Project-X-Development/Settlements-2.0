@@ -5,9 +5,7 @@ import java.sql.SQLException;
 import me.projectx.Settlements.Main;
 import me.projectx.Settlements.API.SettlementManager;
 import me.projectx.Settlements.Commands.CommandSettlementPlayer;
-import me.projectx.Settlements.Events.PlayerChat;
-import me.projectx.Settlements.Events.PlayerJoin;
-import me.projectx.Settlements.Events.PlayerQuit;
+import me.projectx.Settlements.Events.*;
 import me.projectx.Settlements.Land.ChunkManager;
 
 import org.bukkit.Bukkit;
@@ -21,6 +19,7 @@ public class Startup extends Thread {
 		pm.registerEvents(new PlayerJoin(), Main.getInstance());
 		pm.registerEvents(new PlayerQuit(), Main.getInstance());
 		pm.registerEvents(new PlayerChat(), Main.getInstance());
+		pm.registerEvents(new PlayerMove(), Main.getInstance());
 
 		Main.getInstance().getCommand("s").setExecutor(new CommandSettlementPlayer());
 
