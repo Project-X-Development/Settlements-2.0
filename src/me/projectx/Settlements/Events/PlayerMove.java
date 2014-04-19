@@ -49,6 +49,14 @@ public class PlayerMove implements Listener{
 						ChunkManager.getInstance().sendInChunkMsg(e.getPlayer()); //never sent
 					}      
 				}
+				
+				if (c == null){
+					e.getPlayer().sendMessage("c = null");
+				}
+				
+				if (d == null){
+					e.getPlayer().sendMessage("d = null");
+				}
 			}
 		}      
 	}
