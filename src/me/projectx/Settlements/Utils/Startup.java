@@ -32,9 +32,9 @@ public class Startup extends Thread {
 		DatabaseUtils.setupMySQL();
 
 		loadSettlements();
-		ChunkManager.getInstance().loadChunks();
 
 		new ChunkManager(); 
+		ChunkManager.getInstance().loadChunks();
 	}
 
 	private static void loadSettlements() {
