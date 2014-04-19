@@ -1,12 +1,16 @@
 package me.projectx.Settlements.Land;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import me.projectx.Settlements.API.Settlement;
 import me.projectx.Settlements.API.SettlementManager;
+import me.projectx.Settlements.Utils.DatabaseUtils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -158,22 +162,24 @@ public class ChunkManager extends Thread{
 							/*if (xx == player.getLocation().getChunk().getX() && zz == player.getLocation().getChunk().getZ())
 								send = send + ChatColor.YELLOW + "+";
 							else*/
-								send = send + ChatColor.GREEN + "+"; 
-						}else
-							send = send + ChatColor.RED + "-";	
+							send = send + ChatColor.GREEN + "+"; 
+						} else {
+							send = send + ChatColor.RED + "-";
+						}	
 					}
 					player.sendMessage(send);
 				}	
 			}
 		}.start();
 	}
-	
+
 	public boolean isInChunk(Player player){
-		if (isClaimed(player.getLocation().getChunk().getX(), player.getLocation().getChunk().getZ()))
+		if (isClaimed(player.getLocation().getChunk().getX(), player.getLocation().getChunk().getZ())) {
 			return true;
+		}
 		return false;
 	}
-	
+
 	public void sendInChunkMsg(Player player){
 		if (isInChunk(player)){
 			//player.sendMessage(); TODO need method to get the settlement that owns the chunk
@@ -185,5 +191,32 @@ public class ChunkManager extends Thread{
 				}
 			}
 		}	
+	}
+
+	public void saveChunks() throws SQLException{
+		for (ClaimedChunk c : ClaimedChunk.instances){
+			int x = c.getX();
+			int z = c.getZ();
+			String player = c.getOwner();
+			long setid = c.getSettlement().getId();
+			String w = c.getWorld().getName();
+
+			DatabaseUtils.queryOut("UPDATE chunks"
+					+ "SET x='"+ x + "', z='"+ z + "', player='"+ player
+					+ "', settlement='"+ setid +"', world='"+ w +"';");
+		}
+	}
+
+	public void loadChunks() throws SQLException{
+		ResultSet result = null;
+		result = DatabaseUtils.queryIn("SELECT * FROM chunks;");
+		while (result.next()){
+			int x = result.getInt("x");
+			int z = result.getInt("z");
+			String player = result.getString("player");
+			long setid = result.getLong("settlement");
+			String w = result.getString("world");
+			new ClaimedChunk(x,	z , player, SettlementManager.getManager().getSettlement(setid) , Bukkit.getWorld(w));
+		}
 	}
 }

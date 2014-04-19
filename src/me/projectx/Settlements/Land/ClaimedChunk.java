@@ -1,7 +1,6 @@
 package me.projectx.Settlements.Land;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import me.projectx.Settlements.API.Settlement;
@@ -21,7 +20,7 @@ public class ClaimedChunk {
 	public ClaimedChunk(int x, int z, String owner, Settlement set, World w){
 		this.x = x;
 		this.z = z;
-		this.w= w;
+		this.w = w;
 		this.owner = owner;
 		this.set = set;
 		instances.add(this);

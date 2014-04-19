@@ -33,14 +33,16 @@ public class DatabaseUtils extends Thread{
 		System.out.println("[Settlements] Attempting database connection...");
 		mysql.openConnection();
 		con = mysql.getConnection();
-		if (mysql.checkConnection())
-			System.out.println("[Settlements] Success!");		
+		if (mysql.checkConnection()) {
+			System.out.println("[Settlements] Success!");
+		}		
 	}
 
 	public static void setupMySQL() throws SQLException{
 		queryOut("CREATE TABLE IF NOT EXISTS settlements(id BIGINT, name varchar(255), "
 				+ "leader varchar(255), description varchar(255), citizens LONGBLOB, officers LONGBLOB);");
 		queryOut("CREATE TABLE IF NOT EXISTS cache(name varchar(255), id varchar(255));");
+		queryOut("CREATE TABLE IF NOT EXISTS chunks(x BIGINT, z BIGINT, player VARCHAR(255), settlement BIGINT, world VARCHAR(255));");
 	}
 
 	public static void closeConnection(){
