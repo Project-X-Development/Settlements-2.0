@@ -10,6 +10,6 @@ public class PlayerQuit implements Listener{
 	
 	@EventHandler
 	public void onQuit(PlayerQuitEvent e){
-		PlayerCache.getCache().remove(e.getPlayer().getName());
+		PlayerCache.getCache().playerMap.remove(e.getPlayer().getName());
 	}
 }
