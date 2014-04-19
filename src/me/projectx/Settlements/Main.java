@@ -24,11 +24,12 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onDisable(){
-		try {
+		/*Throws Exception because stream is already closed
+		 * try {
 			ChunkManager.getInstance().saveChunks();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		}*/ 
 		DatabaseUtils.closeConnection();
 		plugin = null;
 	}
