@@ -9,6 +9,7 @@ public class Settlement {
 	
 	private long id;
 	private int power;
+	private double balance;
 	private String leader, name, desc;
 	private ArrayList<String> officers = new ArrayList<String>();
 	private ArrayList<String> citizens = new ArrayList<String>();
@@ -44,6 +45,24 @@ public class Settlement {
 	 */
 	public void setId(long id){
 		this.id = id;
+	}
+	
+	/**
+	 * Get the balance of the Settlement
+	 * 
+	 * @return The balance
+	 */
+	public double getBalance(){
+		return this.balance;
+	}
+	
+	/**
+	 * Set the balance of the settlement
+	 * 
+	 * @param balance : The value to set the balance to
+	 */
+	public void setBalance(double balance){
+		this.balance = balance;
 	}
 	
 	/**
