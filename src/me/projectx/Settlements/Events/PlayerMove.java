@@ -35,17 +35,16 @@ public class PlayerMove implements Listener{
 					e.getPlayer().sendMessage("Null"); //never sent
 				}else if(c!=null&&d==null){
 					Settlement b = c.getSettlement();
-					//Entering b from non claimed
+					//Leaving b to non claimed
 					e.getPlayer().sendMessage(ChatColor.GREEN + "~Wilderness"); //sent when leaving claimed land
 				}else if(d!=null&&c==null){
 					Settlement a = d.getSettlement();
-					//Entering nonclaimed from a
+					//Entering a from unclaimed
 					e.getPlayer().sendMessage("Test~Wilderness"); //never sent
 				}else if(c!=null&&d!=null){
 					Settlement a = d.getSettlement();
 					Settlement b = c.getSettlement();
-
-					if(a!=b){
+					if(!a.equals(b)){
 						//Entering b
 						ChunkManager.getInstance().sendInChunkMsg(e.getPlayer()); //never sent
 					}      
