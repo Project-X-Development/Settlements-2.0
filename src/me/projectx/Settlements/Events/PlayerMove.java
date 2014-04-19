@@ -4,6 +4,7 @@ import me.projectx.Settlements.API.Settlement;
 import me.projectx.Settlements.Land.ChunkManager;
 import me.projectx.Settlements.Land.ClaimedChunk;
 
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -31,20 +32,22 @@ public class PlayerMove implements Listener{
 				ClaimedChunk c = ChunkManager.getInstance().getChunk(e.getFrom().getChunk().getX(), e.getFrom().getChunk().getZ());
 				ClaimedChunk d = ChunkManager.getInstance().getChunk(e.getTo().getChunk().getX(), e.getTo().getChunk().getZ());
 				if(c==null&&d==null){
-					//both arent claimed
+					e.getPlayer().sendMessage("Null"); //never sent
 				}else if(c!=null&&d==null){
 					Settlement b = c.getSettlement();
 					//Entering b from non claimed
+					e.getPlayer().sendMessage(ChatColor.GREEN + "~Wilderness"); //sent when leaving claimed land
 				}else if(d!=null&&c==null){
 					Settlement a = d.getSettlement();
 					//Entering nonclaimed from a
+					e.getPlayer().sendMessage("Test~Wilderness"); //never sent
 				}else if(c!=null&&d!=null){
 					Settlement a = d.getSettlement();
 					Settlement b = c.getSettlement();
 
 					if(a!=b){
 						//Entering b
-						ChunkManager.getInstance().sendInChunkMsg(e.getPlayer());
+						ChunkManager.getInstance().sendInChunkMsg(e.getPlayer()); //never sent
 					}      
 				}
 			}
