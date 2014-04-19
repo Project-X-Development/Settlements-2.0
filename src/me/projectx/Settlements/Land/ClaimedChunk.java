@@ -12,7 +12,6 @@ import org.bukkit.World;
 public class ClaimedChunk {
 
 	public static List<ClaimedChunk> instances = new ArrayList<ClaimedChunk>(); //HashMap<Settlement, ClaimedChunk> ?
-	public HashMap<Settlement, List<ClaimedChunk>> map = new HashMap<Settlement, List<ClaimedChunk>>();
 	private final int x ;
 	private final int z;
 	private World w;
@@ -26,7 +25,6 @@ public class ClaimedChunk {
 		this.owner = owner;
 		this.set = set;
 		instances.add(this);
-		map.put(set, instances);
 	}
 
 	//Local methods//
