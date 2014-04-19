@@ -10,6 +10,6 @@ public class PlayerJoin implements Listener {
 	
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e){
-		PlayerCache.getCache().playerMap.put(e.getPlayer().getName(), e.getPlayer().getUniqueId());
+		PlayerCache.getCache().put(e.getPlayer().getName(), e.getPlayer().getUniqueId());
 	}
 }
