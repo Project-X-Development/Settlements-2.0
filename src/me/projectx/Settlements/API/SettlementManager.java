@@ -13,6 +13,7 @@ import me.projectx.Settlements.Utils.MessageType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class SettlementManager extends Thread {
 
@@ -443,12 +444,27 @@ public class SettlementManager extends Thread {
 	 * @param s : The settlement to calculate the power for
 	 */
 	public void calculatePower(Settlement s){
-		int citizens = s.getCitizens().size();
-		int officers = s.getOfficers().size();
+		//int citizens = s.getCitizens().size();
+		//int officers = s.getOfficers().size();
 		for (ClaimedChunk cc : ClaimedChunk.instances){
-			if (cc.getSettlement().equals(s)){
+			if (cc.getSettlement().equals(s))
 				s.setPower( /*((citizens + officers + 1)/*/ChunkManager.getInstance().map.get(s).size()); //will readd members after more testing
-			}
 		} 
+	}
+	
+	/**
+	 * Claim a chunk at a given player's location
+	 * 
+	 * @param player : The player claiming the chunk
+	 */
+	public void claimChunk(Player player){
+		int status = ChunkManager.getInstance().claimChunk(player.getName(), 
+				player.getLocation().getChunk().getX(), player.getLocation().getChunk().getZ(), player.getLocation().getWorld());
+		if (status == 2)
+			player.sendMessage(MessageType.CHUNK_CLAIM_SUCCESS.getMsg());
+		else if (status == 1)
+			player.sendMessage(MessageType.CHUNK_CLAIM_OWNED.getMsg());
+		else if (status == 0)
+			player.sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
 	}
 }

@@ -20,42 +20,30 @@ public class CommandSettlementPlayer extends CommandModel {
 	public boolean onCmd(CommandSender sender, String cml, String[] args) throws SQLException {
 		if (cml.equalsIgnoreCase("s")){
 			if (args.length > 0){
-				if (args[0].equalsIgnoreCase("create")) {
+				if (args[0].equalsIgnoreCase("create")) 
 					SettlementManager.getManager().createSettlement(args[1], sender);
-				}
-				if (args[0].equalsIgnoreCase("delete")) {
+				if (args[0].equalsIgnoreCase("delete")) 
 					SettlementManager.getManager().deleteSettlement(sender);
-				}
-				if (args[0].equalsIgnoreCase("invite")) {
+				if (args[0].equalsIgnoreCase("invite")) 
 					SettlementManager.getManager().inviteCitizen(args[1], sender);
-				}
-				if (args[0].equalsIgnoreCase("accept")) {
+				if (args[0].equalsIgnoreCase("accept"))
 					SettlementManager.getManager().acceptInvite(sender.getName());
-				}
-				if (args[0].equalsIgnoreCase("decline")) {
+				if (args[0].equalsIgnoreCase("decline")) 
 					SettlementManager.getManager().declineInvite(sender.getName());
-				}
-				if (args[0].equalsIgnoreCase("leave")) {
+				if (args[0].equalsIgnoreCase("leave")) 
 					SettlementManager.getManager().leaveSettlement(sender.getName());
-				}
 				if (args[0].equalsIgnoreCase("desc")){
 					StringBuilder str = new StringBuilder();
-					for (int i = 1; i < args.length; i++) {
+					for (int i = 1; i < args.length; i++) 
 						str.append(args[i] + " ");
-					}
 					SettlementManager.getManager().setDescription(sender, str.toString());
 				}
-				if (args[0].equalsIgnoreCase("claim")){ //temporary
-					int status = ChunkManager.getInstance().claimChunk(sender.getName(), ((Player) sender).getLocation().getChunk().getX(), ((Player) sender).getLocation().getChunk().getZ(), ((Player) sender).getLocation().getWorld());
-					if (status == 2){
-						sender.sendMessage(MessageType.PREFIX.getMsg() + "Claimed this chunk!");
-					}
-					else if (status == 1){
-						sender.sendMessage(MessageType.PREFIX.getMsg() + "Someone has already claimed this land!");
-					}
-					else if (status == 0){
-						sender.sendMessage(MessageType.PREFIX.getMsg() + "You must be part of a settlement to claim land!");
-					}
+				if (args[0].equalsIgnoreCase("claim")){
+					if (sender instanceof Player){
+						Player p = (Player) sender;
+						SettlementManager.getManager().claimChunk(p);
+					}else
+						sender.sendMessage(MessageType.NOT_PLAYER.getMsg());
 				}
 
 				if (args[0].equalsIgnoreCase("map")){
@@ -81,6 +69,16 @@ public class CommandSettlementPlayer extends CommandModel {
 				if (args[0].equalsIgnoreCase("power")){//temporary
 					SettlementManager.getManager().calculatePower(SettlementManager.getManager().getPlayerSettlement(sender.getName()));
 					sender.sendMessage("Your settlement power: " + SettlementManager.getManager().getPlayerSettlement(sender.getName()).getPower());
+				}
+				
+				if (args[0].equalsIgnoreCase("unclaim")){
+					if (sender instanceof Player){
+						Player p = (Player) sender;
+						if (ChunkManager.getInstance().unclaimChunk(p.getLocation().getChunk().getX(), p.getLocation().getChunk().getZ()))
+							p.sendMessage(MessageType.CHUNK_UNCLAIM_SUCCESS.getMsg());
+						else
+							p.sendMessage(MessageType.CHUNK_UNCLAIM_FAIL.getMsg());
+					}
 				}
 
 			} else {
