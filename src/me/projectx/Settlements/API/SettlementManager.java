@@ -446,7 +446,7 @@ public class SettlementManager extends Thread {
 		int officers = s.getOfficers().size();
 		for (ClaimedChunk cc : ClaimedChunk.instances){
 			if (cc.getSettlement().equals(s)){
-				s.setPower( /*((citizens + officers + 1)/*/cc.map.get(s).size()); //will readd members after more testing
+				s.setPower( /*((citizens + officers + 1)/*/ChunkManager.getInstance().map.get(s).size()); //will readd members after more testing
 			}
 		} 
 	}
