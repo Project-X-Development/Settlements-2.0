@@ -32,6 +32,8 @@ public class CommandSettlementPlayer extends CommandModel {
 					SettlementManager.getManager().declineInvite(sender.getName());
 				if (args[0].equalsIgnoreCase("leave")) 
 					SettlementManager.getManager().leaveSettlement(sender.getName());
+				if (args[0].equalsIgnoreCase("list"))
+					SettlementManager.getManager().listSettlements(sender);
 				if (args[0].equalsIgnoreCase("desc")){
 					StringBuilder str = new StringBuilder();
 					for (int i = 1; i < args.length; i++) 
@@ -80,7 +82,6 @@ public class CommandSettlementPlayer extends CommandModel {
 							p.sendMessage(MessageType.CHUNK_UNCLAIM_FAIL.getMsg());
 					}
 				}
-
 			} else {
 				CommandType.printList(sender);
 			}

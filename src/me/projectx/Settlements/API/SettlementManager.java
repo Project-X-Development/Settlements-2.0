@@ -437,6 +437,13 @@ public class SettlementManager extends Thread {
 			sender.sendMessage(MessageType.SETTLEMENT_NOT_EXIST.getMsg());
 		}
 	}
+	
+	public void listSettlements(CommandSender sender){
+		for (int i = 0; i < settlements.size(); i++){
+			sender.sendMessage(ChatColor.RED + "" + (i + 1) + ". " + 
+					ChatColor.AQUA + settlements.get(i).getName() + ChatColor.YELLOW + " ~ " + ChatColor.GRAY + settlements.get(i).getDescription());
+		}
+	}
 
 	/**
 	 * Calculate the power for a Settlement
