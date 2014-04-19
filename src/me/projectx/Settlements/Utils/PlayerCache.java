@@ -8,8 +8,7 @@ import java.util.UUID;
 import me.projectx.Settlements.Utils.DatabaseUtils;
 
 public class PlayerCache {
-	public HashMap<String, UUID> playerMap = new HashMap<String, UUID>();
-	private static PlayerCache pc;
+	public static HashMap<String, UUID> playerMap = new HashMap<String, UUID>();
 
 	//Backsup PlayerName : UUID database - Can bog down the server a bit
 	public  void backupCache() throws SQLException{
@@ -32,7 +31,7 @@ public class PlayerCache {
 		tempMap.clear();
 	}
 	
-	public static PlayerCache getCache(){
-		return pc;
+	public static HashMap<String, UUID> getCache(){
+		return playerMap;
 	}
 }
