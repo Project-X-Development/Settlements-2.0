@@ -16,7 +16,11 @@ public enum MessageType {
 	CREATE_IN_SETTLEMENT(PREFIX.getMsg() + "&4You cannot be a member of a Settlement when creating a new one!"),
 	NOT_IN_SETTLEMENT(PREFIX.getMsg() + "&4You are not in a Settlement!"),
 	MUST_APPOINT_NEW_LEADER(PREFIX.getMsg() + "&e Please appoint a new leader before leaving!"),
-	NOT_PLAYER("&4You must be a player to use that command!"),
+	NOT_PLAYER(PREFIX.getMsg() + "&4You must be a player to use that command!"),
+	CHUNK_CLAIM_SUCCESS(PREFIX.getMsg() + "&7Successfully claimed your current chunk!"),
+	CHUNK_CLAIM_OWNED(PREFIX.getMsg() + "&4Someone already owns this chunk!"),
+	CHUNK_UNCLAIM_SUCCESS(PREFIX.getMsg() + "&7Successfully unclaimed your current chunk!"),
+	CHUNK_UNCLAIM_FAIL(PREFIX.getMsg() + "&4You can't unclaim a chunk you don't own!"),
 	NO_PERM(PREFIX.getMsg() + "&4You don't have permission to use that command!");
 
 	private String msg;

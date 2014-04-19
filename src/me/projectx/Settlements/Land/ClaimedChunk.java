@@ -10,9 +10,8 @@ import org.bukkit.World;
 
 public class ClaimedChunk {
 
-	public static List<ClaimedChunk> instances = new ArrayList<ClaimedChunk>(); //HashMap<Settlement, ClaimedChunk> ?
-	private final int x ;
-	private final int z;
+	public static List<ClaimedChunk> instances = new ArrayList<ClaimedChunk>();
+	private final int x, z;
 	private World w;
 	private String owner;
 	private Settlement set;
@@ -63,5 +62,4 @@ public class ClaimedChunk {
 	public void setSettlement(Settlement set){
 		this.set = set;
 	}
-
 }

@@ -11,12 +11,14 @@ public enum CommandType {
 	SETTLEMENT_DELETE("/s delete <name>", "Delete a Settlement", "settlements.player.delete"),
 	SETTLEMENT_DESC("/s desc <description>", "Set a description for the Settlement", "settlements.player.desc"),
 	SETTLEMENT_MEMBER_ADD("/s invite <player>", "Invite a player to join the Settlement", "settlements.player.invite"),
-	SETTLEMENT_MEMBER_LIST("/s members", "List all of the players in a Settlement", "settlements.player.list"),
 	SETTLEMENT_INVITE_ACCEPT("/s accept", "Accept an invitation to join a Settlement", "settlements.player.accept"),
-	SETTLEMENT_INVITE_DECLINE("/s decline", "Decline an invitation to join a Settlement", "settlements.player.decline"),
+	SETTLEMENT_INVITE_DECLINE("/s decline", "Decline an invitation to join a Settlement", "settlements.player.decline"),	
+	SETTLEMENT_MEMBER_LIST("/s members", "List all of the players in a Settlement", "settlements.player.list"),
+	SETTLEMENT_LIST("/s list", "List all Settlements", "settlements.player.slist"),
 	SETTLEMENT_MEMBER_REMOVE("/s kick <player>", "Kick a player from the Settlement", "settlements.player.kick"),
 	SETTLEMENT_LEAVE("/s leave", "Leave your current Settlement", "settlements.player.leave"),
-	SETTLEMENT_CLAIM("/s claim", "Claim the chunk you are standing in", "settlements.player.claim");
+	SETTLEMENT_CLAIM("/s claim", "Claim the chunk you are standing in", "settlements.player.claim"),
+	SETTLEMENT_UNCLAIM("/s unclaim", "Unlaim the chunk you are standing in", "settlements.player.unclaim");
 	
 	private String usage, info, perm;
 	private static ArrayList<String> list = new ArrayList<String>();
