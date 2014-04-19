@@ -1,5 +1,9 @@
 package me.projectx.Settlements.Land;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import me.projectx.Settlements.API.Settlement;
 import me.projectx.Settlements.API.SettlementManager;
 
@@ -81,7 +85,7 @@ public class ChunkManager extends Thread{
 		if (isClaimed(x, z)){
 			ClaimedChunk chunk = getChunk(x, z);
 			Settlement set = chunk.getSettlement();
-			if(map.containKey(set)){
+			if(map.containsKey(set)){
 				List<ClaimedChunk> cc = map.get(set);
 				if(cc.contains(chunk)){
 					cc.remove(chunk);
