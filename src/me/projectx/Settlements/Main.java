@@ -24,12 +24,12 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onDisable(){
-		DatabaseUtils.closeConnection();
 		try {
 			ChunkManager.getInstance().saveChunks();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		DatabaseUtils.closeConnection();
 		plugin = null;
 	}
 

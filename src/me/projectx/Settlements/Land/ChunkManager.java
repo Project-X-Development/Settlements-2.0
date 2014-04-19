@@ -208,8 +208,7 @@ public class ChunkManager extends Thread{
 	}
 
 	public void loadChunks() throws SQLException{
-		ResultSet result = null;
-		result = DatabaseUtils.queryIn("SELECT * FROM chunks;");
+		ResultSet result = DatabaseUtils.queryIn("SELECT * FROM chunks;");
 		while (result.next()){
 			int x = result.getInt("x");
 			int z = result.getInt("z");
