@@ -33,10 +33,10 @@ public class PlayerMove implements Listener{
 				if(c==null&&d==null){
 					//both arent claimed
 				}else if(c!=null&&d==null){
-					Settlement b = ChunkManager.getInstance().getChunk(e.getTo().getChunk().getX(), e.getTo().getChunk().getZ()).getSettlement();
+					Settlement b = c.getSettlement();
 					//Entering b from non claimed
 				}else if(d!=null&&c==null){
-					Settlement a = ChunkManager.getInstance().getChunk(e.getFrom().getChunk().getX(), e.getFrom().getChunk().getZ()).getSettlement();
+					Settlement a = d.getSettlement();
 					//Entering nonclaimed from a
 				}else if(c!=null&&d!=null){
 					Settlement a = d.getSettlement();
