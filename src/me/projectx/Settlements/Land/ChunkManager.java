@@ -15,6 +15,7 @@ public class ChunkManager extends Thread{
 	 * 
 	 */
 	public static ChunkManager instance;
+	public HashMap<Settlement, List<ClaimedChunk>> map = new HashMap<Settlement, List<ClaimedChunk>>();
 
 	public ChunkManager(){
 		instance = this;
@@ -29,7 +30,16 @@ public class ChunkManager extends Thread{
 		if (!(SettlementManager.getManager().getPlayerSettlement(player) == null)){
 			Settlement set = SettlementManager.getManager().getPlayerSettlement(player);
 			if (!isClaimed(x, z)){
-				new ClaimedChunk(x, z, player, set, world);
+				ClaimedChunk c = new ClaimedChunk(x, z, player, set, world);
+				if(!map.containsKey(set)){
+					List<ClaimedChunk> l = new ArrayList<ClaimedChunk>();
+					l.add(c);
+					map.put(set, l);
+				}else{
+					List<ClaimedChunk> l = map.get(set);
+					l.add(c);
+					map.put(set, l);
+				}
 				return 2;
 			}
 			else{
@@ -46,7 +56,16 @@ public class ChunkManager extends Thread{
 		if (!(SettlementManager.getManager().getPlayerSettlement(player) == null)){
 			Settlement set = SettlementManager.getManager().getPlayerSettlement(player);
 			if (!isClaimed((int) x, (int) z)){
-				new ClaimedChunk((int) x, (int) z, player, set, world);
+				ClaimedChunk c = new ClaimedChunk((int)x, (int)z, player, set, world);
+				if(!map.containsKey(set)){
+					List<ClaimedChunk> l = new ArrayList<ClaimedChunk>();
+					l.add(c);
+					map.put(set, l);
+				}else{
+					List<ClaimedChunk> l = map.get(set);
+					l.add(c);
+					map.put(set, l);
+				}
 				return 2;
 			}
 			else{
@@ -61,6 +80,14 @@ public class ChunkManager extends Thread{
 	public boolean unclaimChunk(int x, int z){
 		if (isClaimed(x, z)){
 			ClaimedChunk chunk = getChunk(x, z);
+			Settlement set = chunk.getSettlement();
+			if(map.containKey(set)){
+				List<ClaimedChunk> cc = map.get(set);
+				if(cc.contains(chunk)){
+					cc.remove(chunk);
+				}
+				map.put(set, cc);
+			}
 			ClaimedChunk.instances.remove(chunk);
 			return true;
 		}
@@ -70,8 +97,23 @@ public class ChunkManager extends Thread{
 	}
 
 	public ClaimedChunk changeChunkOwnership(ClaimedChunk chunk, String player){
-		chunk.setOwner(player);
+		Settlement first = chunk.getSettlement();
+		if(map.containsKey(first)){
+			List<ClaimedChunk> cc = map.get(first);
+			if(cc.contains(chunk)){
+				cc.remove(chunk);
+			}
+			map.put(first, cc);
+		}
 		Settlement set = SettlementManager.getManager().getPlayerSettlement(player);
+		if(map.containsKey(set)){
+			List<ClaimedChunk> cc = map.get(set);
+			if(cc.contains(chunk)){
+				cc.remove(chunk);
+			}
+			map.put(set, cc);
+		}
+		chunk.setOwner(player);
 		chunk.setSettlement(set);
 		return chunk;
 	}
@@ -85,7 +127,7 @@ public class ChunkManager extends Thread{
 		return false;
 	}
 
-	public static ClaimedChunk getChunk(int chunkx, int chunkz){
+	public ClaimedChunk getChunk(int chunkx, int chunkz){
 		for (ClaimedChunk tempChunk : ClaimedChunk.instances){
 			if (tempChunk.getX() == chunkx && tempChunk.getZ() == chunkz){
 				return tempChunk;
