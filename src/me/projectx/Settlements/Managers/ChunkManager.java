@@ -115,7 +115,7 @@ public class ChunkManager extends Thread{
 				@Override
 				public void run() {
 					try {
-						DatabaseUtils.queryOut("DELETE FROM settlements WHERE x=" + chunk.getX() + " AND z=" + chunk.getZ() + ";");
+						DatabaseUtils.queryOut("DELETE FROM chunks WHERE x=" + chunk.getX() + " AND z=" + chunk.getZ() + ";");
 					} catch(SQLException e) {
 						e.printStackTrace();
 					}
