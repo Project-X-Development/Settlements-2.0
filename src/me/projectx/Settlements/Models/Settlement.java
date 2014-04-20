@@ -175,7 +175,7 @@ public class Settlement {
 	public void giveCitizenship(String name){
 		if (!isCitizen(name)) {
 			citizens.add(name);
-			if (Bukkit.getPlayer(name).isOnline()){
+			if (Bukkit.getPlayer(name) != null){
 				this.team.addPlayer(Bukkit.getPlayer(name));
 			}
 		}
@@ -190,7 +190,7 @@ public class Settlement {
 		if (isCitizen(name)){
 			citizens.remove(name);
 			officers.remove(name);
-			if (Bukkit.getPlayer(name).isOnline()){
+			if (Bukkit.getPlayer(name) != null){
 				this.team.removePlayer(Bukkit.getPlayer(name));
 			}
 		}
