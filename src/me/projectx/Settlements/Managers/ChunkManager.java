@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 public class ChunkManager extends Thread{
 	public static ChunkManager instance;
 	public HashMap<Settlement, List<ClaimedChunk>> map = new HashMap<Settlement, List<ClaimedChunk>>();
+	private ArrayList<String> autoClaim = new ArrayList<String>();
 
 	public ChunkManager(){
 		instance = this;
@@ -250,5 +251,16 @@ public class ChunkManager extends Thread{
 				}
 			}
 		}.start();
+	}
+	
+	public void setAutoClaiming(Player p){
+		if (autoClaim.contains(p.getName()))
+			autoClaim.remove(p.getName());
+		else
+			autoClaim.add(p.getName());
+	}
+	
+	public boolean isAutoClaiming(Player p){
+		return autoClaim.contains(p.getName());
 	}
 }

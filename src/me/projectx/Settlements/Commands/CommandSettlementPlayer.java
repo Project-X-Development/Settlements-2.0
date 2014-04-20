@@ -99,6 +99,10 @@ public class CommandSettlementPlayer extends CommandModel {
 						}
 					}
 				}
+				
+				if (args[0].equalsIgnoreCase("autoclaim")){
+					ChunkManager.getInstance().setAutoClaiming((Player)sender);
+				}
 			} else {
 				CommandType.printList(sender);
 			}
