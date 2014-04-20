@@ -437,7 +437,7 @@ public class SettlementManager extends Thread {
 			sender.sendMessage(MessageType.SETTLEMENT_NOT_EXIST.getMsg());
 		}
 	}
-	
+
 	public void listSettlements(CommandSender sender){
 		for (int i = 0; i < settlements.size(); i++){
 			sender.sendMessage(ChatColor.RED + "" + (i + 1) + ". " + 
@@ -455,23 +455,27 @@ public class SettlementManager extends Thread {
 		//int officers = s.getOfficers().size();
 		for (ClaimedChunk cc : ClaimedChunk.instances){
 			if (cc.getSettlement().equals(s))
+			{
 				s.setPower( /*((citizens + officers + 1)/*/ChunkManager.getInstance().map.get(s).size()); //will readd members after more testing
+			}
 		} 
 	}
-	
+
 	/**
 	 * Claim a chunk at a given player's location
 	 * 
 	 * @param player : The player claiming the chunk
+	 * @throws SQLException 
 	 */
-	public void claimChunk(Player player){
+	public void claimChunk(Player player) throws SQLException{
 		int status = ChunkManager.getInstance().claimChunk(player.getName(), 
 				player.getLocation().getChunk().getX(), player.getLocation().getChunk().getZ(), player.getLocation().getWorld());
-		if (status == 2)
+		if (status == 2) {
 			player.sendMessage(MessageType.CHUNK_CLAIM_SUCCESS.getMsg());
-		else if (status == 1)
+		} else if (status == 1) {
 			player.sendMessage(MessageType.CHUNK_CLAIM_OWNED.getMsg());
-		else if (status == 0)
+		} else if (status == 0) {
 			player.sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
+		}
 	}
 }

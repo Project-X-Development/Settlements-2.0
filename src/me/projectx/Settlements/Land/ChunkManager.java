@@ -34,11 +34,19 @@ public class ChunkManager extends Thread{
 	}
 
 	//Temporary return value, eventually will be an enum
-	public int claimChunk(String player, int x, int z, World world){
+	public int claimChunk(String player, int x, int z, World world) throws SQLException{
 		if (!(SettlementManager.getManager().getPlayerSettlement(player) == null)){
 			Settlement set = SettlementManager.getManager().getPlayerSettlement(player);
 			if (!isClaimed(x, z)){
 				ClaimedChunk c = new ClaimedChunk(x, z, player, set, world);
+
+				long setid = set.getId();
+				String w = c.getWorld().getName();
+
+				DatabaseUtils.queryOut("INSERT INTO chunks"
+						+ "SET x='"+ x + "', z='"+ z + "', player='"+ player
+						+ "', settlement='"+ setid +"', world='"+ w +"';");
+
 				if(!map.containsKey(set)){
 					List<ClaimedChunk> l = new ArrayList<ClaimedChunk>();
 					l.add(c);
@@ -60,11 +68,19 @@ public class ChunkManager extends Thread{
 	}
 
 	//Temporary return value, eventually will be an enum
-	public int claimChunk(String player, double x, double z, World world) {
+	public int claimChunk(String player, double x, double z, World world) throws SQLException {
 		if (!(SettlementManager.getManager().getPlayerSettlement(player) == null)){
 			Settlement set = SettlementManager.getManager().getPlayerSettlement(player);
 			if (!isClaimed((int) x, (int) z)){
 				ClaimedChunk c = new ClaimedChunk((int)x, (int)z, player, set, world);
+
+				long setid = set.getId();
+				String w = c.getWorld().getName();
+
+				DatabaseUtils.queryOut("INSERT INTO chunks"
+						+ "SET x='"+ x + "', z='"+ z + "', player='"+ player
+						+ "', settlement='"+ setid +"', world='"+ w +"';");
+
 				if(!map.containsKey(set)){
 					List<ClaimedChunk> l = new ArrayList<ClaimedChunk>();
 					l.add(c);
@@ -85,10 +101,13 @@ public class ChunkManager extends Thread{
 		}
 	}
 
-	public boolean unclaimChunk(int x, int z){
+	public boolean unclaimChunk(int x, int z) throws SQLException{
 		if (isClaimed(x, z)){
 			ClaimedChunk chunk = getChunk(x, z);
 			Settlement set = chunk.getSettlement();
+
+			DatabaseUtils.queryOut("DELETE FROM settlements WHERE x=" + chunk.getX() + " AND z=" + chunk.getZ() + ";");
+
 			if(map.containsKey(set)){
 				List<ClaimedChunk> cc = map.get(set);
 				if(cc.contains(chunk)){
@@ -104,11 +123,12 @@ public class ChunkManager extends Thread{
 		}
 	}
 
-	public ClaimedChunk changeChunkOwnership(ClaimedChunk chunk, String player){
+	public ClaimedChunk changeChunkOwnership(ClaimedChunk chunk, String player) throws SQLException{
 		Settlement first = chunk.getSettlement();
+
 		if(map.containsKey(first)){
 			List<ClaimedChunk> cc = map.get(first);
-			if(cc.contains(chunk)){
+			if(cc.contains(chunk)){	
 				cc.remove(chunk);
 			}
 			map.put(first, cc);
@@ -123,6 +143,8 @@ public class ChunkManager extends Thread{
 		}
 		chunk.setOwner(player);
 		chunk.setSettlement(set);
+
+		DatabaseUtils.queryOut("UPDATE chunks SET player='" + player + "' settlement='" + set.getId() + "' WHERE x='" + chunk.getX() + "' AND z='" + chunk.getZ() + "';");
 		return chunk;
 	}
 
@@ -191,20 +213,6 @@ public class ChunkManager extends Thread{
 				}
 			}
 		}	
-	}
-
-	public void saveChunks() throws SQLException{
-		for (ClaimedChunk c : ClaimedChunk.instances){
-			int x = c.getX();
-			int z = c.getZ();
-			String player = c.getOwner();
-			long setid = c.getSettlement().getId();
-			String w = c.getWorld().getName();
-
-			DatabaseUtils.queryOut("UPDATE chunks"
-					+ "SET x='"+ x + "', z='"+ z + "', player='"+ player
-					+ "', settlement='"+ setid +"', world='"+ w +"';");
-		}
 	}
 
 	public void loadChunks() throws SQLException{
