@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import me.projectx.Settlements.Models.ClaimedChunk;
 import me.projectx.Settlements.Models.Settlement;
@@ -212,28 +213,24 @@ public class SettlementManager extends Thread {
 	 * @param sender : Who issued the deletion of the settlement
 	 * @throws SQLException 
 	 */
-	public void deleteSettlement(CommandSender sender) throws SQLException{
+	public void deleteSettlement(final CommandSender sender) throws SQLException{
 		if (settlementExists(getPlayerSettlement(sender.getName()).getName())){
-			final Settlement s = getPlayerSettlement(sender.getName());
-			if (s.isLeader(sender.getName())){
-				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully deleted " + ChatColor.AQUA + s.getName());
-				/*for (ClaimedChunk cc : ClaimedChunk.instances){
-					if (cc.getSettlement().getName() == s.getName()){
-						ClaimedChunk.instances.remove(cc);
-					}
-				}*/
+			if (getPlayerSettlement(sender.getName()).isLeader(sender.getName())){
 				new Thread() {
 					@Override
 					public void run() {
 						try {
+							Settlement s = getPlayerSettlement(sender.getName());
+							List<ClaimedChunk> cc = ChunkManager.getInstance().map.get(s);
+							cc.clear();
 							settlements.remove(s);
 							ChunkManager.getInstance().map.remove(s);
 							DatabaseUtils.queryOut("DELETE FROM settlements WHERE id=" + s.getId() + ";");
 							DatabaseUtils.queryOut("DELETE FROM chunks WHERE settlement=" + s.getId() + ";");
+							sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully deleted " + ChatColor.AQUA + s.getName());
 						} catch(SQLException e) {e.printStackTrace();}	
 					}
 				}.start();
-
 			} else {
 				sender.sendMessage(MessageType.DELETE_NOT_LEADER.getMsg());
 			}
