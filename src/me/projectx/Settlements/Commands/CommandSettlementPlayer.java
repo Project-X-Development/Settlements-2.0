@@ -92,7 +92,7 @@ public class CommandSettlementPlayer extends CommandModel {
 				if (args[0].equalsIgnoreCase("unclaim")){
 					if (sender instanceof Player){
 						Player p = (Player) sender;
-						if (ChunkManager.getInstance().unclaimChunk(p.getLocation().getChunk().getX(), p.getLocation().getChunk().getZ())) {
+						if (ChunkManager.getInstance().unclaimChunk(p.getName(), p.getLocation().getChunk().getX(), p.getLocation().getChunk().getZ())) {
 							p.sendMessage(MessageType.CHUNK_UNCLAIM_SUCCESS.getMsg());
 						} else {
 							p.sendMessage(MessageType.CHUNK_UNCLAIM_FAIL.getMsg());
