@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import me.projectx.Settlements.Models.ClaimedChunk;
 import me.projectx.Settlements.Models.Settlement;
+import me.projectx.Settlements.Scoreboard.NameBoard;
 import me.projectx.Settlements.Utils.DatabaseUtils;
 import me.projectx.Settlements.Utils.MessageType;
 
@@ -430,6 +431,7 @@ public class SettlementManager extends Thread {
 				final Settlement s = getPlayerSettlement(sender.getName());
 				if (s.isOfficer(sender.getName()) || s.isLeader(sender.getName())){
 					s.setTag(tag);
+					NameBoard.getInstance().changeTag(s);
 					sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Set your Settlement's tag to [" + tag + "]");
 					new Thread() {
 						@Override

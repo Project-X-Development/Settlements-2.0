@@ -3,9 +3,11 @@ package me.projectx.Settlements.Models;
 import java.util.ArrayList;
 
 import me.projectx.Settlements.Managers.SettlementManager;
+import me.projectx.Settlements.Scoreboard.NameBoard;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Team;
 
 public class Settlement {
 
@@ -15,11 +17,13 @@ public class Settlement {
 	private String leader, name, desc, tag;
 	private final ArrayList<String> officers = new ArrayList<String>();
 	private final ArrayList<String> citizens = new ArrayList<String>();
+	private Team team = null;
 
 	public Settlement(String name){
 		this.name = name;
 		SettlementManager.getManager();
 		this.id = SettlementManager.getSettlements().size() + 1;
+		this.team = NameBoard.getInstance().requestTeam(this);
 	}
 
 	/**
@@ -140,6 +144,15 @@ public class Settlement {
 	}
 
 	/**
+	 * Get the Scoreboard of the Settlement
+	 * 
+	 * @return The scoreboard of the Settlement
+	 */
+	public Team getTeam(){
+		return this.team;
+	}
+
+	/**
 	 * Set the tag of the Settlement
 	 * 
 	 * @param tag : The tag of the Settlement
@@ -162,6 +175,7 @@ public class Settlement {
 	public void giveCitizenship(String name){
 		if (!isCitizen(name)) {
 			citizens.add(name);
+			this.team.addPlayer(Bukkit.getPlayer(name));
 		}
 	}
 
@@ -174,6 +188,7 @@ public class Settlement {
 		if (isCitizen(name)){
 			citizens.remove(name);
 			officers.remove(name);
+			this.team.removePlayer(Bukkit.getPlayer(name));
 		}
 	}
 
