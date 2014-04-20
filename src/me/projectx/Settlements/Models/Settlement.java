@@ -273,4 +273,16 @@ public class Settlement {
 			}
 		}
 	}
+<<<<<<< HEAD
+=======
+
+	/**
+	 * Deletes settlement object
+	 * 
+	 * @throws Throwable 
+	 */
+	public void deleteSettlement() throws Throwable{
+		this.finalize();
+	}
+>>>>>>> 4e84e2482bceb0fc2fb1868c754f41675186a523
 }
