@@ -199,6 +199,7 @@ public class ChunkManager extends Thread{
 				player.sendMessage(ChatColor.GRAY + "-------------------" + ChatColor.DARK_GRAY + 
 						" [" + ChatColor.AQUA + "Settlement Map" + ChatColor.DARK_GRAY + "] " + ChatColor.GRAY + "-------------------");
 				player.sendMessage("Temporary reference: you are always in the middle of the top row");
+				Settlement set = SettlementManager.getManager().getPlayerSettlement(player.getName());
 				for (int x = 0; x < 5; x++){
 					String send = "";
 					for (int z = -7; z < 8; z++){
@@ -208,7 +209,7 @@ public class ChunkManager extends Thread{
 							/*if (xx == player.getLocation().getChunk().getX() && zz == player.getLocation().getChunk().getZ())
 								send = send + ChatColor.YELLOW + "+";
 							else*/
-							if (getChunk(xx, zz).getSettlement() != SettlementManager.getManager().getPlayerSettlement(player.getName())){
+							if (getChunk(xx, zz).getSettlement() != set){
 								send = send + ChatColor.GREEN + "+"; 
 							}
 							else{
