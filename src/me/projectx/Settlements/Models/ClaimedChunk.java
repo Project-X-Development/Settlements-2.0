@@ -1,9 +1,7 @@
-package me.projectx.Settlements.Land;
+package me.projectx.Settlements.Models;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import me.projectx.Settlements.API.Settlement;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;

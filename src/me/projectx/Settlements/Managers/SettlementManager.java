@@ -1,12 +1,12 @@
-package me.projectx.Settlements.API;
+package me.projectx.Settlements.Managers;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import me.projectx.Settlements.Land.ChunkManager;
-import me.projectx.Settlements.Land.ClaimedChunk;
+import me.projectx.Settlements.Models.ClaimedChunk;
+import me.projectx.Settlements.Models.Settlement;
 import me.projectx.Settlements.Utils.DatabaseUtils;
 import me.projectx.Settlements.Utils.MessageType;
 

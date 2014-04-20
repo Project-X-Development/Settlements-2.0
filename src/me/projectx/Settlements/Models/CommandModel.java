@@ -1,4 +1,4 @@
-package me.projectx.Settlements.Commands;
+package me.projectx.Settlements.Models;
 
 import java.sql.SQLException;
 

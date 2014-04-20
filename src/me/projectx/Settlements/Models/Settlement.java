@@ -1,6 +1,8 @@
-package me.projectx.Settlements.API;
+package me.projectx.Settlements.Models;
 
 import java.util.ArrayList;
+
+import me.projectx.Settlements.Managers.SettlementManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
