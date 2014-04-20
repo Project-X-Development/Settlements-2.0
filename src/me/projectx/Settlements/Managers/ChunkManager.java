@@ -120,7 +120,7 @@ public class ChunkManager extends Thread{
 						} catch(SQLException e) {
 							e.printStackTrace();
 						}
-	
+
 						if(map.containsKey(set)){
 							List<ClaimedChunk> cc = map.get(set);
 							if(cc.contains(chunk)){
@@ -129,11 +129,13 @@ public class ChunkManager extends Thread{
 							map.put(set, cc);
 						}
 						ClaimedChunk.instances.remove(chunk);
+
 					}
 				}.start();
-			}else
+			} else {
 				Bukkit.getPlayer(player).sendMessage(MessageType.PREFIX.getMsg() + ChatColor.DARK_RED + 
 						"You cannot claim land from " + ChatColor.YELLOW + getChunk(x, z).getSettlement().getName());
+			}
 			return true;
 		} else {
 			return false;

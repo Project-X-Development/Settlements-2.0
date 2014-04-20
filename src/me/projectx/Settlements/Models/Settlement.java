@@ -269,4 +269,13 @@ public class Settlement {
 			}
 		}
 	}
+
+	/**
+	 * Deletes settlement object
+	 * 
+	 * @throws Throwable 
+	 */
+	public void delteteSettlement() throws Throwable{
+		this.finalize();
+	}
 }

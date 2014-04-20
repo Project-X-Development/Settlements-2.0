@@ -60,4 +60,8 @@ public class ClaimedChunk {
 	public void setSettlement(Settlement set){
 		this.set = set;
 	}
+
+	public void deleteChunk() throws Throwable{
+		this.finalize();
+	}
 }
