@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 public class ChunkManager extends Thread{
 	public static ChunkManager instance;
 	public HashMap<Settlement, List<ClaimedChunk>> map = new HashMap<Settlement, List<ClaimedChunk>>();
-	private ArrayList<String> autoClaim = new ArrayList<String>();
+	private final ArrayList<String> autoClaim = new ArrayList<String>();
 
 	public ChunkManager(){
 		instance = this;
@@ -59,10 +59,12 @@ public class ChunkManager extends Thread{
 					}
 				}.start();
 				return 2;
-			}else
+			} else {
 				return 1;
-		}else
+			}
+		} else {
 			return 0;
+		}
 	}
 
 	//Temporary return value, eventually will be an enum
@@ -96,10 +98,12 @@ public class ChunkManager extends Thread{
 					}
 				}.start();
 				return 2;
-			}else
+			} else {
 				return 1;
-		}else
+			}
+		} else {
 			return 0;
+		}
 	}
 
 	public boolean unclaimChunk(int x, int z) throws SQLException{
@@ -125,10 +129,11 @@ public class ChunkManager extends Thread{
 					ClaimedChunk.instances.remove(chunk);
 				}
 			}.start();
-			
+
 			return true;
-		}else
+		} else {
 			return false;
+		}
 	}
 
 	public ClaimedChunk changeChunkOwnership(final ClaimedChunk chunk, final String player) throws SQLException{
@@ -143,7 +148,7 @@ public class ChunkManager extends Thread{
 					}
 					map.put(first, cc);
 				}
-				
+
 				Settlement set = SettlementManager.getManager().getPlayerSettlement(player);
 				if(map.containsKey(set)){
 					List<ClaimedChunk> cc = map.get(set);
@@ -154,7 +159,7 @@ public class ChunkManager extends Thread{
 				}
 				chunk.setOwner(player);
 				chunk.setSettlement(set);
-	
+
 				try {
 					DatabaseUtils.queryOut("UPDATE chunks SET player='" + player + "', settlement='" + set.getId() + "' WHERE x=" + chunk.getX() + " AND z=" + chunk.getZ() + ";");
 				} catch(SQLException e) {
@@ -162,7 +167,7 @@ public class ChunkManager extends Thread{
 				}
 			}
 		}.start();
-		
+
 		return chunk;
 	}
 
@@ -177,8 +182,9 @@ public class ChunkManager extends Thread{
 
 	public ClaimedChunk getChunk(int chunkx, int chunkz){
 		for (ClaimedChunk tempChunk : ClaimedChunk.instances){
-			if (tempChunk.getX() == chunkx && tempChunk.getZ() == chunkz)
+			if (tempChunk.getX() == chunkx && tempChunk.getZ() == chunkz) {
 				return tempChunk;
+			}
 		}
 		return null;
 	}
@@ -201,9 +207,14 @@ public class ChunkManager extends Thread{
 							/*if (xx == player.getLocation().getChunk().getX() && zz == player.getLocation().getChunk().getZ())
 								send = send + ChatColor.YELLOW + "+";
 							else*/
-							send = send + ChatColor.GREEN + "+"; 
+							if (getChunk(xx, zz).getSettlement() != SettlementManager.getManager().getPlayerSettlement(player.getName())){
+								send = send + ChatColor.GREEN + "+"; 
+							}
+							else{
+								send = send + ChatColor.RED + "-"; 
+							}
 						} else {
-							send = send + ChatColor.RED + "-";
+							send = send + ChatColor.BLUE + "-";
 						}	
 					}
 					player.sendMessage(send);
@@ -252,14 +263,15 @@ public class ChunkManager extends Thread{
 			}
 		}.start();
 	}
-	
+
 	public void setAutoClaiming(Player p){
-		if (autoClaim.contains(p.getName()))
+		if (autoClaim.contains(p.getName())) {
 			autoClaim.remove(p.getName());
-		else
+		} else {
 			autoClaim.add(p.getName());
+		}
 	}
-	
+
 	public boolean isAutoClaiming(Player p){
 		return autoClaim.contains(p.getName());
 	}
