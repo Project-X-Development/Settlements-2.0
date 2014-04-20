@@ -222,9 +222,9 @@ public class SettlementManager extends Thread {
 						try {
 							Settlement s = getPlayerSettlement(sender.getName());
 							List<ClaimedChunk> cc = ChunkManager.getInstance().map.get(s);
-							cc.clear();
-							settlements.remove(s);
+							ClaimedChunk.instances.removeAll(cc);
 							ChunkManager.getInstance().map.remove(s);
+							settlements.remove(s);
 							DatabaseUtils.queryOut("DELETE FROM settlements WHERE id=" + s.getId() + ";");
 							DatabaseUtils.queryOut("DELETE FROM chunks WHERE settlement=" + s.getId() + ";");
 							sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully deleted " + ChatColor.AQUA + s.getName());
