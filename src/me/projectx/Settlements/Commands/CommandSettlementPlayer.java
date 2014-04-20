@@ -49,9 +49,9 @@ public class CommandSettlementPlayer extends CommandModel {
 					}
 					SettlementManager.getManager().setDescription(sender, str.toString());
 				}
-				if (args[0].equalsIgnoreCase("tag")){
+				/*if (args[0].equalsIgnoreCase("tag")){
 					SettlementManager.getManager().setTag(sender, args[0].toString());
-				}
+				}*/
 				if (args[0].equalsIgnoreCase("claim")){
 					if (sender instanceof Player){
 						Player p = (Player) sender;

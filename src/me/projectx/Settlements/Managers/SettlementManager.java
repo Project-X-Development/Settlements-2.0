@@ -425,7 +425,7 @@ public class SettlementManager extends Thread {
 	 * @param tag : The tag for the Settlement
 	 * @throws SQLException
 	 */
-	public void setTag(CommandSender sender, final String tag) throws SQLException{
+	/*public void setTag(CommandSender sender, final String tag) throws SQLException{
 		if (!(getPlayerSettlement(sender.getName()) == null)){
 			if (tag.length() <= 4){
 				final Settlement s = getPlayerSettlement(sender.getName());
@@ -451,7 +451,7 @@ public class SettlementManager extends Thread {
 		} else {
 			sender.sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
 		}
-	}
+	}*/
 
 	/**
 	 * List all the members of a given Settlement

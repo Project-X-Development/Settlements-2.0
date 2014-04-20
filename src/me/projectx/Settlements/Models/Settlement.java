@@ -12,7 +12,7 @@ public class Settlement {
 	private long id;
 	private int power;
 	private double balance;
-	private String leader, name, desc, tag;
+	private String leader, name, desc /*tag*/;
 	private final ArrayList<String> officers = new ArrayList<String>();
 	private final ArrayList<String> citizens = new ArrayList<String>();
 
@@ -135,16 +135,16 @@ public class Settlement {
 	 * 
 	 * @return The tag of the Settlement
 	 */
-	public String getTag(){
+	/*public String getTag(){
 		return this.tag;
-	}
+	}*/
 
 	/**
 	 * Set the tag of the Settlement
 	 * 
 	 * @param tag : The tag of the Settlement
 	 */
-	public boolean setTag(String tag){
+	/*public boolean setTag(String tag){
 		if (tag.length() <= 4){
 			this.tag = tag;
 			return true;
@@ -152,7 +152,7 @@ public class Settlement {
 		else{
 			return false;
 		}
-	}
+	}*/
 
 	/**
 	 * Grant citizenship to a player
@@ -174,7 +174,6 @@ public class Settlement {
 		if (isCitizen(name)){
 			citizens.remove(name);
 			officers.remove(name);
-			Player p = Bukkit.getPlayer(name);
 		}
 	}
 
