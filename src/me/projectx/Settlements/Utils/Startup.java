@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import me.projectx.Settlements.Main;
 import me.projectx.Settlements.Commands.CommandSettlementPlayer;
+import me.projectx.Settlements.Events.BlockEvent;
 import me.projectx.Settlements.Events.PlayerChat;
 import me.projectx.Settlements.Events.PlayerJoin;
 import me.projectx.Settlements.Events.PlayerMove;
@@ -24,6 +25,7 @@ public class Startup extends Thread {
 		pm.registerEvents(new PlayerQuit(), Main.getInstance());
 		pm.registerEvents(new PlayerChat(), Main.getInstance());
 		pm.registerEvents(new PlayerMove(), Main.getInstance());
+		pm.registerEvents(new BlockEvent(), Main.getInstance());
 
 		Main.getInstance().getCommand("s").setExecutor(new CommandSettlementPlayer());
 
