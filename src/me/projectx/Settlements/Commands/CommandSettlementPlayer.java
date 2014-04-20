@@ -2,8 +2,9 @@ package me.projectx.Settlements.Commands;
 
 import java.sql.SQLException;
 
-import me.projectx.Settlements.API.SettlementManager;
-import me.projectx.Settlements.Land.ChunkManager;
+import me.projectx.Settlements.Managers.ChunkManager;
+import me.projectx.Settlements.Managers.SettlementManager;
+import me.projectx.Settlements.Models.CommandModel;
 import me.projectx.Settlements.Utils.CommandType;
 import me.projectx.Settlements.Utils.MessageType;
 

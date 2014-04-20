@@ -1,4 +1,4 @@
-package me.projectx.Settlements.Land;
+package me.projectx.Settlements.Managers;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import me.projectx.Settlements.API.Settlement;
-import me.projectx.Settlements.API.SettlementManager;
+import me.projectx.Settlements.Models.ClaimedChunk;
+import me.projectx.Settlements.Models.Settlement;
 import me.projectx.Settlements.Utils.DatabaseUtils;
 
 import org.bukkit.Bukkit;

@@ -1,6 +1,6 @@
 package me.projectx.Settlements.Events;
 
-import me.projectx.Settlements.API.SettlementManager;
+import me.projectx.Settlements.Managers.SettlementManager;
 
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;

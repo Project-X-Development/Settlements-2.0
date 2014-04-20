@@ -3,13 +3,13 @@ package me.projectx.Settlements.Utils;
 import java.sql.SQLException;
 
 import me.projectx.Settlements.Main;
-import me.projectx.Settlements.API.SettlementManager;
 import me.projectx.Settlements.Commands.CommandSettlementPlayer;
 import me.projectx.Settlements.Events.PlayerChat;
 import me.projectx.Settlements.Events.PlayerJoin;
 import me.projectx.Settlements.Events.PlayerMove;
 import me.projectx.Settlements.Events.PlayerQuit;
-import me.projectx.Settlements.Land.ChunkManager;
+import me.projectx.Settlements.Managers.ChunkManager;
+import me.projectx.Settlements.Managers.SettlementManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;

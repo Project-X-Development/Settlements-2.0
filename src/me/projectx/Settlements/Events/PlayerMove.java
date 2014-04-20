@@ -1,8 +1,8 @@
 package me.projectx.Settlements.Events;
 
-import me.projectx.Settlements.API.Settlement;
-import me.projectx.Settlements.Land.ChunkManager;
-import me.projectx.Settlements.Land.ClaimedChunk;
+import me.projectx.Settlements.Managers.ChunkManager;
+import me.projectx.Settlements.Models.ClaimedChunk;
+import me.projectx.Settlements.Models.Settlement;
 
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
