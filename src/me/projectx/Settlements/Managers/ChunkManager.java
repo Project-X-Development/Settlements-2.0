@@ -219,7 +219,7 @@ public class ChunkManager extends Thread{
 								send = send + ChatColor.RED + "-"; 
 							}
 						} else {
-							send = send + ChatColor.BLUE + "-";
+							send = send + ChatColor.BLUE + "=";
 						}	
 					}
 					player.sendMessage(send);
