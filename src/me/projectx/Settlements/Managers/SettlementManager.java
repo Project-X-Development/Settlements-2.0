@@ -217,12 +217,19 @@ public class SettlementManager extends Thread {
 			final Settlement s = getPlayerSettlement(sender.getName());
 			if (s.isLeader(sender.getName())){
 				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully deleted " + ChatColor.AQUA + s.getName());
+				/*for (ClaimedChunk cc : ClaimedChunk.instances){
+					if (cc.getSettlement().getName() == s.getName()){
+						ClaimedChunk.instances.remove(cc);
+					}
+				}*/
 				new Thread() {
 					@Override
 					public void run() {
-						settlements.remove(s);
 						try {
+							settlements.remove(s);
+							ChunkManager.getInstance().map.remove(s);
 							DatabaseUtils.queryOut("DELETE FROM settlements WHERE id=" + s.getId() + ";");
+							DatabaseUtils.queryOut("DELETE FROM chunks WHERE settlement=" + s.getId() + ";");
 						} catch(SQLException e) {e.printStackTrace();}	
 					}
 				}.start();
@@ -475,9 +482,10 @@ public class SettlementManager extends Thread {
 	}
 
 	public void listSettlements(CommandSender sender){
+		sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.WHITE + "Listing all current Settlements...");
 		for (int i = 0; i < settlements.size(); i++){
-			sender.sendMessage(ChatColor.RED + "" + (i + 1) + ". " + 
-					ChatColor.AQUA + settlements.get(i).getName() + ChatColor.YELLOW + " ~ " + ChatColor.GRAY + settlements.get(i).getDescription());
+			sender.sendMessage(ChatColor.GOLD + "" + (i + 1) + ". " + 
+					ChatColor.AQUA + settlements.get(i).getName() + ChatColor.RED + " ~ " + ChatColor.GRAY + settlements.get(i).getDescription());
 		}
 	}
 

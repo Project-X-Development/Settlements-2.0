@@ -7,13 +7,22 @@ import me.projectx.Settlements.Utils.MessageType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public class BlockEvent implements Listener{
+	
+	/*
+	 * TODO
+	 * Add exceptions to these if 2 settlements are at war
+	 */
+	
 	@EventHandler
 	public void onBreak(final BlockBreakEvent e){
 		Chunk c = e.getBlock().getLocation().getChunk();
@@ -42,6 +51,24 @@ public class BlockEvent implements Listener{
 			if (p != e.getPlayer()){
 				e.setCancelled(true);
 				p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You are not allowed to build here!");;
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onInteract(PlayerInteractEvent e){
+		if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK){
+			Chunk c = e.getClickedBlock().getLocation().getChunk();
+			int x = c.getX();
+			int z = c.getZ();
+			
+			if (ChunkManager.getInstance().isClaimed(x,  z)){
+				ClaimedChunk chunk = ChunkManager.getInstance().getChunk(x, z);
+				Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
+				if (!(p == e.getPlayer())){
+					e.setCancelled(true);
+					p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You cannot interact with blocks in this territory!");
+				}
 			}
 		}
 	}
