@@ -43,9 +43,9 @@ public class ChunkManager extends Thread{
 				long setid = set.getId();
 				String w = c.getWorld().getName();
 
-				DatabaseUtils.queryOut("INSERT INTO chunks"
-						+ "SET x="+ x + ", z="+ z + ", player='"+ player
-						+ "', settlement="+ setid +", world'="+ w +"';");
+				DatabaseUtils.queryOut("INSERT INTO chunks(x, z, player, settlement, world) VALUES('"
+						+ x + "', '" + z + "','" + player
+						+ "','"+ setid +"', '"+ w +"');");
 
 				if(!map.containsKey(set)){
 					List<ClaimedChunk> l = new ArrayList<ClaimedChunk>();
@@ -77,9 +77,9 @@ public class ChunkManager extends Thread{
 				long setid = set.getId();
 				String w = c.getWorld().getName();
 
-				DatabaseUtils.queryOut("INSERT INTO chunks"
-						+ "SET x=" + x + ", z=" + z + ", player='" + player
-						+ "', settlement="+ setid +", world='"+ w +"';");
+				DatabaseUtils.queryOut("INSERT INTO chunks(x, z, player, settlement, world) VALUES('"
+						+ x + "', '" + z + "','" + player
+						+ "','"+ setid +"', '"+ w +"');");
 
 				if(!map.containsKey(set)){
 					List<ClaimedChunk> l = new ArrayList<ClaimedChunk>();
