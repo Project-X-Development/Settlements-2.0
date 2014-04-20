@@ -275,7 +275,7 @@ public class Settlement {
 	 * 
 	 * @throws Throwable 
 	 */
-	public void delteteSettlement() throws Throwable{
+	public void deleteSettlement() throws Throwable{
 		this.finalize();
 	}
 }
