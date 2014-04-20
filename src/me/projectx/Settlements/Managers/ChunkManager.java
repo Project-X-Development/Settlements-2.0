@@ -205,19 +205,29 @@ public class ChunkManager extends Thread{
 					for (int z = -7; z < 8; z++){
 						int xx = playerx + x;
 						int zz = playerz + z;
-						if (isClaimed(xx, zz)){ 
-							/*if (xx == player.getLocation().getChunk().getX() && zz == player.getLocation().getChunk().getZ())
-								send = send + ChatColor.YELLOW + "+";
-							else*/
-							if (getChunk(xx, zz).getSettlement() == set){
-								send = send + ChatColor.GREEN + "+"; 
-							}
-							else{
-								send = send + ChatColor.RED + "-"; 
-							}
-						} else {
-							send = send + ChatColor.BLUE + "=";
-						}	
+						if (xx == player.getLocation().getChunk().getX() && zz == player.getLocation().getChunk().getZ()) {
+							if (isClaimed(xx, zz)){ 
+								if (getChunk(xx, zz).getSettlement() == set){
+									send = send + ChatColor.GREEN + "P"; 
+								}
+								else{
+									send = send + ChatColor.RED + "P"; 
+								}
+							} else {
+								send = send + ChatColor.BLUE + "P";
+							}	
+						} else{
+							if (isClaimed(xx, zz)){ 
+								if (getChunk(xx, zz).getSettlement() == set){
+									send = send + ChatColor.GREEN + "+"; 
+								}
+								else{
+									send = send + ChatColor.RED + "-"; 
+								}
+							} else {
+								send = send + ChatColor.BLUE + "=";
+							}	
+						}
 					}
 					player.sendMessage(send);
 				}	
