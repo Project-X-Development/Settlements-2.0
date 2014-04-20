@@ -209,7 +209,7 @@ public class ChunkManager extends Thread{
 							/*if (xx == player.getLocation().getChunk().getX() && zz == player.getLocation().getChunk().getZ())
 								send = send + ChatColor.YELLOW + "+";
 							else*/
-							if (getChunk(xx, zz).getSettlement() != set){
+							if (getChunk(xx, zz).getSettlement() == set){
 								send = send + ChatColor.GREEN + "+"; 
 							}
 							else{
