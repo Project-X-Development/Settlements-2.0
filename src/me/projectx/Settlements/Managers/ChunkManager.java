@@ -107,30 +107,33 @@ public class ChunkManager extends Thread{
 		}
 	}
 
-	public boolean unclaimChunk(int x, int z) throws SQLException{
+	public boolean unclaimChunk(String player, int x, int z) throws SQLException{
 		if (isClaimed(x, z)){
-			final ClaimedChunk chunk = getChunk(x, z);
-			final Settlement set = chunk.getSettlement();
-			new Thread() {
-				@Override
-				public void run() {
-					try {
-						DatabaseUtils.queryOut("DELETE FROM chunks WHERE x=" + chunk.getX() + " AND z=" + chunk.getZ() + ";");
-					} catch(SQLException e) {
-						e.printStackTrace();
-					}
-
-					if(map.containsKey(set)){
-						List<ClaimedChunk> cc = map.get(set);
-						if(cc.contains(chunk)){
-							cc.remove(chunk);
+			if (getChunk(x, z).getSettlement().getName() == SettlementManager.getManager().getPlayerSettlement(player).getName()){
+				final ClaimedChunk chunk = getChunk(x, z);
+				final Settlement set = chunk.getSettlement();
+				new Thread() {
+					@Override
+					public void run() {
+						try {
+							DatabaseUtils.queryOut("DELETE FROM chunks WHERE x=" + chunk.getX() + " AND z=" + chunk.getZ() + ";");
+						} catch(SQLException e) {
+							e.printStackTrace();
 						}
-						map.put(set, cc);
+	
+						if(map.containsKey(set)){
+							List<ClaimedChunk> cc = map.get(set);
+							if(cc.contains(chunk)){
+								cc.remove(chunk);
+							}
+							map.put(set, cc);
+						}
+						ClaimedChunk.instances.remove(chunk);
 					}
-					ClaimedChunk.instances.remove(chunk);
-				}
-			}.start();
-
+				}.start();
+			}else
+				Bukkit.getPlayer(player).sendMessage(MessageType.PREFIX.getMsg() + ChatColor.DARK_RED + 
+						"You cannot claim land from " + ChatColor.YELLOW + getChunk(x, z).getSettlement().getName());
 			return true;
 		} else {
 			return false;
