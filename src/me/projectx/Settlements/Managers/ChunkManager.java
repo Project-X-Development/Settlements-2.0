@@ -201,7 +201,7 @@ public class ChunkManager extends Thread{
 			public void run() {
 				player.sendMessage(ChatColor.GRAY + "-------------------" + ChatColor.DARK_GRAY + 
 						" [" + ChatColor.AQUA + "Settlement Map" + ChatColor.DARK_GRAY + "] " + ChatColor.GRAY + "-------------------");
-				player.sendMessage("Temporary reference: you are always in the middle of the top row");
+				player.sendMessage("Reference: 'P' is your current location");
 				Settlement set = SettlementManager.getManager().getPlayerSettlement(player.getName());
 				for (int x = 0; x < 5; x++){
 					String send = "";
@@ -243,19 +243,6 @@ public class ChunkManager extends Thread{
 			return true;
 		}
 		return false;
-	}
-
-	public void sendInChunkMsg(Player player){
-		if (isInChunk(player)){
-			//player.sendMessage(); TODO need method to get the settlement that owns the chunk
-			//Example msg: <Settlement Name> ~ <Settlement Description>
-			for (ClaimedChunk cc : ClaimedChunk.instances){
-				if (cc.getX() == player.getLocation().getChunk().getX() 
-						&& cc.getZ() == player.getLocation().getChunk().getZ() && cc.getWorld() == player.getLocation().getWorld()){
-					player.sendMessage(cc.getSettlement().getName() + " ~ " + cc.getSettlement().getDescription());
-				}
-			}
-		}	
 	}
 
 	public void loadChunks() throws SQLException{

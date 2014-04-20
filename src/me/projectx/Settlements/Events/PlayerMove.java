@@ -27,7 +27,7 @@ public class PlayerMove extends Thread implements Listener{
 						e.getPlayer().sendMessage(ChatColor.GREEN + "~Wilderness");
 					}else if(d!=null&&c==null){ //Entering a from unclaimed
 						Settlement a = d.getSettlement();
-						e.getPlayer().sendMessage(a.getName() + " ~ " + a.getDescription());
+						e.getPlayer().sendMessage(ChatColor.AQUA + a.getName() + ChatColor.RED + " ~ " + ChatColor.GRAY + a.getDescription());
 					}else if(c!=null&&d!=null){ //Entering one claim to another claim
 						Settlement a = d.getSettlement();
 						Settlement b = c.getSettlement();
