@@ -22,6 +22,10 @@ public class Settlement {
 		this.id = SettlementManager.getSettlements().size() + 1;
 	}
 
+	//Empty constructor for deletion
+	public Settlement(){
+	}
+
 	/**
 	 * Get the name of a settlement
 	 * 
@@ -268,14 +272,5 @@ public class Settlement {
 				p.sendMessage(message);
 			}
 		}
-	}
-
-	/**
-	 * Deletes settlement object
-	 * 
-	 * @throws Throwable 
-	 */
-	public void delteteSettlement() throws Throwable{
-		this.finalize();
 	}
 }

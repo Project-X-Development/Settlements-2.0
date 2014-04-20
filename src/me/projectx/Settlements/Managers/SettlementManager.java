@@ -227,7 +227,7 @@ public class SettlementManager extends Thread {
 							settlements.remove(s);
 							DatabaseUtils.queryOut("DELETE FROM settlements WHERE id=" + s.getId() + ";");
 							DatabaseUtils.queryOut("DELETE FROM chunks WHERE settlement=" + s.getId() + ";");
-							s.delteteSettlement();
+							s = new Settlement();
 							sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully deleted " + ChatColor.AQUA + s.getName());
 						} catch(SQLException e) {e.printStackTrace();} catch (Throwable e) {
 							e.printStackTrace();
