@@ -10,6 +10,7 @@ import me.projectx.Settlements.Events.PlayerMove;
 import me.projectx.Settlements.Events.PlayerQuit;
 import me.projectx.Settlements.Managers.ChunkManager;
 import me.projectx.Settlements.Managers.SettlementManager;
+import me.projectx.Settlements.Scoreboard.NameBoard;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
@@ -35,6 +36,8 @@ public class Startup extends Thread {
 
 		new ChunkManager(); 
 		ChunkManager.getInstance().loadChunks();
+
+		new NameBoard();
 	}
 
 	private static void loadSettlements() {
