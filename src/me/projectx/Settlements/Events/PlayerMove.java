@@ -3,6 +3,7 @@ package me.projectx.Settlements.Events;
 import java.sql.SQLException;
 
 import me.projectx.Settlements.Managers.ChunkManager;
+import me.projectx.Settlements.Managers.SettlementManager;
 import me.projectx.Settlements.Models.ClaimedChunk;
 import me.projectx.Settlements.Models.Settlement;
 
@@ -39,8 +40,8 @@ public class PlayerMove extends Thread implements Listener{
 		
 		if (ChunkManager.getInstance().isAutoClaiming(e.getPlayer())){
 			try {
-				ChunkManager.getInstance().claimChunk(e.getPlayer().getName(), 
-						e.getPlayer().getLocation().getChunk().getX(), e.getPlayer().getLocation().getChunk().getZ(), e.getPlayer().getWorld());
+				if (!ChunkManager.getInstance().isClaimed(e.getPlayer().getLocation().getChunk().getX(), e.getPlayer().getLocation().getChunk().getZ()))
+					SettlementManager.getManager().claimChunk(e.getPlayer());
 			} catch(SQLException ex) {
 				ex.printStackTrace();
 			}

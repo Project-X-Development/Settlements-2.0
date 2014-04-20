@@ -9,6 +9,7 @@ import java.util.List;
 import me.projectx.Settlements.Models.ClaimedChunk;
 import me.projectx.Settlements.Models.Settlement;
 import me.projectx.Settlements.Utils.DatabaseUtils;
+import me.projectx.Settlements.Utils.MessageType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -267,8 +268,10 @@ public class ChunkManager extends Thread{
 	public void setAutoClaiming(Player p){
 		if (autoClaim.contains(p.getName())) {
 			autoClaim.remove(p.getName());
+			p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "No longer auto-claiming land for your Settlement");
 		} else {
 			autoClaim.add(p.getName());
+			p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Now auto-claiming land for your Settlement");
 		}
 	}
 
