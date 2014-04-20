@@ -418,6 +418,41 @@ public class SettlementManager extends Thread {
 	}
 
 	/**
+	 * Set the tag for a Settlement
+	 * 
+	 * @param sender : Who issued the command
+	 * @param tag : The tag for the Settlement
+	 * @throws SQLException
+	 */
+	public void setTag(CommandSender sender, final String tag) throws SQLException{
+		if (!(getPlayerSettlement(sender.getName()) == null)){
+			if (tag.length() <= 4){
+				final Settlement s = getPlayerSettlement(sender.getName());
+				if (s.isOfficer(sender.getName()) || s.isLeader(sender.getName())){
+					s.setTag(tag);
+					sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Set your Settlement's tag to [" + tag + "]");
+					new Thread() {
+						@Override
+						public void run() {
+							try {
+								DatabaseUtils.queryOut("UPDATE settlements SET tag='" + tag + "' WHERE id=" + s.getId() + ";");
+							} catch(SQLException e) {e.printStackTrace();}
+						}
+					}.start();
+
+				} else {
+					sender.sendMessage(MessageType.DESCRIPTION_NOT_RANK.getMsg());
+				}
+			}
+			else{
+				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "Your clan tag must be less than 5 characters.");
+			}
+		} else {
+			sender.sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
+		}
+	}
+
+	/**
 	 * List all the members of a given Settlement
 	 * 
 	 * @param sender : Who sent the command and will receive the list
