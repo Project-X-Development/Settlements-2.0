@@ -184,7 +184,6 @@ public class SettlementManager extends Thread {
 			if (getPlayerSettlement(sender.getName()) == null){
 				final Settlement s = new Settlement(name);
 				s.setLeader(sender.getName());
-				settlements.add(s);
 				new Thread() {
 					@Override
 					public void run() {
@@ -221,14 +220,22 @@ public class SettlementManager extends Thread {
 					public void run() {
 						try {
 							Settlement s = getPlayerSettlement(sender.getName());
-							List<ClaimedChunk> cc = ChunkManager.getInstance().map.get(s);
-							ClaimedChunk.instances.removeAll(cc);
-							ChunkManager.getInstance().map.remove(s);
-							settlements.remove(s);
 							DatabaseUtils.queryOut("DELETE FROM settlements WHERE id=" + s.getId() + ";");
 							DatabaseUtils.queryOut("DELETE FROM chunks WHERE settlement=" + s.getId() + ";");
-							s = new Settlement();
+							
+							List<ClaimedChunk> cc = ChunkManager.getInstance().map.get(s);
+							if (cc != null){
+								ClaimedChunk.instances.removeAll(cc);
+								ChunkManager.getInstance().map.remove(s);
+							}
+							
+							if (invitedPlayers.containsValue(s)) // should remove the settlement from the invitedPlayers map
+								invitedPlayers.remove(s);
+							
+							settlements.remove(s);
+							
 							sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully deleted " + ChatColor.AQUA + s.getName());
+							
 						} catch(SQLException e) {e.printStackTrace();} catch (Throwable e) {
 							e.printStackTrace();
 						}	

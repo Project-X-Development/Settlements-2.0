@@ -22,10 +22,6 @@ public class Settlement {
 		this.id = SettlementManager.getSettlements().size() + 1;
 	}
 
-	//Empty constructor for deletion
-	public Settlement(){
-	}
-
 	/**
 	 * Get the name of a settlement
 	 * 
