@@ -3,6 +3,8 @@ package me.projectx.Settlements.Models;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.projectx.Settlements.Utils.ClaimType;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -13,7 +15,19 @@ public class ClaimedChunk {
 	private World w;
 	private String owner;
 	private Settlement set;
+	private ClaimType ct;
 
+	public ClaimedChunk(int x, int z, String owner, Settlement set, World w, ClaimType ct){
+		this.x = x;
+		this.z = z;
+		this.w = w;
+		this.owner = owner;
+		this.set = set;
+		this.ct = ct;
+		instances.add(this);
+	}
+	
+	//temporary so stuff isn't borked
 	public ClaimedChunk(int x, int z, String owner, Settlement set, World w){
 		this.x = x;
 		this.z = z;
@@ -48,6 +62,10 @@ public class ClaimedChunk {
 	public String getOwner(){
 		return this.owner;
 	}
+	
+	public ClaimType getType(){
+		return this.ct;
+	}
 
 	public void setOwner(String owner){
 		this.owner = owner;
@@ -59,6 +77,10 @@ public class ClaimedChunk {
 
 	public void setSettlement(Settlement set){
 		this.set = set;
+	}
+	
+	public void setType(ClaimType ct){
+		this.ct = ct;
 	}
 
 	public void deleteChunk() throws Throwable{
