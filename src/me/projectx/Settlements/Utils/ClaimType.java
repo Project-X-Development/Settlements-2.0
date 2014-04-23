@@ -2,6 +2,10 @@ package me.projectx.Settlements.Utils;
 
 public enum ClaimType {
 	
+	NORMAL,
 	SAFEZONE,
-	CAPITAL;
+	CAPITAL,
+	//Future stuff
+	TRAP; 
+	
 }

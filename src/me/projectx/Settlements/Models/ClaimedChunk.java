@@ -63,10 +63,6 @@ public class ClaimedChunk {
 		return this.owner;
 	}
 	
-	public ClaimType getType(){
-		return this.ct;
-	}
-
 	public void setOwner(String owner){
 		this.owner = owner;
 	}
@@ -77,6 +73,10 @@ public class ClaimedChunk {
 
 	public void setSettlement(Settlement set){
 		this.set = set;
+	}
+	
+	public ClaimType getType(){
+		return this.ct;
 	}
 	
 	public void setType(ClaimType ct){
