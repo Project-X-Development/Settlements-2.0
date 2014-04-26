@@ -157,21 +157,6 @@ public class SettlementManager extends Thread {
 	}
 
 	/**
-	 * Determine if a player is a citezen of a settlement
-	 * 
-	 * @param name : The name of the player to check
-	 * @return True if the player is a citizen of a settlement
-	 */
-	public boolean isCitizenOfSettlement(String name){
-		for (Settlement s : settlements){
-			if (s.getCitizens().contains(name)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
 	 * Create a new settlement. The settlement will only get created if the settlement 
 	 * doesn't already exist and if the sender isn't a member of a different settlement
 	 * 
@@ -506,8 +491,7 @@ public class SettlementManager extends Thread {
 		//int citizens = s.getCitizens().size();
 		//int officers = s.getOfficers().size();
 		for (ClaimedChunk cc : ClaimedChunk.instances){
-			if (cc.getSettlement().equals(s))
-			{
+			if (cc.getSettlement().equals(s)){
 				s.setPower( /*((citizens + officers + 1)/*/ChunkManager.getInstance().map.get(s).size()); //will readd members after more testing
 			}
 		} 

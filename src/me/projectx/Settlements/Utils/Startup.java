@@ -6,6 +6,8 @@ import me.projectx.Settlements.Main;
 import me.projectx.Settlements.Commands.CommandSettlementPlayer;
 import me.projectx.Settlements.Events.BlockEvent;
 import me.projectx.Settlements.Events.PlayerChat;
+import me.projectx.Settlements.Events.PlayerDamage;
+import me.projectx.Settlements.Events.PlayerDeath;
 import me.projectx.Settlements.Events.PlayerJoin;
 import me.projectx.Settlements.Events.PlayerMove;
 import me.projectx.Settlements.Events.PlayerQuit;
@@ -26,7 +28,9 @@ public class Startup extends Thread {
 		pm.registerEvents(new PlayerChat(), Main.getInstance());
 		pm.registerEvents(new PlayerMove(), Main.getInstance());
 		pm.registerEvents(new BlockEvent(), Main.getInstance());
-
+		pm.registerEvents(new PlayerDamage(), Main.getInstance());
+		pm.registerEvents(new PlayerDeath(), Main.getInstance());
+		
 		Main.getInstance().getCommand("s").setExecutor(new CommandSettlementPlayer());
 
 		CommandType.prepareCommandList();
