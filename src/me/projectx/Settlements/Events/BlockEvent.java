@@ -1,13 +1,13 @@
 package me.projectx.Settlements.Events;
 
-import me.projectx.Settlements.Managers.ChunkManager;
+import me.projectx.Settlements.Managers.*;
 import me.projectx.Settlements.Models.ClaimedChunk;
+import me.projectx.Settlements.Utils.ClaimType;
 import me.projectx.Settlements.Utils.MessageType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,9 +32,16 @@ public class BlockEvent implements Listener{
 		if (ChunkManager.getInstance().isClaimed(x, z)){
 			ClaimedChunk chunk = ChunkManager.getInstance().getChunk(x, z);
 			Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
-			if (p != e.getPlayer()){
+			if (!SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()).isInWar()){
+				if (p != e.getPlayer()){
+					e.setCancelled(true);
+					p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You are not allowed to build here!");;
+				}
+			}
+			
+			else if (chunk.getType() == ClaimType.SAFEZONE){
 				e.setCancelled(true);
-				p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You are not allowed to build here!");;
+				e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GOLD + "You cannot place blocks in a SafeZone");
 			}
 		}
 	}
@@ -48,11 +55,19 @@ public class BlockEvent implements Listener{
 		if (ChunkManager.getInstance().isClaimed(x, z)){
 			ClaimedChunk chunk = ChunkManager.getInstance().getChunk(x, z);
 			Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
-			if (p != e.getPlayer()){
+			if (!SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()).isInWar()){
+				if (p != e.getPlayer()){
+					e.setCancelled(true);
+					p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You are not allowed to build here!");;
+				}
+			}
+			
+			else if (chunk.getType() == ClaimType.SAFEZONE){
 				e.setCancelled(true);
-				p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You are not allowed to build here!");;
+				e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GOLD + "You cannot place blocks in a SafeZone");
 			}
 		}
+		
 	}
 	
 	@EventHandler
@@ -65,9 +80,11 @@ public class BlockEvent implements Listener{
 			if (ChunkManager.getInstance().isClaimed(x,  z)){
 				ClaimedChunk chunk = ChunkManager.getInstance().getChunk(x, z);
 				Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
-				if (!(p == e.getPlayer())){
-					e.setCancelled(true);
-					p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You cannot interact with blocks in this territory!");
+				if (!SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()).isInWar()){
+					if (!(p == e.getPlayer())){
+						e.setCancelled(true);
+						p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You cannot interact with blocks in this territory!");
+					}
 				}
 			}
 		}
