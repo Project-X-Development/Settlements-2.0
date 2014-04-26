@@ -15,12 +15,12 @@ import org.bukkit.entity.Player;
 
 public class WarManager {
 
-	public static WarManager instance;
+	private static WarManager instance;
 
-	public static Map<Settlement, Settlement> requests = new HashMap<Settlement, Settlement>();
+	private Map<Settlement, Settlement> requests = new HashMap<Settlement, Settlement>();
 
-	public WarManager(){
-		instance = this;
+	public static WarManager getInstance(){
+		return instance;
 	}
 
 	public War getWar(long id){
@@ -43,8 +43,8 @@ public class WarManager {
 
 	public boolean createWar(Settlement setA, Settlement setB, CommandSender sender){
 		if (setA.isLeader(((Player) sender).getName())){
-			if (!isInWar(setA)){
-				if (!isInWar(setB)){
+			if (!setA.isInWar()){
+				if (!setB.isInWar()){
 					int powerA = setA.getPower();
 					int powerB = setB.getPower();
 					if (Math.abs(powerA - powerB) > (powerA/10)){
@@ -109,14 +109,4 @@ public class WarManager {
 			}
 		}
 	}
-
-	public boolean isInWar(Settlement set){
-		for (War w : War.instances){
-			if (w.getStarter() == set || w.getAccepter() == set){
-				return true;
-			}
-		}
-		return false;
-	}
-
 }

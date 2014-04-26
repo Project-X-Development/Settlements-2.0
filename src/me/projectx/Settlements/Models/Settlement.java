@@ -268,5 +268,26 @@ public class Settlement {
 				p.sendMessage(message);
 			}
 		}
+		
+		/*Removed for now
+		 * for (String s : citizens)
+			Bukkit.getPlayer(s).sendMessage(message);	
+		for (String s : officers)
+			Bukkit.getPlayer(s).sendMessage(message);*/
+		
+	}
+	
+	/**
+	 * Determine if the settlement is currently at war
+	 * 
+	 * @return True if the Settlement is at war
+	 */
+	public boolean isInWar(){
+		for (War w : War.instances){
+			if (w.getStarter() == this || w.getAccepter() == this){
+				return true;
+			}
+		}
+		return false;
 	}
 }
