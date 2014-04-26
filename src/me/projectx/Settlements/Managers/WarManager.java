@@ -15,6 +15,11 @@ import org.bukkit.entity.Player;
 
 public class WarManager {
 
+	/*
+	 * TODO
+	 * Add database saving & loading
+	 * 
+	 */
 	private static WarManager instance;
 
 	private Map<Settlement, Settlement> requests = new HashMap<Settlement, Settlement>();
@@ -108,5 +113,13 @@ public class WarManager {
 				}
 			}
 		}
+	}
+	
+	public Map<Settlement, Settlement> getRequests(){
+		return requests;
+	}
+	
+	public boolean hasRequest(Settlement s){
+		return requests.containsValue(s);
 	}
 }
