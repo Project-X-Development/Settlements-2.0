@@ -18,6 +18,7 @@ public enum MessageType {
 	MUST_APPOINT_NEW_LEADER(PREFIX.getMsg() + "&e Please appoint a new leader before leaving!"),
 	NOT_PLAYER(PREFIX.getMsg() + "&4You must be a player to use that command!"),
 	CHUNK_CLAIM_SUCCESS(PREFIX.getMsg() + "&7Successfully claimed your current chunk!"),
+	CHUNK_CLAIM_SAFEZONE(PREFIX.getMsg() + "&6Claimed SafeZone"),
 	CHUNK_CLAIM_OWNED(PREFIX.getMsg() + "&4Someone already owns this chunk!"),
 	CHUNK_UNCLAIM_SUCCESS(PREFIX.getMsg() + "&7Successfully unclaimed your current chunk!"),
 	CHUNK_UNCLAIM_FAIL(PREFIX.getMsg() + "&4You can't unclaim a chunk you don't own!"),

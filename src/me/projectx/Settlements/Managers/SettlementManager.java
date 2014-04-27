@@ -8,6 +8,7 @@ import java.util.List;
 
 import me.projectx.Settlements.Models.ClaimedChunk;
 import me.projectx.Settlements.Models.Settlement;
+import me.projectx.Settlements.Utils.ClaimType;
 //import me.projectx.Settlements.Scoreboard.NameBoard;
 import me.projectx.Settlements.Utils.DatabaseUtils;
 import me.projectx.Settlements.Utils.MessageType;
@@ -503,11 +504,13 @@ public class SettlementManager extends Thread {
 	 * @param player : The player claiming the chunk
 	 * @throws SQLException 
 	 */
-	public void claimChunk(Player player) throws SQLException{
+	public void claimChunk(Player player, ClaimType ct) throws SQLException{
 		int status = ChunkManager.getInstance().claimChunk(player.getName(), 
-				player.getLocation().getChunk().getX(), player.getLocation().getChunk().getZ(), player.getLocation().getWorld());
+				player.getLocation().getChunk().getX(), player.getLocation().getChunk().getZ(), player.getLocation().getWorld(), ct);
 		if (status == 2) {
 			player.sendMessage(MessageType.CHUNK_CLAIM_SUCCESS.getMsg());
+			if (ct == ClaimType.SAFEZONE)
+				player.sendMessage(MessageType.CHUNK_CLAIM_SAFEZONE.getMsg());
 		} else if (status == 1) {
 			player.sendMessage(MessageType.CHUNK_CLAIM_OWNED.getMsg());
 		} else if (status == 0) {

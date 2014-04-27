@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import me.projectx.Settlements.Managers.ChunkManager;
 import me.projectx.Settlements.Managers.SettlementManager;
 import me.projectx.Settlements.Models.CommandModel;
+import me.projectx.Settlements.Utils.ClaimType;
 import me.projectx.Settlements.Utils.CommandType;
 import me.projectx.Settlements.Utils.MessageType;
 
@@ -54,8 +55,10 @@ public class CommandSettlementPlayer extends CommandModel {
 				}*/
 				if (args[0].equalsIgnoreCase("claim")){
 					if (sender instanceof Player){
-						Player p = (Player) sender;
-						SettlementManager.getManager().claimChunk(p);
+						if (args.length == 2){
+							Player p = (Player) sender;
+							SettlementManager.getManager().claimChunk(p, ClaimType.valueOf(args[1].toUpperCase()));
+						}
 					} else {
 						sender.sendMessage(MessageType.NOT_PLAYER.getMsg());
 					}

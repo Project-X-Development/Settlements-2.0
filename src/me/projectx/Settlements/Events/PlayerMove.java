@@ -6,6 +6,7 @@ import me.projectx.Settlements.Managers.ChunkManager;
 import me.projectx.Settlements.Managers.SettlementManager;
 import me.projectx.Settlements.Models.ClaimedChunk;
 import me.projectx.Settlements.Models.Settlement;
+import me.projectx.Settlements.Utils.ClaimType;
 
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -33,7 +34,7 @@ public class PlayerMove extends Thread implements Listener{
 						Settlement b = c.getSettlement();
 						if(!a.equals(b))
 							e.getPlayer().sendMessage(ChatColor.GREEN + "Leaving " + a.getName() + " entering " + b.getName());    
-					}
+					} //add for safezone & battleground
 				}	     
 			}
 		}.start();
@@ -41,7 +42,7 @@ public class PlayerMove extends Thread implements Listener{
 		if (ChunkManager.getInstance().isAutoClaiming(e.getPlayer())){
 			try {
 				if (!ChunkManager.getInstance().isClaimed(e.getPlayer().getLocation().getChunk().getX(), e.getPlayer().getLocation().getChunk().getZ()))
-					SettlementManager.getManager().claimChunk(e.getPlayer());
+					SettlementManager.getManager().claimChunk(e.getPlayer(), ClaimType.NORMAL); //temp type
 			} catch(SQLException ex) {
 				ex.printStackTrace();
 			}

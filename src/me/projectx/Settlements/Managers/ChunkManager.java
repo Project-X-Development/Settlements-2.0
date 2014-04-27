@@ -8,6 +8,7 @@ import java.util.List;
 
 import me.projectx.Settlements.Models.ClaimedChunk;
 import me.projectx.Settlements.Models.Settlement;
+import me.projectx.Settlements.Utils.ClaimType;
 import me.projectx.Settlements.Utils.DatabaseUtils;
 import me.projectx.Settlements.Utils.MessageType;
 
@@ -30,20 +31,19 @@ public class ChunkManager extends Thread{
 	}
 
 	//Temporary return value, eventually will be an enum
-	public int claimChunk(final String player, final int x, final int z, final World world) throws SQLException{
+	public int claimChunk(final String player, final int x, final int z, final World world, final ClaimType ct) throws SQLException{
 		if (!(SettlementManager.getManager().getPlayerSettlement(player) == null)){
 			final Settlement set = SettlementManager.getManager().getPlayerSettlement(player);
 			if (!isClaimed(x, z)){
 				new Thread() {
 					@Override
 					public void run() {
-						ClaimedChunk c = new ClaimedChunk(x, z, player, set, world);
+						ClaimedChunk c = new ClaimedChunk(x, z, player, set, world, ct);
 						long setid = set.getId();
 						String w = c.getWorld().getName();
 						try {
-							DatabaseUtils.queryOut("INSERT INTO chunks(x, z, player, settlement, world) VALUES('"
-									+ x + "', '" + z + "','" + player
-									+ "','"+ setid +"', '"+ w +"');");
+							DatabaseUtils.queryOut("INSERT INTO chunks(x, z, player, settlement, world, type) VALUES('"
+									+ x + "', '" + z + "','" + player + "','" + setid +"', '" + w + "','" + ct + "');");
 						} catch(SQLException e) {
 							e.printStackTrace();
 						}
@@ -69,20 +69,19 @@ public class ChunkManager extends Thread{
 	}
 
 	//Temporary return value, eventually will be an enum
-	public int claimChunk(final String player, final double x, final double z, final World world) throws SQLException {
+	public int claimChunk(final String player, final double x, final double z, final World world, final ClaimType ct) throws SQLException {
 		if (!(SettlementManager.getManager().getPlayerSettlement(player) == null)){
 			final Settlement set = SettlementManager.getManager().getPlayerSettlement(player);
 			if (!isClaimed((int) x, (int) z)){
 				new Thread() {
 					@Override
 					public void run() {
-						ClaimedChunk c = new ClaimedChunk((int)x, (int)z, player, set, world);
+						ClaimedChunk c = new ClaimedChunk((int)x, (int)z, player, set, world, ct);
 						long setid = set.getId();
 						String w = c.getWorld().getName();
 						try {
-							DatabaseUtils.queryOut("INSERT INTO chunks(x, z, player, settlement, world) VALUES('"
-									+ x + "', '" + z + "','" + player
-									+ "','"+ setid +"', '"+ w +"');");
+							DatabaseUtils.queryOut("INSERT INTO chunks(x, z, player, settlement, world, type) VALUES('"
+									+ x + "', '" + z + "','" + player + "','" + setid +"', '" + w + "','" + ct + "');");
 						} catch(SQLException e) {
 							e.printStackTrace();
 						}
@@ -141,7 +140,7 @@ public class ChunkManager extends Thread{
 			return false;
 		}
 	}
-
+	//add check for safezone & battleground
 	public ClaimedChunk changeChunkOwnership(final ClaimedChunk chunk, final String player) throws SQLException{
 		new Thread() {
 			@Override
@@ -259,7 +258,7 @@ public class ChunkManager extends Thread{
 						String player = result.getString("player");
 						long setid = result.getLong("settlement");
 						String w = result.getString("world");
-						new ClaimedChunk(x,	z , player, SettlementManager.getManager().getSettlement(setid) , Bukkit.getWorld(w));
+						new ClaimedChunk(x,	z , player, SettlementManager.getManager().getSettlement(setid) , Bukkit.getWorld(w), ClaimType.valueOf(result.getString("type")));
 					}	
 				} catch(SQLException e) {
 					e.printStackTrace();
