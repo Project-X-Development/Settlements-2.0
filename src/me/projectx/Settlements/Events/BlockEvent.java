@@ -35,7 +35,7 @@ public class BlockEvent implements Listener{
 			if (!SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()).isInWar()){
 				if (p != e.getPlayer()){
 					e.setCancelled(true);
-					p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You are not allowed to build here!");;
+					e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You are not allowed to build here!");;
 				}
 			}
 			
@@ -58,7 +58,7 @@ public class BlockEvent implements Listener{
 			if (!SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()).isInWar()){
 				if (p != e.getPlayer()){
 					e.setCancelled(true);
-					p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You are not allowed to build here!");;
+					e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You are not allowed to build here!");;
 				}
 			}
 			
@@ -83,7 +83,7 @@ public class BlockEvent implements Listener{
 				if (!SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()).isInWar()){
 					if (!(p == e.getPlayer())){
 						e.setCancelled(true);
-						p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You cannot interact with blocks in this territory!");
+						e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You cannot interact with blocks in this territory!");
 					}
 				}
 			}

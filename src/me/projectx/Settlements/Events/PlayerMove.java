@@ -30,10 +30,14 @@ public class PlayerMove extends Thread implements Listener{
 						Settlement a = d.getSettlement();
 						e.getPlayer().sendMessage(ChatColor.AQUA + a.getName() + ChatColor.RED + " ~ " + ChatColor.GRAY + a.getDescription());
 					}else if(c!=null&&d!=null){ //Entering one claim to another claim
-						Settlement a = d.getSettlement();
-						Settlement b = c.getSettlement();
-						if(!a.equals(b))
-							e.getPlayer().sendMessage(ChatColor.GREEN + "Leaving " + a.getName() + " entering " + b.getName());    
+						Settlement a = c.getSettlement();
+						Settlement b = d.getSettlement();
+						if(!a.equals(b)){
+							if (d.getType() == ClaimType.NORMAL)
+								e.getPlayer().sendMessage(ChatColor.GREEN + "Leaving " + a.getName() + " entering " + b.getName());
+							else if (d.getType() == ClaimType.SAFEZONE)
+								e.getPlayer().sendMessage(ChatColor.GREEN + "Leaving " + a.getName() + ", entering " + ChatColor.GOLD + "SafeZone");
+						}
 					} //add for safezone & battleground
 				}	     
 			}

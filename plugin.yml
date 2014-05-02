@@ -4,3 +4,5 @@ main: me.projectx.Settlements.Main
 commands:
   s:
     description: Base command for settlements
+  sa:
+    description: Admin command

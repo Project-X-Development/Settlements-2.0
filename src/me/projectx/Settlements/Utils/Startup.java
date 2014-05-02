@@ -3,6 +3,7 @@ package me.projectx.Settlements.Utils;
 import java.sql.SQLException;
 
 import me.projectx.Settlements.Main;
+import me.projectx.Settlements.Commands.CommandSettlementAdmin;
 import me.projectx.Settlements.Commands.CommandSettlementPlayer;
 import me.projectx.Settlements.Events.BlockEvent;
 import me.projectx.Settlements.Events.PlayerChat;
@@ -14,6 +15,7 @@ import me.projectx.Settlements.Events.PlayerQuit;
 import me.projectx.Settlements.Managers.ChunkManager;
 import me.projectx.Settlements.Managers.SettlementManager;
 //import me.projectx.Settlements.Scoreboard.NameBoard;
+
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
@@ -32,6 +34,7 @@ public class Startup extends Thread {
 		pm.registerEvents(new PlayerDeath(), Main.getInstance());
 		
 		Main.getInstance().getCommand("s").setExecutor(new CommandSettlementPlayer());
+		Main.getInstance().getCommand("sa").setExecutor(new CommandSettlementAdmin());
 
 		CommandType.prepareCommandList();
 

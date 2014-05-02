@@ -235,6 +235,45 @@ public class SettlementManager extends Thread {
 			sender.sendMessage(MessageType.SETTLEMENT_NOT_EXIST.getMsg());
 		}
 	}
+	
+	/**
+	 * Delete a settlement. Will work for any settlement, even if the sender isn't the leader
+	 * 
+	 * @param name : The name of the settlement to delete
+	 * @param sender : Who issued the deletion of the settlement
+	 * @throws SQLException 
+	 */
+	public void deleteSettlement(final CommandSender sender, final String name) throws SQLException{
+		if (settlementExists(name)){
+			new Thread() {
+				@Override
+				public void run() {
+					try {
+						Settlement s = getSettlement(name);
+						DatabaseUtils.queryOut("DELETE FROM settlements WHERE id=" + s.getId() + ";");
+						DatabaseUtils.queryOut("DELETE FROM chunks WHERE settlement=" + s.getId() + ";");
+
+						List<ClaimedChunk> cc = ChunkManager.getInstance().map.get(s);
+						if (cc != null){
+							ClaimedChunk.instances.removeAll(cc);
+							ChunkManager.getInstance().map.remove(s);
+						}
+						
+						if (invitedPlayers.containsValue(s)) {
+							invitedPlayers.remove(s);
+						}
+						
+						settlements.remove(s);
+
+						sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully deleted " + ChatColor.AQUA + s.getName());
+
+					} catch(SQLException e) {e.printStackTrace();} catch (Throwable e) {
+						e.printStackTrace();
+					}	
+				}
+			}.start();
+		}
+	}
 
 	/**
 	 * Invite a player to join the Settlement. The command sender must be an Officer or higher in the Settlement

@@ -140,6 +140,35 @@ public class ChunkManager extends Thread{
 			return false;
 		}
 	}
+	
+	public boolean unclaimChunk(int x, int z) throws SQLException{
+		if (isClaimed(x, z)){
+			final ClaimedChunk chunk = getChunk(x, z);
+			final Settlement set = chunk.getSettlement();
+			new Thread() {
+				@Override
+				public void run() {
+					try {
+						DatabaseUtils.queryOut("DELETE FROM chunks WHERE x=" + chunk.getX() + " AND z=" + chunk.getZ() + ";");
+					} catch(SQLException e) {
+						e.printStackTrace();
+					}
+
+					if(map.containsKey(set)){
+						List<ClaimedChunk> cc = map.get(set);
+						if(cc.contains(chunk)){
+							cc.remove(chunk);							}
+							map.put(set, cc);
+					}
+					ClaimedChunk.instances.remove(chunk);
+
+				}
+			}.start();
+			return true;
+		} else {
+			return false;
+		}
+	}
 	//add check for safezone & battleground
 	public ClaimedChunk changeChunkOwnership(final ClaimedChunk chunk, final String player) throws SQLException{
 		new Thread() {

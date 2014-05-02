@@ -55,9 +55,9 @@ public class CommandSettlementPlayer extends CommandModel {
 				}*/
 				if (args[0].equalsIgnoreCase("claim")){
 					if (sender instanceof Player){
-						if (args.length == 2){
+						if (args.length == 1){
 							Player p = (Player) sender;
-							SettlementManager.getManager().claimChunk(p, ClaimType.valueOf(args[1].toUpperCase()));
+							SettlementManager.getManager().claimChunk(p, ClaimType.NORMAL);
 						}
 					} else {
 						sender.sendMessage(MessageType.NOT_PLAYER.getMsg());
