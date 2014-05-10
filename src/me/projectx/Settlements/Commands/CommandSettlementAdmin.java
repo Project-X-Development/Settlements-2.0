@@ -25,7 +25,7 @@ public class CommandSettlementAdmin extends CommandModel{
 					if (args.length == 2){
 						if (sender instanceof Player){
 							Player p = (Player) sender;
-							SettlementManager.getManager().claimChunk(p, ClaimType.valueOf(args[1].toUpperCase()));
+							SettlementManager.getManager().claimSpecialChunk(p, ClaimType.valueOf(args[1].toUpperCase()));
 						}
 					}
 				}

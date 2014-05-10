@@ -548,12 +548,22 @@ public class SettlementManager extends Thread {
 				player.getLocation().getChunk().getX(), player.getLocation().getChunk().getZ(), player.getLocation().getWorld(), ct);
 		if (status == 2) {
 			player.sendMessage(MessageType.CHUNK_CLAIM_SUCCESS.getMsg());
-			if (ct == ClaimType.SAFEZONE)
-				player.sendMessage(MessageType.CHUNK_CLAIM_SAFEZONE.getMsg());
 		} else if (status == 1) {
 			player.sendMessage(MessageType.CHUNK_CLAIM_OWNED.getMsg());
 		} else if (status == 0) {
 			player.sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
 		}
+	}
+	
+	public void claimSpecialChunk(Player player, ClaimType ct) throws SQLException{
+		if (ct == ClaimType.SAFEZONE || ct == ClaimType.BATTLEGROUND){
+			int status = ChunkManager.getInstance().claimChunk("", player.getLocation().getChunk().getX(), 
+					player.getLocation().getChunk().getZ(), player.getWorld(), ct);
+			if (status == 2) {
+				if (ct == ClaimType.SAFEZONE)
+					player.sendMessage(MessageType.CHUNK_CLAIM_SAFEZONE.getMsg());
+			}
+		}else
+			player.sendMessage("DEBUG: You can only claim SafeZones and Battlegrounds with this command");
 	}
 }
