@@ -14,9 +14,12 @@ public class PlayerChat implements Listener {
 		String name = e.getPlayer().getName();
 
 		if (!(SettlementManager.getManager().getPlayerSettlement(name) == null)){
+			/*e.setFormat(new FancyMessage(ChatColor.DARK_GRAY + "[" + ChatColor.AQUA + 
+					SettlementManager.getManager().getPlayerSettlement(name).getName() + 
+					ChatColor.DARK_GRAY + "] ").toJSONString() + e.getFormat());*/
 			e.setFormat(ChatColor.DARK_GRAY + "[" + ChatColor.AQUA + 
 					SettlementManager.getManager().getPlayerSettlement(name).getName() + 
 					ChatColor.DARK_GRAY + "] " + e.getFormat());
 		}
-	}	
+	}
 }
