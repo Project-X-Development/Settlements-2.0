@@ -1,6 +1,7 @@
 package me.projectx.Settlements.Events;
 
-import me.projectx.Settlements.Managers.*;
+import me.projectx.Settlements.Managers.ChunkManager;
+import me.projectx.Settlements.Managers.SettlementManager;
 import me.projectx.Settlements.Models.ClaimedChunk;
 import me.projectx.Settlements.Utils.ClaimType;
 import me.projectx.Settlements.Utils.MessageType;

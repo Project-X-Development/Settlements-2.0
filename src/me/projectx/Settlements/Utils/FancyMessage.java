@@ -5,15 +5,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.util.com.google.gson.stream.JsonWriter;
+
 import org.bukkit.Achievement;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.Statistic.Type;
-import org.bukkit.craftbukkit.libs.com.google.gson.stream.JsonWriter;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+
 
 public class FancyMessage {
 
@@ -21,15 +24,15 @@ public class FancyMessage {
 	private String jsonString;
 	private boolean dirty;
 
-	private Class<?> nmsChatSerializer = Reflection.getNMSClass("ChatSerializer");
-	private Class<?> nmsTagCompound = Reflection.getNMSClass("NBTTagCompound");
-	private Class<?> nmsPacketPlayOutChat = Reflection.getNMSClass("PacketPlayOutChat");
-	private Class<?> nmsAchievement = Reflection.getNMSClass("Achievement");
-	private Class<?> nmsStatistic = Reflection.getNMSClass("Statistic");
-	private Class<?> nmsItemStack = Reflection.getNMSClass("ItemStack");
+	private final Class<?> nmsChatSerializer = Reflection.getNMSClass("ChatSerializer");
+	private final Class<?> nmsTagCompound = Reflection.getNMSClass("NBTTagCompound");
+	private final Class<?> nmsPacketPlayOutChat = Reflection.getNMSClass("PacketPlayOutChat");
+	private final Class<?> nmsAchievement = Reflection.getNMSClass("Achievement");
+	private final Class<?> nmsStatistic = Reflection.getNMSClass("Statistic");
+	private final Class<?> nmsItemStack = Reflection.getNMSClass("ItemStack");
 
-	private Class<?> obcStatistic = Reflection.getOBCClass("CraftStatistic");
-	private Class<?> obcItemStack = Reflection.getOBCClass("inventory.CraftItemStack");
+	private final Class<?> obcStatistic = Reflection.getOBCClass("CraftStatistic");
+	private final Class<?> obcItemStack = Reflection.getOBCClass("inventory.CraftItemStack");
 
 	public FancyMessage(final String firstPartText) {
 		messageParts = new ArrayList<MessagePart>();

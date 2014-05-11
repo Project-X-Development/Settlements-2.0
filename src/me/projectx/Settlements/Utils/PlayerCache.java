@@ -5,8 +5,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
 
-import me.projectx.Settlements.Utils.DatabaseUtils;
-
 public class PlayerCache {
 	public static HashMap<String, UUID> playerMap = new HashMap<String, UUID>();
 

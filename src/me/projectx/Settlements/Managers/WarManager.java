@@ -22,7 +22,7 @@ public class WarManager {
 	 */
 	private static WarManager instance;
 
-	private Map<Settlement, Settlement> requests = new HashMap<Settlement, Settlement>();
+	private final Map<Settlement, Settlement> requests = new HashMap<Settlement, Settlement>();
 
 	public static WarManager getInstance(){
 		return instance;
@@ -78,6 +78,7 @@ public class WarManager {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public void sendRequest(Settlement sender, Settlement set){
 		OfflinePlayer p = Bukkit.getOfflinePlayer(set.getLeader());
 		if (p.isOnline()){
@@ -114,11 +115,11 @@ public class WarManager {
 			}
 		}
 	}
-	
+
 	public Map<Settlement, Settlement> getRequests(){
 		return requests;
 	}
-	
+
 	public boolean hasRequest(Settlement s){
 		return requests.containsValue(s);
 	}

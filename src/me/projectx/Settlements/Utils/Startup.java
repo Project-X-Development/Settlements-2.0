@@ -14,11 +14,10 @@ import me.projectx.Settlements.Events.PlayerMove;
 import me.projectx.Settlements.Events.PlayerQuit;
 import me.projectx.Settlements.Managers.ChunkManager;
 import me.projectx.Settlements.Managers.SettlementManager;
-//import me.projectx.Settlements.Scoreboard.NameBoard;
-
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
+//import me.projectx.Settlements.Scoreboard.NameBoard;
 
 public class Startup extends Thread {
 
@@ -32,7 +31,7 @@ public class Startup extends Thread {
 		pm.registerEvents(new BlockEvent(), Main.getInstance());
 		pm.registerEvents(new PlayerDamage(), Main.getInstance());
 		pm.registerEvents(new PlayerDeath(), Main.getInstance());
-		
+
 		Main.getInstance().getCommand("s").setExecutor(new CommandSettlementPlayer());
 		Main.getInstance().getCommand("sa").setExecutor(new CommandSettlementAdmin());
 

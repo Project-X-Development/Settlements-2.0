@@ -235,7 +235,7 @@ public class SettlementManager extends Thread {
 			sender.sendMessage(MessageType.SETTLEMENT_NOT_EXIST.getMsg());
 		}
 	}
-	
+
 	/**
 	 * Delete a settlement. Will work for any settlement, even if the sender isn't the leader
 	 * 
@@ -258,11 +258,11 @@ public class SettlementManager extends Thread {
 							ClaimedChunk.instances.removeAll(cc);
 							ChunkManager.getInstance().map.remove(s);
 						}
-						
+
 						if (invitedPlayers.containsValue(s)) {
 							invitedPlayers.remove(s);
 						}
-						
+
 						settlements.remove(s);
 
 						sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully deleted " + ChatColor.AQUA + s.getName());
@@ -554,16 +554,18 @@ public class SettlementManager extends Thread {
 			player.sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
 		}
 	}
-	
+
 	public void claimSpecialChunk(Player player, ClaimType ct) throws SQLException{
 		if (ct == ClaimType.SAFEZONE || ct == ClaimType.BATTLEGROUND){
-			int status = ChunkManager.getInstance().claimChunk("", player.getLocation().getChunk().getX(), 
+			int status = ChunkManager.getInstance().claimChunk(null, player.getLocation().getChunk().getX(), 
 					player.getLocation().getChunk().getZ(), player.getWorld(), ct);
 			if (status == 2) {
-				if (ct == ClaimType.SAFEZONE)
+				if (ct == ClaimType.SAFEZONE) {
 					player.sendMessage(MessageType.CHUNK_CLAIM_SAFEZONE.getMsg());
+				}
 			}
-		}else
+		} else {
 			player.sendMessage("DEBUG: You can only claim SafeZones and Battlegrounds with this command");
+		}
 	}
 }
