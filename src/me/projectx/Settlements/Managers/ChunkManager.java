@@ -78,7 +78,7 @@ public class ChunkManager extends Thread{
 						String w = world.getName();
 						try {
 							DatabaseUtils.queryOut("INSERT INTO chunks(x, z, player, settlement, world, type) VALUES('"
-									+ x + "', '" + z + "','" + null + "','" + null +"', '" + w + "','" + ct + "');");
+									+ x + "', '" + z + "','" + null + "','" + -1 +"', '" + w + "','" + ct + "');");
 						} catch(SQLException e) {
 							e.printStackTrace();
 						}

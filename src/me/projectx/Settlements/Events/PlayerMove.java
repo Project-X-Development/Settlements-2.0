@@ -14,7 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 public class PlayerMove extends Thread implements Listener{
-	
+
 	@EventHandler
 	public void onMove(final PlayerMoveEvent e){
 		new Thread() {
@@ -28,25 +28,32 @@ public class PlayerMove extends Thread implements Listener{
 						e.getPlayer().sendMessage(ChatColor.GREEN + "~Wilderness");
 					}else if(d!=null&&c==null){ //Entering a from unclaimed
 						Settlement a = d.getSettlement();
-						e.getPlayer().sendMessage(ChatColor.AQUA + a.getName() + ChatColor.RED + " ~ " + ChatColor.GRAY + a.getDescription());
+						if (d.getType() == ClaimType.NORMAL) {
+							e.getPlayer().sendMessage(ChatColor.AQUA + a.getName() + ChatColor.RED + " ~ " + ChatColor.GRAY + a.getDescription());
+						} else if (d.getType() == ClaimType.SAFEZONE) {
+							e.getPlayer().sendMessage(ChatColor.GOLD + "SafeZone ~ Safe from PvP and Monsters");
+						}
 					}else if(c!=null&&d!=null){ //Entering one claim to another claim
 						Settlement a = c.getSettlement();
 						Settlement b = d.getSettlement();
 						if(!a.equals(b)){
-							if (d.getType() == ClaimType.NORMAL)
+							if (d.getType() == ClaimType.NORMAL) {
 								e.getPlayer().sendMessage(ChatColor.GREEN + "Leaving " + a.getName() + " entering " + b.getName());
-							else if (d.getType() == ClaimType.SAFEZONE)
+							} else if (d.getType() == ClaimType.SAFEZONE) {
 								e.getPlayer().sendMessage(ChatColor.GREEN + "Leaving " + a.getName() + ", entering " + ChatColor.GOLD + "SafeZone");
+							}
 						}
 					} //add for safezone & battleground
 				}	     
 			}
 		}.start();
-		
+
 		if (ChunkManager.getInstance().isAutoClaiming(e.getPlayer())){
 			try {
 				if (!ChunkManager.getInstance().isClaimed(e.getPlayer().getLocation().getChunk().getX(), e.getPlayer().getLocation().getChunk().getZ()))
+				{
 					SettlementManager.getManager().claimChunk(e.getPlayer(), ClaimType.NORMAL); //temp type
+				}
 			} catch(SQLException ex) {
 				ex.printStackTrace();
 			}
