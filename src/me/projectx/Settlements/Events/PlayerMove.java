@@ -45,7 +45,7 @@ public class PlayerMove implements Listener{
 						} 
 					}
 				}
-				else if (d.getType() == ClaimType.SAFEZONE) {
+				else if (c.getType() == ClaimType.NORMAL && d.getType() == ClaimType.SAFEZONE) {
 					e.getPlayer().sendMessage(ChatColor.GREEN + "Entering " + ChatColor.GOLD + "SafeZone");
 				}
 			} //add for safezone & battleground
