@@ -13,16 +13,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-public class PlayerMove extends Thread implements Listener{
+public class PlayerMove implements Listener{
 
 	@EventHandler
 	public void onMove(final PlayerMoveEvent e){
-		new Thread() {
-			@Override
-			public void run() {
-				if (e.getFrom().getChunk() != e.getTo().getChunk()){
-					ClaimedChunk c = ChunkManager.getInstance().getChunk(e.getFrom().getChunk().getX(), e.getFrom().getChunk().getZ());
-					ClaimedChunk d = ChunkManager.getInstance().getChunk(e.getTo().getChunk().getX(), e.getTo().getChunk().getZ());
+			if (e.getFrom().getChunk() != e.getTo().getChunk()){
+				ClaimedChunk c = ChunkManager.getInstance().getChunk(e.getFrom().getChunk().getX(), e.getFrom().getChunk().getZ());
+				ClaimedChunk d = ChunkManager.getInstance().getChunk(e.getTo().getChunk().getX(), e.getTo().getChunk().getZ());
 					if(c==null&&d==null){
 					}else if(c!=null&&d==null){ //Leaving b to non claimed
 						e.getPlayer().sendMessage(ChatColor.GREEN + "~Wilderness");
@@ -36,17 +33,21 @@ public class PlayerMove extends Thread implements Listener{
 					}else if(c!=null&&d!=null){ //Entering one claim to another claim
 						Settlement a = c.getSettlement();
 						Settlement b = d.getSettlement();
-						if(!a.equals(b)){
+						
+						if (c.getType() == ClaimType.SAFEZONE && d.getType() != ClaimType.SAFEZONE){
+							e.getPlayer().sendMessage(ChatColor.GREEN + "Leaving " + ChatColor.GOLD + "SafeZone" + ChatColor.GREEN + ", entering " + b.getName());
+						}
+			
+						if(!a.equals(b)){ //NPE
 							if (d.getType() == ClaimType.NORMAL) {
 								e.getPlayer().sendMessage(ChatColor.GREEN + "Leaving " + a.getName() + " entering " + b.getName());
 							} else if (d.getType() == ClaimType.SAFEZONE) {
 								e.getPlayer().sendMessage(ChatColor.GREEN + "Leaving " + a.getName() + ", entering " + ChatColor.GOLD + "SafeZone");
 							}
-						}
+						}				
 					} //add for safezone & battleground
 				}	     
-			}
-		}.start();
+
 
 		if (ChunkManager.getInstance().isAutoClaiming(e.getPlayer())){
 			try {
