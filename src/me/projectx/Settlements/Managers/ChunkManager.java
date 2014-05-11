@@ -283,7 +283,7 @@ public class ChunkManager extends Thread{
 						String player = result.getString("player");
 						long setid = result.getLong("settlement");
 						String w = result.getString("world");
-						new ClaimedChunk(x,	z , player, SettlementManager.getManager().getSettlement(setid) , Bukkit.getWorld(w), ClaimType.NORMAL/*ClaimType.valueOf(result.getString("type"))*/);
+						new ClaimedChunk(x,	z , player, SettlementManager.getManager().getSettlement(setid) , Bukkit.getWorld(w), ClaimType.valueOf(result.getString("type")));
 					}	
 				} catch(SQLException e) {
 					e.printStackTrace();
