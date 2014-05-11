@@ -35,9 +35,10 @@ public class BlockEvent implements Listener{
 			Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
 			if (chunk.getType() == ClaimType.SAFEZONE){
 				e.setCancelled(true);
-				e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GOLD + "You cannot place blocks in a SafeZone");
+				e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GOLD + "You cannot break blocks in a SafeZone");
 				return;
 			}
+			
 			if (!SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()).isInWar()){
 				if (p != e.getPlayer()){
 					e.setCancelled(true);
@@ -61,32 +62,39 @@ public class BlockEvent implements Listener{
 				e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GOLD + "You cannot place blocks in a SafeZone");
 				return;
 			}
+			
 			if (!SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()).isInWar()){
 				if (p != e.getPlayer()){
 					e.setCancelled(true);
 					e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You are not allowed to build here!");;
 				}
 			}
-
 		}
-
-
 	}
 
 	@EventHandler
 	public void onInteract(PlayerInteractEvent e){
 		if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK){
-			Chunk c = e.getClickedBlock().getLocation().getChunk();
-			int x = c.getX();
-			int z = c.getZ();
-
-			if (ChunkManager.getInstance().isClaimed(x,  z)){
-				ClaimedChunk chunk = ChunkManager.getInstance().getChunk(x, z);
-				Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
-				if (!SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()).isInWar()){
-					if (!(p == e.getPlayer())){
-						e.setCancelled(true);
-						e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You cannot interact with blocks in this territory!");
+			if (e.getClickedBlock() != null){
+				Chunk c = e.getClickedBlock().getLocation().getChunk();
+				int x = c.getX();
+				int z = c.getZ();
+	
+				if (ChunkManager.getInstance().isClaimed(x,  z)){
+					ClaimedChunk chunk = ChunkManager.getInstance().getChunk(x, z);
+					Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
+	
+					if (SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()) != null){
+						if (!SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()).isInWar()){
+							if (!(p == e.getPlayer())){
+								if (chunk.getType() == ClaimType.SAFEZONE)
+									e.setCancelled(false);
+								else{
+									e.setCancelled(true);
+									e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You cannot interact with blocks in this territory!");
+								}
+							}
+						}
 					}
 				}
 			}
