@@ -38,13 +38,15 @@ public class PlayerMove implements Listener{
 					e.getPlayer().sendMessage(ChatColor.GREEN + "Leaving " + ChatColor.GOLD + "SafeZone" + ChatColor.GREEN + ", entering " + b.getName());
 				}
 
-				else if(!a.equals(b)){ //NPE
-					if (d.getType() == ClaimType.NORMAL) {
-						e.getPlayer().sendMessage(ChatColor.GREEN + "Leaving " + a.getName() + " entering " + b.getName());
-					} else if (d.getType() == ClaimType.SAFEZONE) {
-						e.getPlayer().sendMessage(ChatColor.GREEN + "Leaving " + a.getName() + ", entering " + ChatColor.GOLD + "SafeZone");
+				if (a != null && b!= null){
+					if(!a.equals(b)){ //NPE
+						if (d.getType() == ClaimType.NORMAL) {
+							e.getPlayer().sendMessage(ChatColor.GREEN + "Leaving " + a.getName() + " entering " + b.getName());
+						} else if (d.getType() == ClaimType.SAFEZONE) {
+							e.getPlayer().sendMessage(ChatColor.GREEN + "Leaving " + a.getName() + ", entering " + ChatColor.GOLD + "SafeZone");
+						}
 					}
-				}				
+				}
 			} //add for safezone & battleground
 		}	     
 
