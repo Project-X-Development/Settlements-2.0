@@ -236,22 +236,29 @@ public class ChunkManager extends Thread{
 						int zz = playerz + z;
 						if (xx == player.getLocation().getChunk().getX() && zz == player.getLocation().getChunk().getZ()) {
 							if (isClaimed(xx, zz)){ 
-								if (getChunk(xx, zz).getSettlement() == set){
+								if (getChunk(xx, zz).getType() == ClaimType.NORMAL && getChunk(xx, zz).getSettlement() == set){
 									send = send + ChatColor.GREEN + "P"; 
 								}
-								else{
-									send = send + ChatColor.RED + "P"; 
+								else if (getChunk(xx, zz).getType() == ClaimType.SAFEZONE){
+									send = send + ChatColor.GOLD + "P"; 
+								}
+								else if (getChunk(xx, zz).getType() == ClaimType.NORMAL && getChunk(xx, zz).getSettlement() != set){
+									send = send + ChatColor.RED + "P";
 								}
 							} else {
 								send = send + ChatColor.BLUE + "P";
 							}	
 						} else{
 							if (isClaimed(xx, zz)){ 
-								if (getChunk(xx, zz).getSettlement() == set){
+								if (getChunk(xx, zz).getType() == ClaimType.NORMAL && getChunk(xx, zz).getSettlement() == set){
 									send = send + ChatColor.GREEN + "+"; 
 								}
-								else{
-									send = send + ChatColor.RED + "-"; 
+								else if (getChunk(xx, zz).getType() == ClaimType.SAFEZONE){
+									send = send + ChatColor.GOLD + "-"; 
+								}
+								
+								else if (getChunk(xx, zz).getType() == ClaimType.NORMAL && getChunk(xx, zz).getSettlement() != set){
+									send = send + ChatColor.RED + "-";
 								}
 							} else {
 								send = send + ChatColor.BLUE + "=";
