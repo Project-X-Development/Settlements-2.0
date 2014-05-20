@@ -1,5 +1,6 @@
 package me.projectx.Settlements.Events;
 
+import me.projectx.Settlements.Managers.PlayerManager;
 import me.projectx.Settlements.Managers.SettlementManager;
 import me.projectx.Settlements.Managers.WarManager;
 import me.projectx.Settlements.Models.Settlement;
@@ -14,6 +15,7 @@ public class PlayerJoin implements Listener {
 
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e){
+		PlayerManager.getInstance().addPlayer(e.getPlayer());
 		SettlementManager sm = SettlementManager.getManager();
 		PlayerCache.getCache().put(e.getPlayer().getName(), e.getPlayer().getUniqueId());
 		
