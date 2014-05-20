@@ -69,7 +69,7 @@ public class CommandSettlementPlayer extends CommandModel {
 				if (args[0].equalsIgnoreCase("map")){
 					if (sender instanceof Player){
 						Player p = (Player) sender;
-						p.getInventory().addItem(new ItemStack(Material.MAP, 1, (byte)1));
+						p.getInventory().addItem(new ItemStack(Material.MAP, 1, (short)1));
 						//ChunkManager.getInstance().printMap(p);
 					} else {
 						sender.sendMessage(MessageType.NOT_PLAYER.getMsg());
