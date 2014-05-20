@@ -15,7 +15,7 @@ public class PlayerJoin implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e){
 		SettlementManager sm = SettlementManager.getManager();
-		PlayerCache.getCache().put(e.getPlayer().getName(), e.getPlayer().getUniqueId());
+		//PlayerCache.getCache().put(e.getPlayer().getName(), e.getPlayer().getUniqueId());
 		
 		if (sm.getPlayerSettlement(e.getPlayer().getName()) != null){
 			Settlement s = sm.getPlayerSettlement(e.getPlayer().getName());

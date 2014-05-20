@@ -50,9 +50,7 @@ public class CommandSettlementPlayer extends CommandModel {
 					}
 					SettlementManager.getManager().setDescription(sender, str.toString());
 				}
-				/*if (args[0].equalsIgnoreCase("tag")){
-					SettlementManager.getManager().setTag(sender, args[0].toString());
-				}*/
+
 				if (args[0].equalsIgnoreCase("claim")){
 					if (sender instanceof Player){
 						if (args.length == 1){

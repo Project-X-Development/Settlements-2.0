@@ -26,16 +26,6 @@ public class ClaimedChunk {
 		this.ct = ct;
 		instances.add(this);
 	}
-	
-	//temporary so stuff isn't borked
-	/*public ClaimedChunk(int x, int z, String owner, Settlement set, World w){
-		this.x = x;
-		this.z = z;
-		this.w = w;
-		this.owner = owner;
-		this.set = set;
-		instances.add(this);
-	}*/
 
 	//Local methods//
 
