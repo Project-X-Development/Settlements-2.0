@@ -13,10 +13,11 @@ public class Settlement {
 	private long id;
 	private int power;
 	private double balance;
-	private String leader, name, desc /*tag*/;
+	private String leader, name, desc;
 	private UUID owner;
 	private final ArrayList<String> officers = new ArrayList<String>();
 	private final ArrayList<String> citizens = new ArrayList<String>();
+	private final ArrayList<String> allies = new ArrayList<String>();
 	//private final ArrayList<UUID> officers = new ArrayList<String>();
 	//private final ArrayList<UUID> citizens = new ArrayList<String>();
 
@@ -280,5 +281,65 @@ public class Settlement {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Determine if the Settlement is allied with a designated Settlement
+	 * 
+	 * @param s : The Settlement to check
+	 * @return True if the Settlement is allied with the other Settlement
+	 */
+	public boolean hasAlly(Settlement s){
+		return allies.contains(s.getName());
+	}
+	
+	/**
+	 * Get one of the allies of the Settlement
+	 * 
+	 * @param s : The ally to get
+	 * @return The allied Settlement
+	 */
+	public Settlement getAlly(Settlement s){
+		return SettlementManager.getManager().getSettlement(s.getName());
+	}
+	
+	/**
+	 * Get the names of all the allies of the Settlement
+	 * 
+	 * @return The names of all the allied Settlements
+	 */
+	public ArrayList<String> getAllies(){
+		return allies;
+	}
+	
+	/**
+	 * Get all Settlements in this Settlement's alliance
+	 * 
+	 * @returnall All Settlements in this Settlement's alliance
+	 */
+	public Settlement getAlliedSettlements(){
+		for (String s : allies)
+			return SettlementManager.getManager().getSettlement(s);
+		return null;
+	}
+	
+	/**
+	 * Add an ally to the Settlement
+	 * 
+	 * @param s : The Settlement to add
+	 */
+	public void addAlly(Settlement s){
+		allies.add(s.getName());
+		s.addAlly(this);
+	}
+	
+	/**
+	 * Remove one of the Settlement's allies
+	 * 
+	 * @param s : The Settlement who will no longer be in the alliance
+	 */
+	public void removeAlly(Settlement s){
+		allies.remove(s.getName());
+		s.removeAlly(this);
 	}
 }
