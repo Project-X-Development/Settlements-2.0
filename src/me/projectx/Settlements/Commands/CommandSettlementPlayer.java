@@ -9,8 +9,10 @@ import me.projectx.Settlements.Utils.ClaimType;
 import me.projectx.Settlements.Utils.CommandType;
 import me.projectx.Settlements.Utils.MessageType;
 
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class CommandSettlementPlayer extends CommandModel {
 
@@ -65,7 +67,8 @@ public class CommandSettlementPlayer extends CommandModel {
 				if (args[0].equalsIgnoreCase("map")){
 					if (sender instanceof Player){
 						Player p = (Player) sender;
-						ChunkManager.getInstance().printMap(p);
+						p.getInventory().addItem(new ItemStack(Material.MAP, 1, (short)1));
+						//ChunkManager.getInstance().printMap(p);
 					} else {
 						sender.sendMessage(MessageType.NOT_PLAYER.getMsg());
 					}

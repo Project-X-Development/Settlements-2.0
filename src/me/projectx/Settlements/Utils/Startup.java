@@ -6,6 +6,7 @@ import me.projectx.Settlements.Main;
 import me.projectx.Settlements.Commands.CommandSettlementAdmin;
 import me.projectx.Settlements.Commands.CommandSettlementPlayer;
 import me.projectx.Settlements.Events.BlockEvent;
+import me.projectx.Settlements.Events.MapInitialize;
 import me.projectx.Settlements.Events.PlayerChat;
 import me.projectx.Settlements.Events.PlayerDamage;
 import me.projectx.Settlements.Events.PlayerDeath;
@@ -24,13 +25,14 @@ public class Startup extends Thread {
 	public static void runStartup() throws SQLException{
 		PluginManager pm = Bukkit.getPluginManager();
 
-		pm.registerEvents(new PlayerJoin(), Main.getInstance());
-		pm.registerEvents(new PlayerQuit(), Main.getInstance());
-		pm.registerEvents(new PlayerChat(), Main.getInstance());
-		pm.registerEvents(new PlayerMove(), Main.getInstance());
 		pm.registerEvents(new BlockEvent(), Main.getInstance());
+		pm.registerEvents(new MapInitialize(), Main.getInstance());
+		pm.registerEvents(new PlayerChat(), Main.getInstance());
 		pm.registerEvents(new PlayerDamage(), Main.getInstance());
 		pm.registerEvents(new PlayerDeath(), Main.getInstance());
+		pm.registerEvents(new PlayerJoin(), Main.getInstance());
+		pm.registerEvents(new PlayerQuit(), Main.getInstance());
+		pm.registerEvents(new PlayerMove(), Main.getInstance());
 
 		Main.getInstance().getCommand("s").setExecutor(new CommandSettlementPlayer());
 		Main.getInstance().getCommand("sa").setExecutor(new CommandSettlementAdmin());
