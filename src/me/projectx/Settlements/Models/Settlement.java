@@ -13,13 +13,11 @@ public class Settlement {
 	private long id;
 	private int power;
 	private double balance;
-	private String leader, name, desc;
+	private String name, desc;
 	private UUID owner;
-	private ArrayList<String> officers = new ArrayList<String>();
-	private ArrayList<String> citizens = new ArrayList<String>();
 	private ArrayList<String> allies = new ArrayList<String>();
-	//private final ArrayList<UUID> officers = new ArrayList<String>();
-	//private final ArrayList<UUID> citizens = new ArrayList<String>();
+	private final ArrayList<UUID> officers = new ArrayList<UUID>();
+	private final ArrayList<UUID> citizens = new ArrayList<UUID>();
 
 	public Settlement(String name){
 		this.name = name;
@@ -102,21 +100,19 @@ public class Settlement {
 	/**
 	 * Get the leader of the settlement
 	 * 
-	 * @return The leader of the settlement
-	 * @deprecated Conversion to UUID
+	 * @return The UUID of the leader leader of the settlement
 	 */
-	public String getLeader(){
-		return this.leader;
+	public UUID getLeader(){
+		return this.owner;
 	}
 
 	/**
 	 * Set the leader of the settlement
 	 * 
-	 * @param name : The name of the new leader
-	 * @deprecated Conversion to UUID
+	 * @param uuid : The UUID of the new leader
 	 */
-	public void setLeader(String name){
-		this.leader = name;
+	public void setLeader(UUID uuid){
+		this.owner = uuid;
 	}
 
 	/**
@@ -140,38 +136,35 @@ public class Settlement {
 	/**
 	 * Grant citizenship to a player
 	 * 
-	 * @param name : The name of the player
-	 * @deprecated Conversion to UUID
+	 * @param uuid : The UUID of the player to grant citizenship
 	 */
-	public void giveCitizenship(String name){
-		if (!isCitizen(name)) {
-			citizens.add(name);
+	public void giveCitizenship(UUID uuid){
+		if (!isCitizen(uuid)) {
+			citizens.add(uuid);
 		}
 	}
 
 	/**
 	 * Revoke citizenship from a player
 	 * 
-	 * @param name : The name of the player who will lose citizenship
-	 * @deprecated Conversion to UUID
+	 * @param name : The UUID of the player who will lose citizenship
 	 */
-	public void revokeCitizenship(String name){
-		if (isCitizen(name)){
-			citizens.remove(name);
-			officers.remove(name);
+	public void revokeCitizenship(UUID uuid){
+		if (isCitizen(uuid)){
+			citizens.remove(uuid);
+			officers.remove(uuid);
 		}
 	}
 
 	/**
 	 * Set a player as an officer of the settlement
 	 * 
-	 * @param name : The name of the player who will become an officer
-	 * @deprecated Conversion to UUID
+	 * @param name : The UUID of the player who will become an officer
 	 */
-	public void setOfficer(String name){
-		if (isCitizen(name)){
-			if (!isOfficer(name)) {
-				officers.add(name);
+	public void setOfficer(UUID uuid){
+		if (isCitizen(uuid)){
+			if (!isOfficer(uuid)) {
+				officers.add(uuid);
 			}
 		}
 	}
@@ -179,64 +172,58 @@ public class Settlement {
 	/**
 	 * Determine if a player is a citizen of the settlement
 	 * 
-	 * @param name : The name of the player to check
+	 * @param name : The UUID of the player to check
 	 * @return True if the player is a citizen
-	 * @deprecated Conversion to UUID
 	 */
-	public boolean isCitizen(String name){
-		return citizens.contains(name);
+	public boolean isCitizen(UUID uuid){
+		return citizens.contains(uuid);
 	}
 
 	/**
 	 * Determine if a player is an officer in the settlement
 	 * 
-	 * @param name : The name of the player to check
+	 * @param name : The UUID of the player to check
 	 * @return True if the player is an officer
-	 * @deprecated Conversion to UUID
 	 */
-	public boolean isOfficer(String name){
-		return officers.contains(name);
+	public boolean isOfficer(UUID uuid){
+		return officers.contains(uuid);
 	}
 
 	/**
 	 * Determine if a player is the leader of the settlement
 	 * 
-	 * @param name : The name of the player to check
+	 * @param name : The UUID of the player to check
 	 * @return True if the player is the leader of the settlement
-	 * @deprecated Conversion to UUID
 	 */
-	public boolean isLeader(String name){
-		return name.equalsIgnoreCase(leader);
+	public boolean isLeader(UUID uuid){
+		return owner.equals(uuid);
 	}
 
 	/**
 	 * Determine if a player is a member of the settlement
 	 * 
-	 * @param name : The name of the player to check
+	 * @param name : The UUID of the player to check
 	 * @return True if the player is a citizen, officer, or leader
-	 * @deprecated Conversion to UUID
 	 */
-	public boolean hasMember(String name){
-		return isCitizen(name) || isOfficer(name) || isLeader(name);
+	public boolean hasMember(UUID uuid){
+		return isCitizen(uuid) || isOfficer(uuid) || isLeader(uuid);
 	}
 
 	/**
 	 * Get the citizens of the settlement
 	 * 
-	 * @return The citizens of the settlement
-	 * @deprecated Conversion to UUID
+	 * @return The UUIDs of the citizens of the settlement
 	 */
-	public ArrayList<String> getCitizens(){
+	public ArrayList<UUID> getCitizens(){
 		return citizens;
 	}
 
 	/**
 	 * Get the officers of the settlement
 	 * 
-	 * @return The officers of the settlement
-	 * @deprecated Conversion to UUID
+	 * @return The UUIDs of the officers of the settlement
 	 */
-	public ArrayList<String> getOfficers(){
+	public ArrayList<UUID> getOfficers(){
 		return officers;
 	}
 
@@ -256,7 +243,7 @@ public class Settlement {
 	 */
 	public void sendSettlementMessage(String message){
 		for (Player p : Bukkit.getOnlinePlayers()){
-			if (hasMember(p.getName())) {
+			if (hasMember(p.getUniqueId())) {
 				p.sendMessage(message);
 			}
 		}
@@ -271,12 +258,13 @@ public class Settlement {
 	
 	/**
 	 * Send a message to all members in this settlement's alliance
-	 * @param message
+	 * 
+	 * @param message : The message to send to the alliance members
 	 */
 	public void sendAllianceMessage(String message){
 		Settlement s = getAlliedSettlements();
 		for (Player p : Bukkit.getOnlinePlayers()){
-			if (s.hasMember(p.getName())){
+			if (s.hasMember(p.getUniqueId())){
 				p.sendMessage(message);
 			}
 		}

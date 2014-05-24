@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import me.projectx.Settlements.Models.ClaimedChunk;
 import me.projectx.Settlements.Models.Settlement;
@@ -58,7 +59,7 @@ public class SettlementManager extends Thread {
 					while (result.next()){
 						String name = result.getString("name");
 						Settlement set = new Settlement(name);
-						set.setLeader(result.getString("leader"));
+						set.setLeader(result.getString(("leader").toString()));
 						set.setDescription(result.getString("description"));
 						set.setOfficer(result.getString("officers"));
 						set.giveCitizenship(result.getString("citizens"));
@@ -82,10 +83,10 @@ public class SettlementManager extends Thread {
 				for (Settlement set : settlements){
 					String tempName = set.getName();
 					long tempId = set.getId();
-					String tempLeader = set.getLeader();
+					UUID tempLeader = set.getLeader();
 					String tempDesc = set.getDescription();
-					ArrayList<String> tempCits = set.getCitizens();
-					ArrayList<String> tempOffs = set.getOfficers();
+					ArrayList<UUID> tempCits = set.getCitizens();
+					ArrayList<UUID> tempOffs = set.getOfficers();
 					try {
 						DatabaseUtils.queryOut("UPDATE settlements"
 								+ "SET name='"+ tempName + "', leader='"+ tempLeader 
@@ -105,7 +106,8 @@ public class SettlementManager extends Thread {
 	 */
 	public Settlement getPlayerSettlement(String name){
 		for (Settlement s : settlements){
-			if (s.isCitizen(name) || s.isOfficer(name) || s.isLeader(name)) {
+			if (s.isCitizen(Bukkit.getPlayer(name).getUniqueId()) || 
+					s.isOfficer(Bukkit.getPlayer(name).getUniqueId()) || s.isLeader(Bukkit.getPlayer(name).getUniqueId())) {
 				return s;
 			}
 		}
@@ -169,7 +171,8 @@ public class SettlementManager extends Thread {
 		if (!settlementExists(name)){
 			if (getPlayerSettlement(sender.getName()) == null){
 				final Settlement s = new Settlement(name);
-				s.setLeader(sender.getName());
+				Player p = (Player) sender;
+				s.setLeader(p.getUniqueId());
 				new Thread() {
 					@Override
 					public void run() {
@@ -200,7 +203,8 @@ public class SettlementManager extends Thread {
 	 */
 	public void deleteSettlement(final CommandSender sender) throws SQLException{
 		if (settlementExists(getPlayerSettlement(sender.getName()).getName())){
-			if (getPlayerSettlement(sender.getName()).isLeader(sender.getName())){
+			Player p = (Player) sender;
+			if (getPlayerSettlement(sender.getName()).isLeader(p.getUniqueId())){
 				new Thread() {
 					@Override
 					public void run() {
@@ -286,8 +290,9 @@ public class SettlementManager extends Thread {
 		if (!invitedPlayers.containsKey(player)){
 			if (!(getPlayerSettlement(sender.getName()) == null)){
 				Settlement s = getPlayerSettlement(sender.getName());	
-				if (!s.hasMember(player)){
-					if (s.isOfficer(sender.getName()) || s.isLeader(sender.getName())){
+				if (!s.hasMember(Bukkit.getPlayer(player).getUniqueId())){
+					Player p = (Player) sender;
+					if (s.isOfficer(p.getUniqueId()) || s.isLeader(p.getUniqueId())){
 						invitedPlayers.put(player, getPlayerSettlement(sender.getName()));		
 						sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + 
 								"Invited " + ChatColor.AQUA + player + ChatColor.GRAY + " to your Settlement");
@@ -312,12 +317,11 @@ public class SettlementManager extends Thread {
 	 * @param player : The player who is accepting the invite
 	 * @throws SQLException 
 	 */
-	@SuppressWarnings("deprecation")
 	public void acceptInvite(final String player) throws SQLException{
 		if (hasInvite(player)){
 			if (getPlayerSettlement(player) == null){
 				final Settlement s = invitedPlayers.get(player);
-				s.giveCitizenship(player);
+				s.giveCitizenship(Bukkit.getPlayer(player).getUniqueId());
 				new Thread() {
 					@Override
 					public void run() {
@@ -374,10 +378,10 @@ public class SettlementManager extends Thread {
 	public void leaveSettlement(String name) throws SQLException{
 		if (!(getPlayerSettlement(name) == null)){
 			final Settlement s = getPlayerSettlement(name);
-			if (!s.isLeader(name)){
+			if (!s.isLeader(Bukkit.getPlayer(name).getUniqueId())){
 				Bukkit.getPlayer(name).sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully left " + ChatColor.AQUA + s.getName());
 				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + name + ChatColor.GRAY + " left the Settlement :(");
-				s.revokeCitizenship(name);
+				s.revokeCitizenship(Bukkit.getPlayer(name).getUniqueId());
 				new Thread() {
 					@Override
 					public void run() {
@@ -394,13 +398,12 @@ public class SettlementManager extends Thread {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	public void kickPlayer(CommandSender sender, String name){
 		if (!(getPlayerSettlement(sender.getName()) == null)){
 			final Settlement s = getPlayerSettlement(sender.getName());
-			if (s.hasMember(name)){
-				if (!s.isLeader(name)){
-					s.revokeCitizenship(name);
+			if (s.hasMember(Bukkit.getPlayer(name).getUniqueId())){
+				if (!s.isLeader(Bukkit.getPlayer(name).getUniqueId())){
+					s.revokeCitizenship(Bukkit.getPlayer(name).getUniqueId());
 					if (Bukkit.getPlayer(name).isOnline()){
 						Bukkit.getPlayer(name).sendMessage(MessageType.PREFIX.getMsg() + 
 								ChatColor.GRAY + "You have been kicked from " + ChatColor.AQUA + s.getName());
@@ -438,7 +441,8 @@ public class SettlementManager extends Thread {
 	public void setDescription(CommandSender sender, final String desc) throws SQLException{
 		if (!(getPlayerSettlement(sender.getName()) == null)){
 			final Settlement s = getPlayerSettlement(sender.getName());
-			if (s.isOfficer(sender.getName()) || s.isLeader(sender.getName())){
+			Player p = (Player) sender;
+			if (s.isOfficer(p.getUniqueId()) || s.isLeader(p.getUniqueId())){
 				s.setDescription(desc);
 				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Set your Settlement's description to " + desc);
 				new Thread() {

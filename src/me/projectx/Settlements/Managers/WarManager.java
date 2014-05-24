@@ -47,7 +47,7 @@ public class WarManager {
 	}
 
 	public boolean createWar(Settlement setA, Settlement setB, CommandSender sender){
-		if (setA.isLeader(((Player) sender).getName())){
+		if (setA.isLeader(((Player) sender).getUniqueId())){
 			if (!setA.isInWar()){
 				if (!setB.isInWar()){
 					int powerA = setA.getPower();
