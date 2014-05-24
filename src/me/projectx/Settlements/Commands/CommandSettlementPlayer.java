@@ -3,6 +3,7 @@ package me.projectx.Settlements.Commands;
 import java.sql.SQLException;
 
 import me.projectx.Settlements.Managers.ChunkManager;
+import me.projectx.Settlements.Managers.PlayerManager;
 import me.projectx.Settlements.Managers.SettlementManager;
 import me.projectx.Settlements.Models.CommandModel;
 import me.projectx.Settlements.Utils.ClaimType;
@@ -106,6 +107,15 @@ public class CommandSettlementPlayer extends CommandModel {
 				
 				if (args[0].equalsIgnoreCase("autoclaim")){
 					ChunkManager.getInstance().setAutoClaiming((Player)sender);
+				}
+				
+				if (args[0].equalsIgnoreCase("chat")){
+					Player p = (Player) sender;
+					if (args.length == 1){
+						PlayerManager.getInstance().setSettlementChatting(p);
+					}else if (args.length == 2){
+						PlayerManager.getInstance().setAllianceChatting(p);
+					}
 				}
 			} else {
 				CommandType.printList(sender);

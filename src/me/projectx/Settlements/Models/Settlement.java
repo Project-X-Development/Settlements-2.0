@@ -15,9 +15,9 @@ public class Settlement {
 	private double balance;
 	private String leader, name, desc;
 	private UUID owner;
-	private final ArrayList<String> officers = new ArrayList<String>();
-	private final ArrayList<String> citizens = new ArrayList<String>();
-	private final ArrayList<String> allies = new ArrayList<String>();
+	private ArrayList<String> officers = new ArrayList<String>();
+	private ArrayList<String> citizens = new ArrayList<String>();
+	private ArrayList<String> allies = new ArrayList<String>();
 	//private final ArrayList<UUID> officers = new ArrayList<String>();
 	//private final ArrayList<UUID> citizens = new ArrayList<String>();
 
@@ -270,6 +270,19 @@ public class Settlement {
 	}
 	
 	/**
+	 * Send a message to all members in this settlement's alliance
+	 * @param message
+	 */
+	public void sendAllianceMessage(String message){
+		Settlement s = getAlliedSettlements();
+		for (Player p : Bukkit.getOnlinePlayers()){
+			if (s.hasMember(p.getName())){
+				p.sendMessage(message);
+			}
+		}
+	}
+	
+	/**
 	 * Determine if the settlement is currently at war
 	 * 
 	 * @return True if the Settlement is at war
@@ -327,19 +340,29 @@ public class Settlement {
 	 * Add an ally to the Settlement
 	 * 
 	 * @param s : The Settlement to add
+	 * @return True if the ally was successfully added
 	 */
-	public void addAlly(Settlement s){
-		allies.add(s.getName());
-		s.addAlly(this);
+	public boolean addAlly(Settlement s){
+		if (!hasAlly(s)){
+			allies.add(s.getName());
+			s.addAlly(this);
+			return true;
+		}
+		return false;
 	}
 	
 	/**
 	 * Remove one of the Settlement's allies
 	 * 
 	 * @param s : The Settlement who will no longer be in the alliance
+	 * @return True if the ally was successfully removed
 	 */
-	public void removeAlly(Settlement s){
-		allies.remove(s.getName());
-		s.removeAlly(this);
+	public boolean removeAlly(Settlement s){
+		if (hasAlly(s)){
+			allies.remove(s.getName());
+			s.removeAlly(this);
+			return true;
+		}
+		return false;
 	}
 }

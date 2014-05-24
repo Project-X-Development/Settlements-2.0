@@ -16,8 +16,8 @@ public class PlayerJoin implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e){
 		PlayerManager.getInstance().addPlayer(e.getPlayer());
-		SettlementManager sm = SettlementManager.getManager();
-		//PlayerCache.getCache().put(e.getPlayer().getName(), e.getPlayer().getUniqueId());
+		/*SettlementManager sm = SettlementManager.getManager();
+		PlayerCache.getCache().put(e.getPlayer().getName(), e.getPlayer().getUniqueId());
 		
 		if (sm.getPlayerSettlement(e.getPlayer().getName()) != null){
 			Settlement s = sm.getPlayerSettlement(e.getPlayer().getName());
@@ -25,6 +25,6 @@ public class PlayerJoin implements Listener {
 			if (WarManager.getInstance().hasRequest(s)){
 				Bukkit.getPlayer(s.getLeader()).sendMessage(WarManager.getInstance().getRequests().get(s) + " has requested to go to war!");
 			}
-		}
+		}*/
 	}
 }
