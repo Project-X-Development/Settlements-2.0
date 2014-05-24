@@ -114,6 +114,15 @@ public class Settlement {
 	public void setLeader(UUID uuid){
 		this.owner = uuid;
 	}
+	
+	/**
+	 * Set the leader of the Settlement
+	 * 
+	 * @param uuid : The string that will be converted to UUID
+	 */
+	public void setLeader(String uuid){
+		this.owner = UUID.fromString(uuid);
+	}
 
 	/**
 	 * Get the description of the Settlement
@@ -143,6 +152,18 @@ public class Settlement {
 			citizens.add(uuid);
 		}
 	}
+	
+	/**
+	 * Grant citizenship to a player
+	 * 
+	 * @param uuid : The string that will be converted to a UUID
+	 */
+	public void giveCitizenship(String uuid){
+		UUID id = UUID.fromString(uuid);
+		if (!isCitizen(id)){
+			citizens.add(id);
+		}
+	}
 
 	/**
 	 * Revoke citizenship from a player
@@ -165,6 +186,20 @@ public class Settlement {
 		if (isCitizen(uuid)){
 			if (!isOfficer(uuid)) {
 				officers.add(uuid);
+			}
+		}
+	}
+	
+	/**
+	 * Set a player as an officer of the Settlement
+	 * 
+	 * @param uuid : The string that will be converted to UUID. 
+	 */
+	public void setOfficer(String uuid){
+		UUID id = UUID.fromString(uuid);
+		if (isCitizen(id)){
+			if (!isOfficer(id)){
+				officers.add(id);
 			}
 		}
 	}

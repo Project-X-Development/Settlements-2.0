@@ -59,7 +59,7 @@ public class SettlementManager extends Thread {
 					while (result.next()){
 						String name = result.getString("name");
 						Settlement set = new Settlement(name);
-						set.setLeader(result.getString(("leader").toString()));
+						set.setLeader(result.getString(("leader")));
 						set.setDescription(result.getString("description"));
 						set.setOfficer(result.getString("officers"));
 						set.giveCitizenship(result.getString("citizens"));
