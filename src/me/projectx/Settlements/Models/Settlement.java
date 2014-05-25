@@ -21,8 +21,7 @@ public class Settlement {
 
 	public Settlement(String name){
 		this.name = name;
-		SettlementManager.getManager();
-		this.id = SettlementManager.getSettlements().size() + 1;
+		this.id = SettlementManager.getManager().settlements.size() + 1;
 	}
 
 	/**

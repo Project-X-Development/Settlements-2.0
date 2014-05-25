@@ -55,7 +55,7 @@ public class Startup extends Thread {
 			@Override
 			public void run() {
 				try {
-					SettlementManager.loadSettlmentsFromDB();
+					SettlementManager.getManager().loadSettlmentsFromDB();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}

@@ -21,8 +21,8 @@ import org.bukkit.entity.Player;
 
 public class SettlementManager extends Thread {
 
-	private static ArrayList<Settlement> settlements = new ArrayList<Settlement>();
-	private final HashMap<String, Settlement> invitedPlayers = new HashMap<String, Settlement>();
+	public ArrayList<Settlement> settlements = new ArrayList<Settlement>();
+	private HashMap<String, Settlement> invitedPlayers = new HashMap<String, Settlement>();
 	private static SettlementManager sm = new SettlementManager();
 
 	/**
@@ -35,21 +35,12 @@ public class SettlementManager extends Thread {
 	}
 
 	/**
-	 * Get a list of all Settlment objects
-	 * 
-	 * @return Settlement class instance
-	 */
-	public static ArrayList<Settlement> getSettlements(){
-		return settlements;
-	}
-
-	/**
 	 * Load settlements (Call onEnable)
 	 * 
 	 * @return Returns true if successful, false otherwise
 	 * @throws SQLException 
 	 */
-	public static void loadSettlmentsFromDB() throws SQLException{
+	public void loadSettlmentsFromDB() throws SQLException{
 		new Thread() {
 			@Override
 			public void run() {
@@ -76,17 +67,17 @@ public class SettlementManager extends Thread {
 	 * @return Returns true if successful, false otherwise
 	 * @throws SQLException 
 	 */
-	public static void saveSettlements() throws SQLException{
+	public void saveSettlements() throws SQLException{
 		new Thread() {
 			@Override
 			public void run() {
 				for (Settlement set : settlements){
 					String tempName = set.getName();
 					long tempId = set.getId();
-					UUID tempLeader = set.getLeader();
+					String tempLeader = set.getLeader().toString();
 					String tempDesc = set.getDescription();
-					ArrayList<UUID> tempCits = set.getCitizens();
-					ArrayList<UUID> tempOffs = set.getOfficers();
+					String tempCits = set.getCitizens().toString(); //ArrayList<UUID>
+					String tempOffs = set.getOfficers().toString(); //ArrayList<UUID>
 					try {
 						DatabaseUtils.queryOut("UPDATE settlements"
 								+ "SET name='"+ tempName + "', leader='"+ tempLeader 
@@ -179,7 +170,7 @@ public class SettlementManager extends Thread {
 						settlements.add(s);
 						try {
 							DatabaseUtils.queryOut("INSERT INTO settlements (id, name, leader)"
-									+ "VALUES ('" + s.getId() + "','" + s.getName() + "','" + s.getLeader() + "');");
+									+ "VALUES ('" + s.getId() + "','" + s.getName() + "','" + s.getLeader().toString() + "');");
 						} catch(SQLException e) {e.printStackTrace();}
 					}
 				}.start();
@@ -327,7 +318,7 @@ public class SettlementManager extends Thread {
 					public void run() {
 						invitedPlayers.remove(player);
 						try {
-							DatabaseUtils.queryOut("UPDATE settlements SET citizens='"+ s.getCitizens() +"' WHERE id='" + s.getId() + "';");
+							DatabaseUtils.queryOut("UPDATE settlements SET citizens='"+ s.getCitizens().toString() +"' WHERE id='" + s.getId() + "';");
 						} catch(SQLException e) {e.printStackTrace();}
 					}
 				}.start();
@@ -386,7 +377,7 @@ public class SettlementManager extends Thread {
 					@Override
 					public void run() {
 						try {
-							DatabaseUtils.queryOut("UPDATE settlements SET citizens='"+ s.getCitizens() +"' WHERE id=" + s.getId() + ";");
+							DatabaseUtils.queryOut("UPDATE settlements SET citizens='"+ s.getCitizens().toString() +"' WHERE id=" + s.getId() + ";");
 						} catch(SQLException e) {e.printStackTrace();}
 					}
 				}.start();	
@@ -414,8 +405,8 @@ public class SettlementManager extends Thread {
 							@Override
 							public void run() {
 								try {
-									DatabaseUtils.queryOut("UPDATE settlements SET citizens='"+ s.getCitizens() +"' WHERE id=" + s.getId() + ";");
-									DatabaseUtils.queryOut("UPDATE settlements SET officers='" + s.getOfficers() + "' WHERE id=" + s.getId() + ";");
+									DatabaseUtils.queryOut("UPDATE settlements SET citizens='"+ s.getCitizens().toString() +"' WHERE id=" + s.getId() + ";");
+									DatabaseUtils.queryOut("UPDATE settlements SET officers='" + s.getOfficers().toString() + "' WHERE id=" + s.getId() + ";");
 								} catch(SQLException e) {e.printStackTrace();}
 							}
 						}.start();
