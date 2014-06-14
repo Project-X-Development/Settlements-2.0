@@ -58,7 +58,7 @@ public class PlayerMove implements Listener{
 			try {
 				if (!ChunkManager.getInstance().isClaimed(e.getPlayer().getLocation().getChunk().getX(), e.getPlayer().getLocation().getChunk().getZ()))
 				{
-					SettlementManager.getManager().claimChunk(e.getPlayer(), ClaimType.NORMAL); //temp type
+					ChunkManager.getInstance().claimChunk(e.getPlayer(), ClaimType.NORMAL); //temp type
 				}
 			} catch(SQLException ex) {
 				ex.printStackTrace();

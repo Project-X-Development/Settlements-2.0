@@ -6,6 +6,7 @@ import me.projectx.Settlements.Managers.ChunkManager;
 import me.projectx.Settlements.Managers.PlayerManager;
 import me.projectx.Settlements.Managers.SettlementManager;
 import me.projectx.Settlements.Models.CommandModel;
+import me.projectx.Settlements.Models.Settlement;
 import me.projectx.Settlements.Utils.ClaimType;
 import me.projectx.Settlements.Utils.CommandType;
 import me.projectx.Settlements.Utils.MessageType;
@@ -44,7 +45,7 @@ public class CommandSettlementPlayer extends CommandModel {
 					SettlementManager.getManager().leaveSettlement(sender.getName());
 				}
 				if (args[0].equalsIgnoreCase("list")) {
-					SettlementManager.getManager().listSettlements(sender);
+					SettlementManager.getManager().listSettlements((Player)sender);
 				}
 				if (args[0].equalsIgnoreCase("desc")){
 					StringBuilder str = new StringBuilder();
@@ -58,7 +59,7 @@ public class CommandSettlementPlayer extends CommandModel {
 					if (sender instanceof Player){
 						if (args.length == 1){
 							Player p = (Player) sender;
-							SettlementManager.getManager().claimChunk(p, ClaimType.NORMAL);
+							ChunkManager.getInstance().claimChunk(p, ClaimType.NORMAL);
 						}
 					} else {
 						sender.sendMessage(MessageType.NOT_PLAYER.getMsg());
@@ -68,8 +69,8 @@ public class CommandSettlementPlayer extends CommandModel {
 				if (args[0].equalsIgnoreCase("map")){
 					if (sender instanceof Player){
 						Player p = (Player) sender;
-						p.getInventory().addItem(new ItemStack(Material.MAP, 1, (short)1));
-						//ChunkManager.getInstance().printMap(p);
+						//p.getInventory().addItem(new ItemStack(Material.MAP, 1, (short)1));
+						ChunkManager.getInstance().printMap(p);
 					} else {
 						sender.sendMessage(MessageType.NOT_PLAYER.getMsg());
 					}
@@ -77,9 +78,14 @@ public class CommandSettlementPlayer extends CommandModel {
 
 				if (args[0].equalsIgnoreCase("members")){
 					if (args.length == 1) {
-						SettlementManager.getManager().listMembers(sender, SettlementManager.getManager().getPlayerSettlement(sender.getName()));
+						Settlement s  = SettlementManager.getManager().getPlayerSettlement(sender.getName());
+						if (s != null){
+							SettlementManager.getManager().displayMembers((Player)sender, s.getName());
+						}else{
+							sender.sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
+						}
 					} else if (args.length == 2) {
-						SettlementManager.getManager().listMembers(sender, SettlementManager.getManager().getSettlement(args[1]));
+						SettlementManager.getManager().displayMembers((Player)sender, args[1]);
 					}
 				}
 
@@ -115,6 +121,12 @@ public class CommandSettlementPlayer extends CommandModel {
 						PlayerManager.getInstance().setSettlementChatting(p);
 					}else if (args.length == 2){
 						PlayerManager.getInstance().setAllianceChatting(p);
+					}
+				}
+				
+				if (args[0].equalsIgnoreCase("ally")){
+					if (args.length == 2){
+						SettlementManager.getManager().allySettlement(SettlementManager.getManager().getPlayerSettlement(sender.getName()), args[1]);
 					}
 				}
 			} else {

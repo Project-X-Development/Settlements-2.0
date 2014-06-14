@@ -12,13 +12,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 
 public class DatabaseUtils extends Thread{
-	public static Connection con;
-	public static MySQL mysql;
+	private static Connection con;
+	private static MySQL mysql;
 
 	public static void setupConnection(){
-		//Get database values from config
-		Plugin pl = Main.getInstance();
-		FileConfiguration fc = pl.getConfig();
+		FileConfiguration fc = Main.getInstance().getConfig();
 
 		String host = fc.getString("db.host");
 		String port = fc.getString("db.port");
@@ -26,16 +24,13 @@ public class DatabaseUtils extends Thread{
 		String user = fc.getString("db.user");
 		String pass = fc.getString("db.pass");
 
-		//Create SQL object for database
-		mysql = new MySQL(pl, host, port, db, user, pass);
+		mysql = new MySQL(Main.getInstance(), host, port, db, user, pass);
 
-		//Connection successful....store in variable
 		System.out.println("[Settlements] Attempting database connection...");
 		mysql.openConnection();
 		con = mysql.getConnection();
-		if (mysql.checkConnection()) {
-			System.out.println("[Settlements] Success!");
-		}		
+		if (mysql.checkConnection()) 
+			System.out.println("[Settlements] Success!");		
 	}
 
 	public static void setupMySQL() throws SQLException{

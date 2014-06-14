@@ -1,6 +1,7 @@
 package me.projectx.Settlements.Models;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import me.projectx.Settlements.Managers.SettlementManager;
@@ -16,8 +17,8 @@ public class Settlement {
 	private String name, desc;
 	private UUID owner;
 	private ArrayList<String> allies = new ArrayList<String>();
-	private final ArrayList<UUID> officers = new ArrayList<UUID>();
-	private final ArrayList<UUID> citizens = new ArrayList<UUID>();
+	private ArrayList<UUID> officers = new ArrayList<UUID>();
+	private ArrayList<UUID> citizens = new ArrayList<UUID>();
 
 	public Settlement(String name){
 		this.name = name;
@@ -158,16 +159,18 @@ public class Settlement {
 	 * @param uuid : The string that will be converted to a UUID
 	 */
 	public void giveCitizenship(String uuid){
-		UUID id = UUID.fromString(uuid);
-		if (!isCitizen(id)){
-			citizens.add(id);
+		if (uuid != null){
+			UUID id = UUID.fromString(uuid);
+			if (!isCitizen(id)){
+				citizens.add(id);
+			}
 		}
 	}
 
 	/**
 	 * Revoke citizenship from a player
 	 * 
-	 * @param name : The UUID of the player who will lose citizenship
+	 * @param uuid : The UUID of the player who will lose citizenship
 	 */
 	public void revokeCitizenship(UUID uuid){
 		if (isCitizen(uuid)){
@@ -179,7 +182,7 @@ public class Settlement {
 	/**
 	 * Set a player as an officer of the settlement
 	 * 
-	 * @param name : The UUID of the player who will become an officer
+	 * @param uuid : The UUID of the player who will become an officer
 	 */
 	public void setOfficer(UUID uuid){
 		if (isCitizen(uuid)){
@@ -195,10 +198,12 @@ public class Settlement {
 	 * @param uuid : The string that will be converted to UUID. 
 	 */
 	public void setOfficer(String uuid){
-		UUID id = UUID.fromString(uuid);
-		if (isCitizen(id)){
-			if (!isOfficer(id)){
-				officers.add(id);
+		if (uuid != null){
+			UUID id = UUID.fromString(uuid);
+			if (isCitizen(id)){
+				if (!isOfficer(id)){
+					officers.add(id);
+				}
 			}
 		}
 	}
@@ -206,7 +211,7 @@ public class Settlement {
 	/**
 	 * Determine if a player is a citizen of the settlement
 	 * 
-	 * @param name : The UUID of the player to check
+	 * @param uuid : The UUID of the player to check
 	 * @return True if the player is a citizen
 	 */
 	public boolean isCitizen(UUID uuid){
@@ -216,7 +221,7 @@ public class Settlement {
 	/**
 	 * Determine if a player is an officer in the settlement
 	 * 
-	 * @param name : The UUID of the player to check
+	 * @param uuid : The UUID of the player to check
 	 * @return True if the player is an officer
 	 */
 	public boolean isOfficer(UUID uuid){
@@ -226,7 +231,7 @@ public class Settlement {
 	/**
 	 * Determine if a player is the leader of the settlement
 	 * 
-	 * @param name : The UUID of the player to check
+	 * @param uuid : The UUID of the player to check
 	 * @return True if the player is the leader of the settlement
 	 */
 	public boolean isLeader(UUID uuid){
@@ -236,7 +241,7 @@ public class Settlement {
 	/**
 	 * Determine if a player is a member of the settlement
 	 * 
-	 * @param name : The UUID of the player to check
+	 * @param uuid : The UUID of the player to check
 	 * @return True if the player is a citizen, officer, or leader
 	 */
 	public boolean hasMember(UUID uuid){
@@ -281,13 +286,6 @@ public class Settlement {
 				p.sendMessage(message);
 			}
 		}
-		
-		/*Removed for now
-		 * for (String s : citizens)
-			Bukkit.getPlayer(s).sendMessage(message);	
-		for (String s : officers)
-			Bukkit.getPlayer(s).sendMessage(message);*/
-		
 	}
 	
 	/**
@@ -296,10 +294,21 @@ public class Settlement {
 	 * @param message : The message to send to the alliance members
 	 */
 	public void sendAllianceMessage(String message){
-		Settlement s = getAlliedSettlements();
+		/*Settlement s = getAlliedSettlements();
 		for (Player p : Bukkit.getOnlinePlayers()){
 			if (s.hasMember(p.getUniqueId())){
 				p.sendMessage(message);
+			}
+		}*/
+		
+		//Mental note: This could probably be more efficient
+		for (String s : allies){ 
+			Settlement set = SettlementManager.getManager().getSettlement(s);
+			if (set != null){
+				for (Player p : Bukkit.getOnlinePlayers()){
+					if (set.hasMember(p.getUniqueId()))
+						p.sendMessage(message);
+				}
 			}
 		}
 	}
@@ -350,12 +359,10 @@ public class Settlement {
 	/**
 	 * Get all Settlements in this Settlement's alliance
 	 * 
-	 * @returnall All Settlements in this Settlement's alliance
+	 * @return All Settlements in this Settlement's alliance
 	 */
-	public Settlement getAlliedSettlements(){
-		for (String s : allies)
-			return SettlementManager.getManager().getSettlement(s);
-		return null;
+	public ArrayList<String> getAlliedSettlements(){
+		return allies;
 	}
 	
 	/**
@@ -386,5 +393,24 @@ public class Settlement {
 			return true;
 		}
 		return false;
+	}
+	
+	public Player getPlayer(int i){
+		List<UUID> temp = new ArrayList<UUID>();
+		temp.addAll(citizens);
+		temp.addAll(officers);
+		temp.add(owner);
+		
+		return Bukkit.getPlayer(temp.get(i));
+	}
+	
+	public String getRank(Player p){
+		if (isCitizen(p.getUniqueId()))
+			return "Citizen";
+		else if (isOfficer(p.getUniqueId()))
+			return "Officer";
+		else if (isLeader(p.getUniqueId()))
+			return "Leader";
+		return null;
 	}
 }

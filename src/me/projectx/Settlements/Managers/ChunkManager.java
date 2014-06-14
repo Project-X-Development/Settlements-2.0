@@ -18,13 +18,9 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 public class ChunkManager extends Thread{
-	public static ChunkManager instance;
+	private static ChunkManager instance = new ChunkManager();
 	public HashMap<Settlement, List<ClaimedChunk>> map = new HashMap<Settlement, List<ClaimedChunk>>();
 	private final ArrayList<String> autoClaim = new ArrayList<String>();
-
-	public ChunkManager(){
-		instance = this;
-	}
 
 	public static ChunkManager getInstance(){
 		return instance;
@@ -311,5 +307,37 @@ public class ChunkManager extends Thread{
 
 	public boolean isAutoClaiming(Player p){
 		return autoClaim.contains(p.getName());
+	}
+	
+	/**
+	 * Claim a chunk at a given player's location
+	 * 
+	 * @param player : The player claiming the chunk
+	 * @throws SQLException 
+	 */
+	public void claimChunk(Player player, ClaimType ct) throws SQLException{
+		int status = ChunkManager.getInstance().claimChunk(player.getName(), 
+				player.getLocation().getChunk().getX(), player.getLocation().getChunk().getZ(), player.getLocation().getWorld(), ct);
+		if (status == 2) {
+			player.sendMessage(MessageType.CHUNK_CLAIM_SUCCESS.getMsg());
+		} else if (status == 1) {
+			player.sendMessage(MessageType.CHUNK_CLAIM_OWNED.getMsg());
+		} else if (status == 0) {
+			player.sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
+		}
+	}
+
+	public void claimSpecialChunk(Player player, ClaimType ct) throws SQLException{
+		if (ct == ClaimType.SAFEZONE || ct == ClaimType.BATTLEGROUND){
+			int status = ChunkManager.getInstance().claimChunk(null, player.getLocation().getChunk().getX(), 
+					player.getLocation().getChunk().getZ(), player.getWorld(), ct);
+			if (status == 2) {
+				if (ct == ClaimType.SAFEZONE) {
+					player.sendMessage(MessageType.CHUNK_CLAIM_SAFEZONE.getMsg());
+				}
+			}
+		} else {
+			player.sendMessage("DEBUG: You can only claim SafeZones and Battlegrounds with this command");
+		}
 	}
 }
