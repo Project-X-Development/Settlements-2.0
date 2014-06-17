@@ -11,7 +11,7 @@ public class MapInitialize implements Listener {
 
 	@EventHandler
 	public void onMap(MapInitializeEvent e){
-		if(e.getMap().getId()==1){
+		if(e.getMap().getId()==0){
 			for(org.bukkit.map.MapRenderer r : e.getMap().getRenderers()){
 				e.getMap().removeRenderer(r);
 			}

@@ -3,6 +3,7 @@ package me.projectx.Settlements.Commands;
 import java.sql.SQLException;
 
 import me.projectx.Settlements.Managers.ChunkManager;
+import me.projectx.Settlements.Managers.MapManager;
 import me.projectx.Settlements.Managers.PlayerManager;
 import me.projectx.Settlements.Managers.SettlementManager;
 import me.projectx.Settlements.Models.CommandModel;
@@ -11,10 +12,12 @@ import me.projectx.Settlements.Utils.ClaimType;
 import me.projectx.Settlements.Utils.CommandType;
 import me.projectx.Settlements.Utils.MessageType;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.map.MapView;
 
 public class CommandSettlementPlayer extends CommandModel {
 
@@ -69,7 +72,14 @@ public class CommandSettlementPlayer extends CommandModel {
 				if (args[0].equalsIgnoreCase("map")){
 					if (sender instanceof Player){
 						Player p = (Player) sender;
-						p.getInventory().addItem(new ItemStack(Material.MAP, 1, (short)0));
+						MapManager.getInstance().remove(p);
+						ItemStack item = new ItemStack(Material.MAP, 1, (short)0);
+						MapView m = Bukkit.getServer().getMap(item.getDurability());
+						for(org.bukkit.map.MapRenderer r : m.getRenderers()){
+							m.removeRenderer(r);
+						}
+						m.addRenderer(MapManager.getInstance().getRenderMap());
+						p.getInventory().addItem(item);
 						//ChunkManager.getInstance().printMap(p);
 					} else {
 						sender.sendMessage(MessageType.NOT_PLAYER.getMsg());

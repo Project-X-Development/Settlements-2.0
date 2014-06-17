@@ -44,9 +44,9 @@ public class RenderMap extends MapRenderer {
 				for(int a = 0; a<4; a++){
 					for(int b = 0; b<4; b++){
 						ClaimedChunk c = cm.getChunk(chunkx, chunkx);
-						if(cm.isClaimed(chunkx, chunkz)&&c.getSettlement()==set){//If chunk x,z is claimed by own settlement
+						if(c!=null&&cm.isClaimed(chunkx, chunkz)&&c.getSettlement()==set){//If chunk x,z is claimed by own settlement
 							canvas.setPixel(column + a, row + b, MapPalette.LIGHT_GREEN);
-						}else if(cm.isClaimed(chunkx, chunkz)&&c.getSettlement()!=set){//If chunk x,z is claimed by other settlement
+						}else if(c!=null&&cm.isClaimed(chunkx, chunkz)&&c.getSettlement()!=set){//If chunk x,z is claimed by other settlement
 							canvas.setPixel(column + a, row + b, MapPalette.RED);
 						}else{
 							canvas.setPixel(column + a, row + b, MapPalette.LIGHT_GRAY);
