@@ -35,7 +35,7 @@ public class DatabaseUtils extends Thread{
 
 	public static void setupMySQL() throws SQLException{
 		queryOut("CREATE TABLE IF NOT EXISTS settlements(id BIGINT, name varchar(255), "
-				+ "leader varchar(255), description varchar(255), citizens LONGBLOB, officers LONGBLOB, tag VARCHAR(4));");
+				+ "leader varchar(255), description varchar(255), citizens LONGBLOB, officers LONGBLOB, tag VARCHAR(4), balance BIGINT);");
 		queryOut("CREATE TABLE IF NOT EXISTS cache(name varchar(255), id varchar(255));");
 		queryOut("CREATE TABLE IF NOT EXISTS chunks(x BIGINT, z BIGINT, player VARCHAR(255), settlement BIGINT, world VARCHAR(255), type VARCHAR(255));");
 	}

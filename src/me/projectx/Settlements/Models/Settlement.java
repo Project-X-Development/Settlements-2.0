@@ -395,15 +395,41 @@ public class Settlement {
 		return false;
 	}
 	
-	public Player getPlayer(int i){
+	/*public Player getPlayer(int i){
 		List<UUID> temp = new ArrayList<UUID>();
 		temp.addAll(citizens);
 		temp.addAll(officers);
 		temp.add(owner);
 		
 		return Bukkit.getPlayer(temp.get(i));
+	}*/
+	
+	/**
+	 * Get a member from the Settlement. This method is used for iteration only!
+	 * 
+	 * @param i - The integer value of the player to get
+	 * @return The player based on the integer specified
+	 */
+	public Player getPlayer(int i){
+		UUID uuid = null;
+		if (i < citizens.size()) {
+			uuid = citizens.get(i);
+		}else if (i - citizens.size() < officers.size()) {
+			uuid = officers.get(i - citizens.size());
+		}else if (i - citizens.size() - officers.size() == 0) {
+			uuid = owner;
+		}
+	 return Bukkit.getPlayer(uuid);
 	}
 	
+	/**
+	 * Get the rank of a player
+	 * <p>
+	 * Ex. "Citizen", "Officer", "Leader"
+	 * 
+	 * @param p : The player
+	 * @return The rank of the player
+	 */
 	public String getRank(Player p){
 		if (isCitizen(p.getUniqueId()))
 			return "Citizen";

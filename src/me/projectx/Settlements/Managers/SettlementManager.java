@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import me.projectx.Economy.API.EconomyAPI;
 import me.projectx.Settlements.Models.ClaimedChunk;
 import me.projectx.Settlements.Models.Settlement;
 import me.projectx.Settlements.Utils.DatabaseUtils;
@@ -59,6 +60,7 @@ public class SettlementManager extends Thread {
 						set.setDescription(result.getString("description"));
 						set.setOfficer(result.getString("officers"));
 						set.giveCitizenship(result.getString("citizens"));
+						set.setBalance(result.getDouble("balance"));
 						settlements.add(set);
 					}
 				} catch(SQLException e) {e.printStackTrace();}
@@ -223,8 +225,8 @@ public class SettlementManager extends Thread {
 
 							List<ClaimedChunk> cc = ChunkManager.getInstance().map.get(s);
 							if (cc != null){
-								ClaimedChunk.instances.removeAll(cc);
 								ChunkManager.getInstance().map.remove(s);
+								ClaimedChunk.instances.remove(cc);
 							}
 
 							if (invitedPlayers.containsValue(s)) 
@@ -555,5 +557,11 @@ public class SettlementManager extends Thread {
 			inv.setItem(i, is);
 		}
 		player.openInventory(inv);	
+	}
+	
+	public void depositIntoSettlement(Player player, Settlement s, double amount) throws SQLException{
+		EconomyAPI.getAccountManager().withdraw(player, amount);
+		s.setBalance(s.getBalance() + amount);
+		DatabaseUtils.queryOut("UPDATE settlements SET balance=" + s.getBalance() + " WHERE id=" + s.getId() + ";");
 	}
 }

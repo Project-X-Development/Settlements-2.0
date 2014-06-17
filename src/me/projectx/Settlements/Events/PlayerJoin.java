@@ -4,7 +4,6 @@ import me.projectx.Settlements.Managers.PlayerManager;
 import me.projectx.Settlements.Managers.SettlementManager;
 import me.projectx.Settlements.Managers.WarManager;
 import me.projectx.Settlements.Models.Settlement;
-import me.projectx.Settlements.Utils.PlayerCache;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
