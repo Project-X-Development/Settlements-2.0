@@ -73,7 +73,7 @@ public class RenderMap extends MapRenderer {
 					for(int a = 0; a<4; a++){
 						for(int b = 0; b<4; b++){
 							if((a==1&&b==1)||(a==1&&b==2)||(a==2&&b==1)||(a==2&&b==2)){
-								canvas.setPixel(column + a, row + b, MapPalette.PALE_BLUE);
+								canvas.setPixel(column + a, row + b, MapPalette.WHITE);
 							}
 						}	
 					}
