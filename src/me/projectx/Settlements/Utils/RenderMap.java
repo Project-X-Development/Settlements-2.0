@@ -43,11 +43,11 @@ public class RenderMap extends MapRenderer {
 				int chunkz = p.getLocation().getChunk().getZ()-(z-13);
 				for(int a = 0; a<4; a++){
 					for(int b = 0; b<4; b++){
-						ClaimedChunk c = cm.getChunk(chunkx, chunkx);
-						if(c!=null&&cm.isClaimed(chunkx, chunkz)&&c.getSettlement()==set){//If chunk x,z is claimed by own settlement
+						ClaimedChunk c = cm.getChunk(chunkx, chunkz);
+						if(cm.isClaimed(chunkx, chunkz)&&c.getSettlement()==set){//If chunk x,z is claimed by own settlement
 							canvas.setPixel(column + a, row + b, MapPalette.LIGHT_GREEN);
-						}else if(c!=null&&cm.isClaimed(chunkx, chunkz)&&c.getSettlement()!=set){//If chunk x,z is claimed by other settlement
-							canvas.setPixel(column + a, row + b, MapPalette.RED);
+						}else if(cm.isClaimed(chunkx, chunkz)&&c.getSettlement()!=set){//If chunk x,z is claimed by other settlement
+							canvas.setPixel(column + a, row + b, MapPalette.RED);cm.getChunk(chunkx, chunkx);
 						}else{
 							canvas.setPixel(column + a, row + b, MapPalette.LIGHT_GRAY);
 						}
