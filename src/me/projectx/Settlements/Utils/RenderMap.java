@@ -37,8 +37,8 @@ public class RenderMap extends MapRenderer {
 		ChunkManager cm = ChunkManager.getInstance();
 		Settlement set = SettlementManager.getManager().getPlayerSettlement(p.getName());
 		for(int x = 1; x<=25; x++){
+			int column = 1+(4*x)-3+(x-1);
 			for(int z = 1; z<=25; z++){
-				int column = 1+(4*x)-3+(x-1);
 				int row = 1+(4*z)-3+(z-1);
 				int chunkx = p.getLocation().getChunk().getX()+(x-13);
 				int chunkz = p.getLocation().getChunk().getZ()+(z-13);
