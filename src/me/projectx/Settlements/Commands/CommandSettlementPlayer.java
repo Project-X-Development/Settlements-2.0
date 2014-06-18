@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 import me.projectx.Settlements.Managers.ChunkManager;
+import me.projectx.Settlements.Managers.MapManager;
 import me.projectx.Settlements.Managers.PlayerManager;
 import me.projectx.Settlements.Managers.SettlementManager;
 import me.projectx.Settlements.Models.CommandModel;
@@ -16,6 +17,9 @@ import me.projectx.Settlements.Utils.MessageType;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.map.MapView;
 
 public class CommandSettlementPlayer extends CommandModel {
 
@@ -70,8 +74,15 @@ public class CommandSettlementPlayer extends CommandModel {
 				if (args[0].equalsIgnoreCase("map")){
 					if (sender instanceof Player){
 						Player p = (Player) sender;
-						//p.getInventory().addItem(new ItemStack(Material.MAP, 1, (short)1));
-						ChunkManager.getInstance().printMap(p);
+						MapManager.getInstance().remove(p);
+						ItemStack item = new ItemStack(Material.MAP, 1, (short)0);
+						MapView m = Bukkit.getServer().getMap(item.getDurability());
+						for(org.bukkit.map.MapRenderer r : m.getRenderers()){
+							m.removeRenderer(r);
+						}
+						m.addRenderer(MapManager.getInstance().getRenderMap());
+						p.getInventory().addItem(item);
+						//ChunkManager.getInstance().printMap(p);
 					} else {
 						sender.sendMessage(MessageType.NOT_PLAYER.getMsg());
 					}
@@ -128,14 +139,6 @@ public class CommandSettlementPlayer extends CommandModel {
 				if (args[0].equalsIgnoreCase("ally")){
 					if (args.length == 2){
 						SettlementManager.getManager().allySettlement(SettlementManager.getManager().getPlayerSettlement(sender.getName()), args[1]);
-					}
-				}
-				
-				if (args[0].equalsIgnoreCase("add")){
-					Settlement s = SettlementManager.getManager().getPlayerSettlement(sender.getName());
-					s.setOfficer(Bukkit.getOfflinePlayer("Dablakbandit").getUniqueId());
-					for (UUID id : s.getOfficers()){
-						DatabaseUtils.queryOut("UPDATE settlements SET officers=" + id + " WHERE id=" + s.getId() + ";");
 					}
 				}
 			} else {

@@ -1,6 +1,9 @@
 package me.projectx.Settlements.Utils;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import me.projectx.Settlements.Managers.ChunkManager;
 import me.projectx.Settlements.Managers.PlayerManager;
 import me.projectx.Settlements.Managers.SettlementManager;
@@ -15,15 +18,16 @@ import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
 public class RenderMap extends MapRenderer {
+	
+	private List<String> players = new ArrayList<String>();
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public void render(MapView view, MapCanvas canvas, Player p) {
-		Players pl = PlayerManager.getInstance().getPlayer(p);
-		if(pl.getBoolean("map")){
+		if(contains(p)){
 			return;
 		}
-		pl.setBoolean("map", true);
+		add(p);
 		for(int j = 0; j < 128; j++) {
 			for(int i = 0; i < 128; i++) {
 				canvas.setPixel(i, j, MapPalette.WHITE);
@@ -39,11 +43,11 @@ public class RenderMap extends MapRenderer {
 				int chunkz = p.getLocation().getChunk().getZ()-(z-13);
 				for(int a = 0; a<4; a++){
 					for(int b = 0; b<4; b++){
-						ClaimedChunk c = cm.getChunk(chunkx, chunkx);
+						ClaimedChunk c = cm.getChunk(chunkx, chunkz);
 						if(cm.isClaimed(chunkx, chunkz)&&c.getSettlement()==set){//If chunk x,z is claimed by own settlement
 							canvas.setPixel(column + a, row + b, MapPalette.LIGHT_GREEN);
 						}else if(cm.isClaimed(chunkx, chunkz)&&c.getSettlement()!=set){//If chunk x,z is claimed by other settlement
-							canvas.setPixel(column + a, row + b, MapPalette.RED);
+							canvas.setPixel(column + a, row + b, MapPalette.RED);cm.getChunk(chunkx, chunkx);
 						}else{
 							canvas.setPixel(column + a, row + b, MapPalette.LIGHT_GRAY);
 						}
@@ -57,5 +61,24 @@ public class RenderMap extends MapRenderer {
 			}
 		}
 		p.sendMap(view);
+	}
+	
+	public void add(Player pl){
+		this.players.add(pl.getUniqueId().toString());
+	}
+	
+	public void remove(Player pl){
+		String uuid = pl.getUniqueId().toString();
+		if(this.players.contains(uuid)){
+			this.players.remove(uuid);
+		}
+	}
+	
+	public boolean contains(Player pl){
+		String uuid = pl.getUniqueId().toString();
+		if(this.players.contains(uuid)){
+			return true;
+		}
+		return false;
 	}
 }
