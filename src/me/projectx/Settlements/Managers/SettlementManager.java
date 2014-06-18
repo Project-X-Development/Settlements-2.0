@@ -297,7 +297,8 @@ public class SettlementManager extends Thread {
 			if (s != null){	
 				Player p = Bukkit.getPlayer(player);
 				if (!s.hasMember(p.getUniqueId())){
-					if (s.isOfficer(p.getUniqueId()) || s.isLeader(p.getUniqueId())){
+					Player pl = (Player) sender;
+					if (s.isOfficer(pl.getUniqueId()) || s.isLeader(pl.getUniqueId())){
 						invitedPlayers.put(player, getPlayerSettlement(sender.getName()));		
 						sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + 
 								"Invited " + ChatColor.AQUA + player + ChatColor.GRAY + " to your Settlement");
@@ -517,6 +518,7 @@ public class SettlementManager extends Thread {
 				is.setItemMeta(sm);
 				inv.setItem(i, is);
 			}
+			
 			player.openInventory(inv);
 		}else{
 			player.sendMessage(MessageType.SETTLEMENT_NOT_EXIST.getMsg());

