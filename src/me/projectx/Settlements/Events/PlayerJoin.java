@@ -1,11 +1,7 @@
 package me.projectx.Settlements.Events;
 
 import me.projectx.Settlements.Managers.PlayerManager;
-import me.projectx.Settlements.Managers.SettlementManager;
-import me.projectx.Settlements.Managers.WarManager;
-import me.projectx.Settlements.Models.Settlement;
 
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;

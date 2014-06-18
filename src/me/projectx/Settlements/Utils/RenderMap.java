@@ -1,15 +1,11 @@
 package me.projectx.Settlements.Utils;
 
-
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
 import me.projectx.Settlements.Managers.ChunkManager;
-import me.projectx.Settlements.Managers.PlayerManager;
 import me.projectx.Settlements.Managers.SettlementManager;
 import me.projectx.Settlements.Models.ClaimedChunk;
-import me.projectx.Settlements.Models.Players;
 import me.projectx.Settlements.Models.Settlement;
 
 import org.bukkit.entity.Player;

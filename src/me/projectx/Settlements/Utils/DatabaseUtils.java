@@ -9,7 +9,6 @@ import me.projectx.Settlements.Main;
 import me.projectx.Settlements.MySQL.MySQL;
 
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.Plugin;
 
 public class DatabaseUtils extends Thread{
 	private static Connection con;
