@@ -11,6 +11,7 @@ import me.projectx.Settlements.Events.MapInitialize;
 import me.projectx.Settlements.Events.PlayerChat;
 import me.projectx.Settlements.Events.PlayerDamage;
 import me.projectx.Settlements.Events.PlayerDeath;
+import me.projectx.Settlements.Events.PlayerJoin;
 //import me.projectx.Settlements.Events.PlayerJoin;
 import me.projectx.Settlements.Events.PlayerMove;
 import me.projectx.Settlements.Events.PlayerQuit;
@@ -31,7 +32,7 @@ public class Startup extends Thread {
 		pm.registerEvents(new PlayerChat(), Main.getInstance());
 		pm.registerEvents(new PlayerDamage(), Main.getInstance());
 		pm.registerEvents(new PlayerDeath(), Main.getInstance());
-		//pm.registerEvents(new PlayerJoin(), Main.getInstance());
+		pm.registerEvents(new PlayerJoin(), Main.getInstance());
 		pm.registerEvents(new PlayerQuit(), Main.getInstance());
 		pm.registerEvents(new PlayerMove(), Main.getInstance());
 		pm.registerEvents(new InventoryClick(), Main.getInstance());

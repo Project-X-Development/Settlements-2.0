@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.projectx.Settlements.Managers.ChunkManager;
+import me.projectx.Settlements.Managers.PlayerManager;
 import me.projectx.Settlements.Managers.SettlementManager;
 import me.projectx.Settlements.Models.ClaimedChunk;
+import me.projectx.Settlements.Models.Players;
 import me.projectx.Settlements.Models.Settlement;
 
 import org.bukkit.entity.Player;
@@ -32,14 +34,48 @@ public class RenderMap extends MapRenderer {
 		}
 		ChunkManager cm = ChunkManager.getInstance();
 		Settlement set = SettlementManager.getManager().getPlayerSettlement(p.getName());
+		int pchunkx = p.getLocation().getChunk().getX();
+		int pchunkz = p.getLocation().getChunk().getZ();
+		switch(getZoom(PlayerManager.getInstance().getPlayer(p))){
+		case 1:{
+			zoom1(view, canvas, cm, set, pchunkx, pchunkz);
+		}
+			
+		}
+		p.sendMap(view);
+	}
+
+	public void add(Player pl){
+		this.players.add(pl.getUniqueId().toString());
+	}
+
+	public void remove(Player pl){
+		String uuid = pl.getUniqueId().toString();
+		if(this.players.contains(uuid)){
+			this.players.remove(uuid);
+		}
+	}
+
+	public boolean contains(Player pl){
+		String uuid = pl.getUniqueId().toString();
+		if(this.players.contains(uuid)){
+			return true;
+		}
+		return false;
+	}
+	
+	public int getZoom(Players pl){
+		return pl.getInt("map");
+	}
+	
+	public void zoom1(MapView view, MapCanvas canvas, ChunkManager cm, Settlement set, int pchunkx, int pchunkz){
 		for(int x = 1; x<=25; x++){
 			int column = 1+(4*x)-3+(x-1);
+			int chunkx = pchunkx+(x-13);
 			for(int z = 1; z<=25; z++){
 				int row = 1+(4*z)-3+(z-1);
-				int chunkx = p.getLocation().getChunk().getX()+(x-13);
-				int chunkz = p.getLocation().getChunk().getZ()+(z-13);
+				int chunkz = pchunkz+(z-13);
 				ClaimedChunk c = cm.getChunk(chunkx, chunkz);
-
 				if(cm.isClaimed(chunkx, chunkz)){
 					if(c.getType() == ClaimType.SAFEZONE){
 						for(int a = 0; a<4; a++){
@@ -80,25 +116,5 @@ public class RenderMap extends MapRenderer {
 				}
 			}
 		}
-		p.sendMap(view);
-	}
-
-	public void add(Player pl){
-		this.players.add(pl.getUniqueId().toString());
-	}
-
-	public void remove(Player pl){
-		String uuid = pl.getUniqueId().toString();
-		if(this.players.contains(uuid)){
-			this.players.remove(uuid);
-		}
-	}
-
-	public boolean contains(Player pl){
-		String uuid = pl.getUniqueId().toString();
-		if(this.players.contains(uuid)){
-			return true;
-		}
-		return false;
 	}
 }

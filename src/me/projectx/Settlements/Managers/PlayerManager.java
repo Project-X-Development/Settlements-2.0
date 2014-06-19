@@ -35,6 +35,10 @@ public class PlayerManager {
 		return addPlayer(player);
 	}
 	
+	public void removePlayer(Player player){
+		this.playerobjects.remove(getPlayer(player));
+	}
+	
 	public void setAllianceChatting(Player player){
 		if (allianceChat.contains(player.getName())) {
 			allianceChat.remove(player.getName());

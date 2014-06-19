@@ -3,6 +3,7 @@ package me.projectx.Settlements.Events;
 import java.sql.SQLException;
 
 import me.projectx.Settlements.Managers.ChunkManager;
+import me.projectx.Settlements.Managers.MapManager;
 import me.projectx.Settlements.Managers.PlayerManager;
 import me.projectx.Settlements.Models.ClaimedChunk;
 import me.projectx.Settlements.Models.Settlement;
@@ -18,7 +19,7 @@ public class PlayerMove implements Listener{
 	@EventHandler
 	public void onMove(final PlayerMoveEvent e){
 		if (e.getFrom().getChunk() != e.getTo().getChunk()){
-			PlayerManager.getInstance().getPlayer(e.getPlayer()).removeBoolean("map");
+			MapManager.getInstance().remove(e.getPlayer());
 			ClaimedChunk c = ChunkManager.getInstance().getChunk(e.getFrom().getChunk().getX(), e.getFrom().getChunk().getZ());
 			ClaimedChunk d = ChunkManager.getInstance().getChunk(e.getTo().getChunk().getX(), e.getTo().getChunk().getZ());
 			if(c==null&&d==null){

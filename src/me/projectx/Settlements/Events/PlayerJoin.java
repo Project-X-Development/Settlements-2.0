@@ -1,6 +1,7 @@
 package me.projectx.Settlements.Events;
 
 import me.projectx.Settlements.Managers.PlayerManager;
+import me.projectx.Settlements.Models.Players;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,7 +11,8 @@ public class PlayerJoin implements Listener {
 
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e){
-		PlayerManager.getInstance().addPlayer(e.getPlayer());
+		Players pl = PlayerManager.getInstance().addPlayer(e.getPlayer());
+		pl.setInt("map", 1);
 		/*SettlementManager sm = SettlementManager.getManager();
 		PlayerCache.getCache().put(e.getPlayer().getName(), e.getPlayer().getUniqueId());
 		
