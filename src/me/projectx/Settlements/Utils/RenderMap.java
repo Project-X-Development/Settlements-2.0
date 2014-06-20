@@ -527,10 +527,10 @@ public class RenderMap extends MapRenderer {
 
 	public void zoom41(MapView view, MapCanvas canvas, ChunkManager cm, Settlement set, int pchunkx, int pchunkz){
 		for(int x = 1; x<=41; x++){
-			int column = (2*x)+(x-1);
+			int column = 1+(2*x)+(x-1);
 			int chunkx = pchunkx+(x-21);
 			for(int z = 1; z<=41; z++){
-				int row = (2*z)+(z-1);
+				int row = 1+(2*z)+(z-1);
 				int chunkz = pchunkz+(z-21);
 				ClaimedChunk c = cm.getChunk(chunkx, chunkz);
 				if(cm.isClaimed(chunkx, chunkz)){
@@ -575,7 +575,7 @@ public class RenderMap extends MapRenderer {
 
 	public void zoom125(MapView view, MapCanvas canvas, ChunkManager cm, Settlement set, int pchunkx, int pchunkz){
 		for(int x = 1; x<=63; x++){
-			int column = x+(x-1);;
+			int column = x+(x-1);
 			int chunkx = pchunkx+(x-32);
 			for(int z = 1; z<=63; z++){
 				int row = z+(z-1);;
