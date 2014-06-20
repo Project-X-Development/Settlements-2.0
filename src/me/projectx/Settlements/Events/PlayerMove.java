@@ -2,6 +2,7 @@ package me.projectx.Settlements.Events;
 
 import java.sql.SQLException;
 
+import me.projectx.Economy.Main;
 import me.projectx.Settlements.Managers.ChunkManager;
 import me.projectx.Settlements.Managers.MapManager;
 import me.projectx.Settlements.Managers.PlayerManager;
@@ -9,6 +10,7 @@ import me.projectx.Settlements.Models.ClaimedChunk;
 import me.projectx.Settlements.Models.Settlement;
 import me.projectx.Settlements.Utils.ClaimType;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,7 +21,6 @@ public class PlayerMove implements Listener{
 	@EventHandler
 	public void onMove(final PlayerMoveEvent e){
 		if (e.getFrom().getChunk() != e.getTo().getChunk()){
-			MapManager.getInstance().remove(e.getPlayer());
 			ClaimedChunk c = ChunkManager.getInstance().getChunk(e.getFrom().getChunk().getX(), e.getFrom().getChunk().getZ());
 			ClaimedChunk d = ChunkManager.getInstance().getChunk(e.getTo().getChunk().getX(), e.getTo().getChunk().getZ());
 			if(c==null&&d==null){
@@ -51,6 +52,14 @@ public class PlayerMove implements Listener{
 					e.getPlayer().sendMessage(ChatColor.GREEN + "Entering " + ChatColor.GOLD + "SafeZone");
 				}
 			} //add for safezone & battleground
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getInstance(), new Runnable(){
+
+				@Override
+				public void run() {
+					MapManager.getInstance().remove(e.getPlayer());
+				}
+				
+			},1);
 		}	     
 
 

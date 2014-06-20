@@ -30,7 +30,7 @@ public class RenderMap extends MapRenderer {
 		for(int j = 0; j < 128; j++) {
 			for(int i = 0; i < 128; i++) {
 				canvas.setPixel(i, j, MapPalette.WHITE);
-			}
+			} 
 		}
 		ChunkManager cm = ChunkManager.getInstance();
 		Settlement set = SettlementManager.getManager().getPlayerSettlement(p.getName());

@@ -76,11 +76,6 @@ public class CommandSettlementPlayer extends CommandModel {
 						Player p = (Player) sender;
 						MapManager.getInstance().remove(p);
 						ItemStack item = new ItemStack(Material.MAP, 1, (short)0);
-						MapView m = Bukkit.getServer().getMap(item.getDurability());
-						for(org.bukkit.map.MapRenderer r : m.getRenderers()){
-							m.removeRenderer(r);
-						}
-						m.addRenderer(MapManager.getInstance().getRenderMap());
 						p.getInventory().addItem(item);
 						//ChunkManager.getInstance().printMap(p);
 					} else {

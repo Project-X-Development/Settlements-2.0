@@ -16,9 +16,14 @@ import me.projectx.Settlements.Events.PlayerJoin;
 import me.projectx.Settlements.Events.PlayerMove;
 import me.projectx.Settlements.Events.PlayerQuit;
 import me.projectx.Settlements.Managers.ChunkManager;
+import me.projectx.Settlements.Managers.MapManager;
+import me.projectx.Settlements.Managers.PlayerManager;
 import me.projectx.Settlements.Managers.SettlementManager;
+import me.projectx.Settlements.Models.Players;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.map.MapView;
 import org.bukkit.plugin.PluginManager;
 
 
@@ -48,6 +53,17 @@ public class Startup extends Thread {
 		loadSettlements();
 
 		ChunkManager.getInstance().loadChunks();
+		
+		for(Player p : Bukkit.getOnlinePlayers()){
+			Players pl = PlayerManager.getInstance().addPlayer(p);
+			pl.setInt("map", 1);
+		}
+		
+		MapView m = Bukkit.getServer().getMap((short)0);
+		for(org.bukkit.map.MapRenderer r : m.getRenderers()){
+			m.removeRenderer(r);
+		}
+		m.addRenderer(MapManager.getInstance().getRenderMap());
 	}
 
 	private static void loadSettlements() {
