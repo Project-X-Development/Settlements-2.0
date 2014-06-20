@@ -15,10 +15,12 @@ import me.projectx.Settlements.Utils.DatabaseUtils;
 import me.projectx.Settlements.Utils.MessageType;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.map.MapView;
 
 public class CommandSettlementPlayer extends CommandModel {
@@ -76,6 +78,9 @@ public class CommandSettlementPlayer extends CommandModel {
 						Player p = (Player) sender;
 						MapManager.getInstance().remove(p);
 						ItemStack item = new ItemStack(Material.MAP, 1, (short)0);
+						ItemMeta im = item.getItemMeta();
+						im.setDisplayName(ChatColor.RED + "Dab " + ChatColor.BLUE + "Maps");
+						item.setItemMeta(im);
 						p.getInventory().addItem(item);
 						//ChunkManager.getInstance().printMap(p);
 					} else {
