@@ -11,6 +11,7 @@ import me.projectx.Settlements.Events.MapInitialize;
 import me.projectx.Settlements.Events.PlayerChat;
 import me.projectx.Settlements.Events.PlayerDamage;
 import me.projectx.Settlements.Events.PlayerDeath;
+import me.projectx.Settlements.Events.PlayerInteract;
 import me.projectx.Settlements.Events.PlayerJoin;
 //import me.projectx.Settlements.Events.PlayerJoin;
 import me.projectx.Settlements.Events.PlayerMove;
@@ -37,6 +38,7 @@ public class Startup extends Thread {
 		pm.registerEvents(new PlayerChat(), Main.getInstance());
 		pm.registerEvents(new PlayerDamage(), Main.getInstance());
 		pm.registerEvents(new PlayerDeath(), Main.getInstance());
+		pm.registerEvents(new PlayerInteract(), Main.getInstance());
 		pm.registerEvents(new PlayerJoin(), Main.getInstance());
 		pm.registerEvents(new PlayerQuit(), Main.getInstance());
 		pm.registerEvents(new PlayerMove(), Main.getInstance());
@@ -56,7 +58,7 @@ public class Startup extends Thread {
 		
 		for(Player p : Bukkit.getOnlinePlayers()){
 			Players pl = PlayerManager.getInstance().addPlayer(p);
-			pl.setInt("map", 1);
+			pl.setInt("map", 25);
 		}
 		
 		MapView m = Bukkit.getServer().getMap((short)0);

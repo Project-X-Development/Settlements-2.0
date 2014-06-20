@@ -12,7 +12,7 @@ public class PlayerJoin implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e){
 		Players pl = PlayerManager.getInstance().addPlayer(e.getPlayer());
-		pl.setInt("map", 1);
+		pl.setInt("map", 25);
 		/*SettlementManager sm = SettlementManager.getManager();
 		PlayerCache.getCache().put(e.getPlayer().getName(), e.getPlayer().getUniqueId());
 		
