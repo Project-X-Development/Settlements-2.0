@@ -28,6 +28,7 @@ public enum MessageType {
 	CHUNK_CLAIM_OWNED(PREFIX.getMsg() + "&4Someone already owns this chunk!"),
 	CHUNK_UNCLAIM_SUCCESS(PREFIX.getMsg() + "&7Successfully unclaimed your current chunk!"),
 	CHUNK_UNCLAIM_FAIL(PREFIX.getMsg() + "&4You can't unclaim a chunk you don't own!"),
+	COMMAND_INVALID_ARGS(PREFIX.getMsg() + "&4Invalid arguments. "),
 	NO_PERM(PREFIX.getMsg() + "&4You don't have permission to use that command!");
 
 	private String msg;

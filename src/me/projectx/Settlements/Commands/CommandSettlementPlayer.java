@@ -34,114 +34,146 @@ public class CommandSettlementPlayer extends CommandModel {
 		if (cml.equalsIgnoreCase("s")){
 			if (args.length > 0){
 				if (args[0].equalsIgnoreCase("create")) {
-					SettlementManager.getManager().createSettlement(args[1], sender);
+					if (args.length == 2)
+						SettlementManager.getManager().createSettlement(args[1], sender);
+					else
+						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s create <name>");
 				}
+				
 				if (args[0].equalsIgnoreCase("delete")) {
-					SettlementManager.getManager().deleteSettlement(sender);
+					if (args.length == 1)
+						SettlementManager.getManager().deleteSettlement(sender);
+					else
+						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s delete");
 				}
+				
 				if (args[0].equalsIgnoreCase("invite")) {
-					SettlementManager.getManager().inviteCitizen(args[1], sender);
+					if (args.length == 2)
+						SettlementManager.getManager().inviteCitizen(args[1], sender);
+					else
+						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s invite <player>");
 				}
+				
 				if (args[0].equalsIgnoreCase("accept")) {
-					SettlementManager.getManager().acceptInvite(sender.getName());
+					if (args.length == 1)
+						SettlementManager.getManager().acceptInvite(sender.getName());
+					else
+						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s accept");
 				}
+				
 				if (args[0].equalsIgnoreCase("decline")) {
-					SettlementManager.getManager().declineInvite(sender.getName());
+					if (args.length == 1)
+						SettlementManager.getManager().declineInvite(sender.getName());
+					else
+						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s decline");
 				}
+				
 				if (args[0].equalsIgnoreCase("leave")) {
-					SettlementManager.getManager().leaveSettlement(sender.getName());
+					if (args.length == 1)
+						SettlementManager.getManager().leaveSettlement(sender.getName());
+					else
+						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s leave");
 				}
+				
 				if (args[0].equalsIgnoreCase("list")) {
-					SettlementManager.getManager().listSettlements((Player)sender);
+					if (args.length == 1)
+						SettlementManager.getManager().listSettlements((Player)sender);
+					else
+						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s list");
 				}
+				
 				if (args[0].equalsIgnoreCase("desc")){
-					StringBuilder str = new StringBuilder();
-					for (int i = 1; i < args.length; i++) {
-						str.append(args[i] + " ");
-					}
-					SettlementManager.getManager().setDescription(sender, str.toString());
+					if (args.length > 1){
+						StringBuilder str = new StringBuilder();
+						for (int i = 1; i < args.length; i++) 
+							str.append(args[i] + " ");
+						SettlementManager.getManager().setDescription(sender, str.toString());
+					}else
+						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s desc <Settlement description>");
 				}
 
 				if (args[0].equalsIgnoreCase("claim")){
-					if (sender instanceof Player){
-						if (args.length == 1){
-							Player p = (Player) sender;
-							ChunkManager.getInstance().claimChunk(p, ClaimType.NORMAL);
-						}
-					} else {
-						sender.sendMessage(MessageType.NOT_PLAYER.getMsg());
-					}
+					if (args.length == 1)
+						ChunkManager.getInstance().claimChunk((Player)sender, ClaimType.NORMAL);
+					else
+						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s claim");
 				}
 
 				if (args[0].equalsIgnoreCase("map")){
-					if (sender instanceof Player){
-						Player p = (Player) sender;
-						MapManager.getInstance().remove(p);
-						ItemStack item = new ItemStack(Material.MAP, 1, (short)0);
-						ItemMeta im = item.getItemMeta();
-						im.setDisplayName(ChatColor.RED + "Dab " + ChatColor.BLUE + "Maps");
-						item.setItemMeta(im);
-						p.getInventory().addItem(item);
-						//ChunkManager.getInstance().printMap(p);
-					} else {
-						sender.sendMessage(MessageType.NOT_PLAYER.getMsg());
-					}
+					if (args.length == 1)
+						ChunkManager.getInstance().issueMap((Player)sender);
+					else
+						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s map");
 				}
 
 				if (args[0].equalsIgnoreCase("members")){
 					if (args.length == 1) {
 						Settlement s  = SettlementManager.getManager().getPlayerSettlement(sender.getName());
-						if (s != null){
+						if (s != null)
 							SettlementManager.getManager().displayMembers((Player)sender, s.getName());
-						}else{
+						else
 							sender.sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
-						}
-					} else if (args.length == 2) {
+					} 
+					else if (args.length == 2) 
 						SettlementManager.getManager().displayMembers((Player)sender, args[1]);
-					}
+					if (args.length > 2)
+						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s members [Settlement]");
 				}
 
 				if (args[0].equalsIgnoreCase("kick")){
-					if (args.length == 2) {
+					if (args.length == 2) 
 						SettlementManager.getManager().kickPlayer(sender, args[1]);
-					}
+					else
+						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s kick <player>");
 				}
 
+				/*
 				if (args[0].equalsIgnoreCase("power")){//temporary
-					SettlementManager.getManager().calculatePower(SettlementManager.getManager().getPlayerSettlement(sender.getName()));
+					SettlementManager.getManager().updateInfluence(SettlementManager.getManager().getPlayerSettlement(sender.getName()));
 					sender.sendMessage("Your settlement power: " + SettlementManager.getManager().getPlayerSettlement(sender.getName()).getPower());
-				}
+				}*/
 
 				if (args[0].equalsIgnoreCase("unclaim")){
 					if (sender instanceof Player){
-						Player p = (Player) sender;
-						if (ChunkManager.getInstance().unclaimChunk(p.getName(), p.getLocation().getChunk().getX(), p.getLocation().getChunk().getZ())) {
-							p.sendMessage(MessageType.CHUNK_UNCLAIM_SUCCESS.getMsg());
-						} else {
-							p.sendMessage(MessageType.CHUNK_UNCLAIM_FAIL.getMsg());
-						}
-					}
+						if (args.length == 1){
+							Player p = (Player) sender;
+							if (ChunkManager.getInstance().unclaimChunk(p.getName(), 
+									p.getLocation().getChunk().getX(), p.getLocation().getChunk().getZ())) 
+								p.sendMessage(MessageType.CHUNK_UNCLAIM_SUCCESS.getMsg());
+							else 
+								p.sendMessage(MessageType.CHUNK_UNCLAIM_FAIL.getMsg());
+						}else
+							sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s unclaim");
+					}else
+						sender.sendMessage(MessageType.NOT_PLAYER.getMsg());
 				}
 				
-				if (args[0].equalsIgnoreCase("autoclaim")){
+				if (args[0].equalsIgnoreCase("autoclaim")){ //needs work atm
 					ChunkManager.getInstance().setAutoClaiming((Player)sender);
 				}
 				
 				if (args[0].equalsIgnoreCase("chat")){
-					Player p = (Player) sender;
 					if (args.length == 1){
-						PlayerManager.getInstance().setSettlementChatting(p);
-					}else if (args.length == 2){
-						PlayerManager.getInstance().setAllianceChatting(p);
-					}
+						Player p = (Player) sender;
+						if (args.length == 1){
+							PlayerManager.getInstance().setSettlementChatting(p);
+						}else if (args.length == 2){
+							PlayerManager.getInstance().setAllianceChatting(p);
+						}
+					}else
+						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s chat");
 				}
 				
 				if (args[0].equalsIgnoreCase("ally")){
 					if (args.length == 2){
-						SettlementManager.getManager().allySettlement(SettlementManager.getManager().getPlayerSettlement(sender.getName()), args[1]);
-					}
+						SettlementManager sm = SettlementManager.getManager();
+						sm.allySettlement(sm.getPlayerSettlement(sender.getName()), args[1]);
+					}else
+						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s ally <Settlement>");
 				}
-			} else {
+			} else if (sender instanceof Player){
+				CommandType.displayCommands((Player)sender);
+			} else{
 				CommandType.printList(sender);
 			}
 		}
