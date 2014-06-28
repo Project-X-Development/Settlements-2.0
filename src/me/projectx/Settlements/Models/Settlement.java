@@ -293,13 +293,6 @@ public class Settlement {
 	 * @param message : The message to send to the alliance members
 	 */
 	public void sendAllianceMessage(String message){
-		/*Settlement s = getAlliedSettlements();
-		for (Player p : Bukkit.getOnlinePlayers()){
-			if (s.hasMember(p.getUniqueId())){
-				p.sendMessage(message);
-			}
-		}*/
-		
 		//Mental note: This could probably be more efficient
 		for (String s : allies){ 
 			Settlement set = SettlementManager.getManager().getSettlement(s);

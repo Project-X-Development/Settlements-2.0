@@ -1,8 +1,5 @@
 package me.projectx.Settlements.Events;
 
-import me.projectx.Settlements.Managers.SettlementManager;
-import me.projectx.Settlements.Models.Settlement;
-
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,11 +9,13 @@ public class InventoryClick implements Listener{
 	
 	@EventHandler
 	public void onClick(InventoryClickEvent e){
-		for (Settlement s: SettlementManager.getManager().settlements){
-			if (e.getInventory().getTitle().equals(ChatColor.BLUE + "Members of " + s.getName()) || 
-					e.getInventory().getTitle().equals(ChatColor.BLUE + "All Current Settlements:")){
-				e.setCancelled(true);
-			}
-		}
+		if (e.getInventory().getTitle().contains(ChatColor.BLUE + "Members of "))
+			e.setCancelled(true);
+		
+		else if (e.getInventory().getTitle().equals(ChatColor.BLUE + "All Current Settlements:"))
+			e.setCancelled(true);
+		
+		else if (e.getInventory().getTitle().equals(ChatColor.DARK_RED + "Settlement Commands"))
+			e.setCancelled(true);
 	}	
 }
