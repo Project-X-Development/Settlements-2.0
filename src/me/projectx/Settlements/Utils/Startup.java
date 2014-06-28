@@ -17,6 +17,7 @@ import me.projectx.Settlements.Events.PlayerJoin;
 import me.projectx.Settlements.Events.PlayerMove;
 import me.projectx.Settlements.Events.PlayerQuit;
 import me.projectx.Settlements.Managers.ChunkManager;
+import me.projectx.Settlements.Managers.EconomyManager;
 import me.projectx.Settlements.Managers.MapManager;
 import me.projectx.Settlements.Managers.PlayerManager;
 import me.projectx.Settlements.Managers.SettlementManager;
@@ -66,6 +67,8 @@ public class Startup extends Thread {
 			m.removeRenderer(r);
 		}
 		m.addRenderer(MapManager.getInstance().getRenderMap());
+		
+		EconomyManager.getManager().scheduleTaxCollection(1); //Every 1 minute for debug purposes
 	}
 
 	private static void loadSettlements() {

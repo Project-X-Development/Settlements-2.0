@@ -14,13 +14,17 @@ import me.projectx.Settlements.Utils.MessageType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class ChunkManager extends Thread{
 	private static ChunkManager instance = new ChunkManager();
 	public HashMap<Settlement, List<ClaimedChunk>> map = new HashMap<Settlement, List<ClaimedChunk>>();
-	private final ArrayList<String> autoClaim = new ArrayList<String>();
+	private ArrayList<String> autoClaim = new ArrayList<String>();
+	private final int BASE_CHUNK_COST = 50;
 
 	public static ChunkManager getInstance(){
 		return instance;
@@ -29,13 +33,20 @@ public class ChunkManager extends Thread{
 	//Temporary return value, eventually will be an enum
 	public int claimChunk(final String player, final int x, final int z, final World world, final ClaimType ct) throws SQLException{
 		if (player != null){
-			if (!(SettlementManager.getManager().getPlayerSettlement(player) == null)){
-				final Settlement set = SettlementManager.getManager().getPlayerSettlement(player);
+			final Settlement set = SettlementManager.getManager().getPlayerSettlement(player);
+			if (set != null){
 				if (!isClaimed(x, z)){
 					new Thread() {
 						@Override
 						public void run() {
 							ClaimedChunk c = new ClaimedChunk(x, z, player, set, world, ct);
+							
+							/*
+							 * Charge the base chunk cost and tack on an additional amount for the amount of chunks they already own.
+							 * More chunks = higher cost
+							 */
+							EconomyManager.getManager().withdrawFromSettlement(set, BASE_CHUNK_COST + map.get(set).size());
+							
 							long setid = set.getId();
 							String w = world.getName();
 							try {
@@ -63,8 +74,7 @@ public class ChunkManager extends Thread{
 			} else {
 				return 0;
 			}
-		}
-		else {
+		} else {
 			if (!isClaimed(x, z)){
 				final Settlement set = null;
 				new Thread() {
@@ -215,6 +225,10 @@ public class ChunkManager extends Thread{
 		return null;
 	}
 
+
+	/**
+	 * @deprecated : Outdated method
+	 */
 	public void printMap(final Player player){
 		final int playerx = player.getLocation().getChunk().getX();
 		final int playerz = player.getLocation().getChunk().getZ();
@@ -265,6 +279,18 @@ public class ChunkManager extends Thread{
 				}	
 			}
 		}.start();
+	}
+	
+	public void issueMap(Player player){
+		MapManager.getInstance().remove(player);
+		ItemStack item = new ItemStack(Material.MAP, 1, (short)0);
+		ItemMeta im = item.getItemMeta();
+		im.setDisplayName(ChatColor.RED + "Dab " + ChatColor.BLUE + "Maps");
+		item.setItemMeta(im);
+		if (!player.getInventory().contains(item))
+			player.getInventory().addItem(item);
+		else
+			player.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Derp, you already have a map. Check your inventory again.");
 	}
 
 	public boolean isInChunk(Player player){
@@ -339,5 +365,9 @@ public class ChunkManager extends Thread{
 		} else {
 			player.sendMessage("DEBUG: You can only claim SafeZones and Battlegrounds with this command");
 		}
+	}
+	
+	public List<ClaimedChunk> getClaims(Settlement s){
+		return map.get(s);
 	}
 }
