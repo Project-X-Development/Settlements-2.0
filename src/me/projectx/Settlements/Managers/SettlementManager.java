@@ -60,8 +60,8 @@ public class SettlementManager extends Thread {
 						set.setDescription(result.getString("description"));
 						set.setBalance(result.getDouble("balance"));
 						ResultSet citizens = DatabaseUtils
-								.queryIn("SELECT * FROM citizens WHERE settlement="
-										+ set.getName() + ";");
+								.queryIn("SELECT * FROM citizens WHERE settlement='"
+										+ set.getName() + "';");
 						while (citizens.next()) {
 							UUID uuid = UUID.fromString(result
 									.getString("uuid"));
