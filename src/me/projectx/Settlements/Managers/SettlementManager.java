@@ -68,7 +68,8 @@ public class SettlementManager extends Thread {
 							String rank = result.getString("rank");
 							set.getCitizens().add(uuid);
 							/*
-							 * Rank 1 = Citizen Rank 2 = Officer Rank 3 = Leader
+							 * Rank 1 = Citizen Rank 2 = Officer Rank 3 =
+							 * Leader...
 							 */
 							if (rank.equalsIgnoreCase("2")) {
 								set.getOfficers().add(uuid);
