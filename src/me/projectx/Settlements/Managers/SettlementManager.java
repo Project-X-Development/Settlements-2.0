@@ -13,6 +13,7 @@ import me.projectx.Settlements.Models.Settlement;
 import me.projectx.Settlements.Utils.DatabaseUtils;
 import me.projectx.Settlements.Utils.MessageType;
 import me.projectx.Settlements.Utils.PlayerUtils;
+import me.projectx.Settlements.Utils.SettlementRuntime;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -70,8 +71,10 @@ public class SettlementManager extends Thread {
 							}else if (rank.equalsIgnoreCase("2")) {
 								set.getOfficers().add(uuid);
 							}
+							SettlementRuntime.getRuntime().sortMembers(set);
 						}
 						settlements.add(set);
+						SettlementRuntime.getRuntime().sortSettlements();
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -183,6 +186,7 @@ public class SettlementManager extends Thread {
 				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully created " + ChatColor.AQUA + s.getName());
 				sender.sendMessage(ChatColor.GRAY + "You can now set a description by doing " + ChatColor.AQUA + "/s desc <description>");
 				sender.sendMessage(ChatColor.GRAY + "For more things you can do, type " + ChatColor.AQUA + "/s");
+				SettlementRuntime.getRuntime().sortSettlements(); //Do this after the messages so they don't get delayed
 			} else {
 				sender.sendMessage(MessageType.CREATE_IN_SETTLEMENT.getMsg());
 			}
@@ -222,11 +226,12 @@ public class SettlementManager extends Thread {
 								invitedPlayers.remove(s);
 
 							settlements.remove(s);
+							SettlementRuntime.getRuntime().sortSettlements();
 
 							sender.sendMessage(MessageType.PREFIX.getMsg()
 									+ ChatColor.GRAY + "Successfully deleted "
 									+ ChatColor.AQUA + s.getName());
-
+							
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}
@@ -269,6 +274,7 @@ public class SettlementManager extends Thread {
 							invitedPlayers.remove(s);
 
 						settlements.remove(s);
+						SettlementRuntime.getRuntime().sortSettlements();
 
 						sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully deleted "
 								+ ChatColor.AQUA + s.getName());
@@ -348,6 +354,7 @@ public class SettlementManager extends Thread {
 				s.sendSettlementMessage(MessageType.PREFIX.getMsg()
 						+ ChatColor.AQUA + player + ChatColor.GRAY
 						+ " joined the Settlement!");
+				SettlementRuntime.getRuntime().sortMembers(s);
 			} else {
 				p.sendMessage(MessageType.CURRENTLY_IN_SETTLEMENT.getMsg());
 			}
@@ -403,6 +410,7 @@ public class SettlementManager extends Thread {
 				s.revokeCitizenship(p.getUniqueId());
 				DatabaseUtils.queryOut("DELETE FROM citizens WHERE uuid='"
 						+ id.toString() + "';");
+				SettlementRuntime.getRuntime().sortMembers(s);
 			} else {
 				p.sendMessage(MessageType.MUST_APPOINT_NEW_LEADER.getMsg());
 			}
@@ -436,6 +444,7 @@ public class SettlementManager extends Thread {
 								+ name + ChatColor.GRAY
 								+ " from the Settlement!");
 						DatabaseUtils.queryOut("DELETE FROM citizens WHERE uuid='" + id.toString() + "';");
+						SettlementRuntime.getRuntime().sortMembers(s);
 					}
 				} else {
 					sender.sendMessage(MessageType.KICK_NOT_LEADER.getMsg());

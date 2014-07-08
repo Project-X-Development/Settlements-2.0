@@ -1,6 +1,7 @@
 package me.projectx.Settlements.Models;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.UUID;
 
 import me.projectx.Settlements.Managers.SettlementManager;
@@ -426,4 +427,13 @@ public class Settlement {
 			return "Leader";
 		return null;
 	}
+
+	public static Comparator<Settlement> comparator = new Comparator<Settlement>(){
+		public int compare(Settlement s1, Settlement s2){
+			String n1 = s1.getName().toUpperCase();
+			String n2 = s1.getName().toUpperCase();
+			
+			return n1.compareTo(n2);
+		}
+	};
 }

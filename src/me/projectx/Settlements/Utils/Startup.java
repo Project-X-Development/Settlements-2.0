@@ -68,7 +68,9 @@ public class Startup extends Thread {
 		}
 		m.addRenderer(MapManager.getInstance().getRenderMap());
 		
-		EconomyManager.getManager().scheduleTaxCollection(1); //Every 1 minute for debug purposes
+		SettlementRuntime.getRuntime().scheduleSorting(1); //Every 1 minute for now
+		
+		//EconomyManager.getManager().scheduleTaxCollection(1); //Every 1 minute for debug purposes
 	}
 
 	private static void loadSettlements() {
