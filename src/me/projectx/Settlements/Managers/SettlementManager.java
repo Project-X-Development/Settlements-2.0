@@ -425,11 +425,11 @@ public class SettlementManager extends Thread {
 				DatabaseUtils.queryOut("DELETE FROM citizens WHERE uuid='"
 						+ id.toString() + "';");
 				DatabaseUtils
-						.queryOut("INSERT INTO citizens(uuid, settlement, rank) VALUES '"
+						.queryOut("INSERT INTO citizens(uuid, settlement, rank) VALUES ('"
 								+ id.toString()
 								+ "','"
 								+ s.getName()
-								+ "','1';");
+								+ "','1');");
 				p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY
 						+ "Successfully joined " + ChatColor.AQUA
 						+ getPlayerSettlement(id).getName());
@@ -725,9 +725,8 @@ public class SettlementManager extends Thread {
 			if (!s.isOfficer(id))
 				s.setOfficer(id);
 			try {
-				DatabaseUtils.queryOut("UPDATE settlements SET officers='"
-						+ s.getOfficers().toString() + "' WHERE id="
-						+ s.getId() + ";");
+				DatabaseUtils.queryOut("UPDATE citizens WHERE uuid='" + id
+						+ "' SET rank='2';");
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}

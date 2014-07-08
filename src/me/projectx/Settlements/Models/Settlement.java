@@ -201,12 +201,6 @@ public class Settlement {
 		if (isCitizen(uuid)) {
 			if (!isOfficer(uuid)) {
 				officers.add(uuid);
-				try {
-					DatabaseUtils.queryOut("UPDATE citizens WHERE uuid='" + id
-							+ "' SET rank='2';");
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
 			}
 		}
 	}
@@ -222,7 +216,7 @@ public class Settlement {
 			UUID id = UUID.fromString(uuid);
 			if (isCitizen(id)) {
 				if (!isOfficer(id)) {
-					setOfficer(id);
+					officers.add(id);
 				}
 			}
 		}
