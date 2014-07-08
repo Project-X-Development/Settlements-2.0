@@ -63,9 +63,9 @@ public class SettlementManager extends Thread {
 								.queryIn("SELECT * FROM citizens WHERE settlement='"
 										+ set.getName() + "';");
 						while (citizens.next()) {
-							UUID uuid = UUID.fromString(result
+							UUID uuid = UUID.fromString(citizens
 									.getString("uuid"));
-							String rank = result.getString("rank");
+							String rank = citizens.getString("rank");
 							set.getCitizens().add(uuid);
 							/*
 							 * Rank 1 = Citizen Rank 2 = Officer Rank 3 =
