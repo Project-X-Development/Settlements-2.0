@@ -103,7 +103,7 @@ public class SettlementManager extends Thread {
 						DatabaseUtils.queryOut("UPDATE settlements"
 								+ "SET name='" + tempName + "', leader='"
 								+ tempLeader + "', description='" + tempDesc
-								+ "'WHERE id='" + tempId + "';");
+								+ "'WHERE id=" + tempId + ";");
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
@@ -267,14 +267,6 @@ public class SettlementManager extends Thread {
 									.queryOut("DELETE FROM chunks WHERE settlement="
 											+ s.getId() + ";");
 
-							Settlement s = getPlayerSettlement(id);
-							DatabaseUtils
-									.queryOut("DELETE FROM settlements WHERE id="
-											+ s.getId() + ";");
-							DatabaseUtils
-									.queryOut("DELETE FROM chunks WHERE settlement="
-											+ s.getId() + ";");
-
 							List<ClaimedChunk> cc = ChunkManager.getInstance().map
 									.get(s);
 							if (cc != null) {
@@ -326,16 +318,8 @@ public class SettlementManager extends Thread {
 								.queryOut("DELETE FROM settlements WHERE id="
 										+ s.getId() + ";");
 						DatabaseUtils
-								.queryOut("DELETE FROM chunks WHERE settlement="
-										+ s.getId() + ";");
-
-						Settlement s = getSettlement(name);
-						DatabaseUtils
-								.queryOut("DELETE FROM settlements WHERE id="
-										+ s.getId() + ";");
-						DatabaseUtils
-								.queryOut("DELETE FROM chunks WHERE settlement="
-										+ s.getId() + ";");
+								.queryOut("DELETE FROM chunks WHERE settlement='"
+										+ s.getId() + "';");
 
 						List<ClaimedChunk> cc = ChunkManager.getInstance().map
 								.get(s);
@@ -725,8 +709,8 @@ public class SettlementManager extends Thread {
 			if (!s.isOfficer(id))
 				s.setOfficer(id);
 			try {
-				DatabaseUtils.queryOut("UPDATE citizens WHERE uuid='" + id
-						+ "' SET rank='2';");
+				DatabaseUtils.queryOut("UPDATE citizens WHERE uuid='"
+						+ id.toString() + "' SET rank='2';");
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
