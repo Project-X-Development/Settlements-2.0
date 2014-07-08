@@ -27,7 +27,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 public class SettlementManager extends Thread {
 
 	public ArrayList<Settlement> settlements = new ArrayList<Settlement>();
-	private HashMap<String, Settlement> invitedPlayers = new HashMap<String, Settlement>();
+	private HashMap<String, String> invitedPlayers = new HashMap<String, String>();
 	private static SettlementManager sm = new SettlementManager();
 
 	/**
@@ -171,8 +171,7 @@ public class SettlementManager extends Thread {
 	 * @param sender: Who issued the creation of the settlement
 	 * @throws SQLException
 	 */
-	public void createSettlement(String name, CommandSender sender)
-			throws SQLException {
+	public void createSettlement(String name, CommandSender sender) throws SQLException {
 		if (!settlementExists(name)) {
 			Player p = (Player) sender;
 			if (getPlayerSettlement(p.getUniqueId()) == null) {
@@ -200,8 +199,7 @@ public class SettlementManager extends Thread {
 	 * @param sender: Who issued the deletion of the settlement
 	 * @throws SQLException
 	 */
-	public void deleteSettlement(final CommandSender sender)
-			throws SQLException {
+	public void deleteSettlement(final CommandSender sender) throws SQLException {
 		Player p = (Player) sender;
 		final UUID id = p.getUniqueId();
 		final Settlement s = getPlayerSettlement(id);
@@ -248,8 +246,7 @@ public class SettlementManager extends Thread {
 	 * @param sender: Who issued the deletion of the settlement
 	 * @throws SQLException
 	 */
-	public void deleteSettlement(final CommandSender sender, final String name)
-			throws SQLException {
+	public void deleteSettlement(final CommandSender sender, final String name) throws SQLException {
 		final Settlement s = getSettlement(name);
 		if (s != null) {
 			new Thread() {
@@ -301,7 +298,7 @@ public class SettlementManager extends Thread {
 				if (!s.hasMember(p.getUniqueId())) {
 					Player pl = (Player) sender;
 					if (s.isOfficer(pl.getUniqueId()) || s.isLeader(pl.getUniqueId())) {
-						invitedPlayers.put(invite, s);
+						invitedPlayers.put(invite, s.getName());
 						s.sendSettlementMessage(MessageType.PREFIX.getMsg()
 								+ pl.getDisplayName() + ChatColor.GRAY
 								+ " invited " + ChatColor.AQUA + invite
@@ -336,7 +333,7 @@ public class SettlementManager extends Thread {
 		UUID id = p.getUniqueId();
 		if (hasInvite(player)) {
 			if (getPlayerSettlement(id) == null) {
-				final Settlement s = invitedPlayers.get(player);
+				final Settlement s = getSettlement(invitedPlayers.get(player));
 				s.giveCitizenship(id);
 				invitedPlayers.remove(player);
 				DatabaseUtils.queryOut("DELETE FROM citizens WHERE uuid='" + id.toString() + "';");
@@ -379,7 +376,7 @@ public class SettlementManager extends Thread {
 		if (hasInvite(player)) {
 			p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY
 					+ "You declined an invite to join " + ChatColor.AQUA
-					+ invitedPlayers.get(player).getName());
+					+ invitedPlayers.get(player));
 			invitedPlayers.remove(player);
 		} else {
 			p.sendMessage(MessageType.NO_INVITE.getMsg());
@@ -421,8 +418,7 @@ public class SettlementManager extends Thread {
 	 * @param name: The name of the player to kick
 	 * @throws SQLException
 	 */
-	public void kickPlayer(CommandSender sender, String name)
-			throws SQLException {
+	public void kickPlayer(CommandSender sender, String name) throws SQLException {
 		final Settlement s = getPlayerSettlement(sender.getName());
 		if (s != null) {
 			Player p = Bukkit.getPlayer(name);
