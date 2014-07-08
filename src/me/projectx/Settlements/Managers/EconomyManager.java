@@ -2,8 +2,8 @@ package me.projectx.Settlements.Managers;
 
 import java.sql.SQLException;
 
-import me.projectx.Economy.Main;
-import me.projectx.Economy.API.EconomyAPI;
+import me.projectx.Economy.Managers.AccountManager;
+import me.projectx.Settlements.Main;
 import me.projectx.Settlements.Models.Settlement;
 import me.projectx.Settlements.Utils.DatabaseUtils;
 import me.projectx.Settlements.Utils.MessageType;
@@ -45,7 +45,7 @@ public class EconomyManager {
 	 * @throws SQLException
 	 */
 	public void depositIntoSettlement(Player player, Settlement s, double amount){
-		EconomyAPI.getAccountManager().withdraw(player, amount);
+		AccountManager.getManager().withdraw(player, amount);
 		s.setBalance(s.getBalance() + amount);
 		try {
 			DatabaseUtils.queryOut("UPDATE settlements SET balance=" + s.getBalance() + " WHERE id=" + s.getId() + ";");
@@ -72,13 +72,11 @@ public class EconomyManager {
 	
 	/**
 	 * Tax all Settlements for their claimed land
-	 * 
-	 * @throws SQLException
 	 */
 	public void taxSettlements(){
 		for (Settlement s : SettlementManager.getManager().settlements){
 			int claimCount = ChunkManager.getInstance().getClaims(s).size();
-			double cost = claimCount * 20;
+			double cost = claimCount * 20; //number of claimed chunks * 20 just cuz. Might need to change the amount
 			withdrawFromSettlement(s, cost);
 			s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + 
 					"Your Settlement has been charged " + ChatColor.AQUA + "$" + cost + ChatColor.GRAY + " in land taxes");

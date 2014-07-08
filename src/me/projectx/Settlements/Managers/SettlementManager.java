@@ -120,9 +120,8 @@ public class SettlementManager extends Thread {
 	 * @return The player's settlement. If they are not a member of a settlement, this will return null
 	 */
 	public Settlement getPlayerSettlement(String name){
-		UUID id = Bukkit.getPlayer(name).getUniqueId();
 		for (Settlement s : settlements){
-			if (s.hasMember(id)){
+			if (s.hasMember(Bukkit.getPlayer(name).getUniqueId())){
 				return s;
 			}
 		}
@@ -212,14 +211,13 @@ public class SettlementManager extends Thread {
 	public void deleteSettlement(final CommandSender sender) throws SQLException{
 		Player p = (Player) sender;
 		final UUID id = p.getUniqueId();
-		Settlement s = getPlayerSettlement(id);
+		final Settlement s = getPlayerSettlement(id);
 		if (s != null){
 			if (s.isLeader(id)){
 				new Thread() {
 					@Override
 					public void run() {
 						try {
-							Settlement s = getPlayerSettlement(id);
 							DatabaseUtils.queryOut("DELETE FROM settlements WHERE id=" + s.getId() + ";");
 							DatabaseUtils.queryOut("DELETE FROM chunks WHERE settlement=" + s.getId() + ";");
 
@@ -255,12 +253,12 @@ public class SettlementManager extends Thread {
 	 * @throws SQLException 
 	 */
 	public void deleteSettlement(final CommandSender sender, final String name) throws SQLException{
-		if (settlementExists(name)){
+		final Settlement s = getSettlement(name);
+		if (s != null){
 			new Thread() {
 				@Override
 				public void run() {
 					try {
-						Settlement s = getSettlement(name);
 						DatabaseUtils.queryOut("DELETE FROM settlements WHERE id=" + s.getId() + ";");
 						DatabaseUtils.queryOut("DELETE FROM chunks WHERE settlement=" + s.getId() + ";");
 
@@ -434,12 +432,13 @@ public class SettlementManager extends Thread {
 	 * @throws SQLException
 	 */
 	public void setDescription(CommandSender sender, final String desc) throws SQLException{
-		final Settlement s = getPlayerSettlement(sender.getName());
+		Settlement s = getPlayerSettlement(sender.getName());
 		if (s != null){
 			Player p = (Player) sender;
 			if (s.isOfficer(p.getUniqueId()) || s.isLeader(p.getUniqueId())){
-				s.setDescription(desc);
-				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Set your Settlement's description to " + desc);
+				s.setDescription(desc);    
+				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Set your Settlement's description to: " +
+						ChatColor.AQUA + desc);  
 				DatabaseUtils.queryOut("UPDATE settlements SET description='" + desc + "' WHERE id=" + s.getId() + ";");
 			} else {
 				sender.sendMessage(MessageType.DESCRIPTION_NOT_RANK.getMsg());
@@ -454,14 +453,8 @@ public class SettlementManager extends Thread {
 	 * 
 	 * @param s : The settlement to calculate the power for
 	 */
-	public void calculatePower(Settlement s){
-		//int citizens = s.getCitizens().size();
-		//int officers = s.getOfficers().size();
-		for (ClaimedChunk cc : ClaimedChunk.instances){
-			if (cc.getSettlement().equals(s)){
-				s.setPower( /*((citizens + officers + 1)/*/ChunkManager.getInstance().map.get(s).size()); //will readd members after more testing
-			}
-		} 
+	public void updateInfluence(Settlement s){
+		s.setPower( (s.getCitizens().size() + s.getOfficers().size()+ 1) / ChunkManager.getInstance().map.get(s).size());
 	}
 	
 	/**
@@ -518,7 +511,6 @@ public class SettlementManager extends Thread {
 				is.setItemMeta(sm);
 				inv.setItem(i, is);
 			}
-			
 			player.openInventory(inv);
 		}else{
 			player.sendMessage(MessageType.SETTLEMENT_NOT_EXIST.getMsg());
@@ -534,7 +526,7 @@ public class SettlementManager extends Thread {
 	 * @param max : The maximum size of the inventory
 	 * @return The size of the inventory, based on a multiple of 9
 	 */
-	private int getInventorySize(int max) {
+	public static int getInventorySize(int max) {
 	    if (max <= 0) return 9;
 	    int quotient = (int)Math.ceil(max / 9.0);
 	    return quotient > 5 ? 54: quotient * 9;
@@ -561,9 +553,17 @@ public class SettlementManager extends Thread {
 		player.openInventory(inv);	
 	}
 	
-	public void depositIntoSettlement(Player player, Settlement s, double amount) throws SQLException{
-		EconomyAPI.getAccountManager().withdraw(player, amount);
-		s.setBalance(s.getBalance() + amount);
-		DatabaseUtils.queryOut("UPDATE settlements SET balance=" + s.getBalance() + " WHERE id=" + s.getId() + ";");
+	public void promotePlayer(Player player){ //untested
+		UUID id = player.getUniqueId();
+		Settlement s = getPlayerSettlement(id);
+		if (s != null){
+			if (!s.isOfficer(id))
+				s.setOfficer(id);
+			try {
+				DatabaseUtils.queryOut("UPDATE settlements SET officers='" + s.getOfficers().toString() + "' WHERE id=" + s.getId() + ";");
+			} catch(SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }
