@@ -59,19 +59,15 @@ public class SettlementManager extends Thread {
 						set.setLeader(result.getString(("leader")));
 						set.setDescription(result.getString("description"));
 						set.setBalance(result.getDouble("balance"));
-						ResultSet citizens = DatabaseUtils
-								.queryIn("SELECT * FROM citizens WHERE settlement='"
-										+ set.getName() + "';");
+						ResultSet citizens = DatabaseUtils.queryIn("SELECT * FROM citizens WHERE settlement='" + set.getName() + "';");
 						while (citizens.next()) {
-							UUID uuid = UUID.fromString(citizens
-									.getString("uuid"));
-							String rank = citizens.getString("rank");
-							set.getCitizens().add(uuid);
-							/*
-							 * Rank 1 = Citizen Rank 2 = Officer Rank 3 =
-							 * Leader...
-							 */
-							if (rank.equalsIgnoreCase("2")) {
+							UUID uuid = UUID.fromString(citizens.getString("uuid"));
+							String rank = citizens.getString("rank");	
+							
+							/* Rank 1 = Citizen || Rank 2 = Officer || Rank 3 = Leader */
+							if (rank.equalsIgnoreCase("1")){
+								set.getCitizens().add(uuid);
+							}else if (rank.equalsIgnoreCase("2")) {
 								set.getOfficers().add(uuid);
 							}
 						}
@@ -85,40 +81,11 @@ public class SettlementManager extends Thread {
 	}
 
 	/**
-	 * Save settlements (Call onDisable)
-	 * 
-	 * @return Returns true if successful, false otherwise
-	 * @throws SQLException
-	 */
-	public void saveSettlements() throws SQLException {
-		new Thread() {
-			@Override
-			public void run() {
-				for (Settlement set : settlements) {
-					String tempName = set.getName();
-					long tempId = set.getId();
-					String tempLeader = set.getLeader().toString();
-					String tempDesc = set.getDescription();
-					try {
-						DatabaseUtils.queryOut("UPDATE settlements"
-								+ "SET name='" + tempName + "', leader='"
-								+ tempLeader + "', description='" + tempDesc
-								+ "'WHERE id=" + tempId + ";");
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}.start();
-	}
-
-	/**
 	 * Get the settlement of a player
 	 * 
-	 * @param uuid
-	 *            : The UUID of the player to get the settlement for.
-	 *            <p>
-	 *            <b> UUID-based lookup is faster than name-based lookup! </b>
+	 * @param uuid: The UUID of the player to get the settlement for.
+	 *<p>
+	 *<b> UUID-based lookup is faster than name-based lookup! </b>
 	 * @return The player's settlement. If they are not a member of a
 	 *         settlement, this will return null
 	 */
@@ -134,10 +101,9 @@ public class SettlementManager extends Thread {
 	/**
 	 * Get the settlement of a player
 	 * 
-	 * @param name
-	 *            : The name of the player to get the settlement for
-	 *            <p>
-	 *            <b> This is slower than UUID-based lookup! </b>
+	 * @param name: The name of the player to get the settlement for
+	 * <p>
+	 * <b> This is slower than UUID-based lookup! </b>
 	 * @return The player's settlement. If they are not a member of a
 	 *         settlement, this will return null
 	 */
@@ -154,8 +120,7 @@ public class SettlementManager extends Thread {
 	/**
 	 * Determine if a settlement exists
 	 * 
-	 * @param name
-	 *            : The name of the settlement to check
+	 * @param name: The name of the settlement to check
 	 * @return True if the settlement exists
 	 */
 	public boolean settlementExists(String name) {
@@ -170,8 +135,7 @@ public class SettlementManager extends Thread {
 	/**
 	 * Get a settlement by name
 	 * 
-	 * @param name
-	 *            : The name of the settlement to get
+	 * @param name: The name of the settlement to get
 	 * @return The designated settlement. Returns null if it doesn't exist
 	 */
 	public Settlement getSettlement(String name) {
@@ -186,8 +150,7 @@ public class SettlementManager extends Thread {
 	/**
 	 * Get a settlement by id
 	 * 
-	 * @param id
-	 *            : The id of the settlement to get
+	 * @param id: The id of the settlement to get
 	 * @return The designated settlement. Returns null if it doesn't exist
 	 */
 	public Settlement getSettlement(long id) {
@@ -204,33 +167,23 @@ public class SettlementManager extends Thread {
 	 * settlement doesn't already exist and if the sender isn't a member of a
 	 * different settlement
 	 * 
-	 * @param name
-	 *            : The name of the new settlement
-	 * @param sender
-	 *            : Who issued the creation of the settlement
+	 * @param name: The name of the new settlement
+	 * @param sender: Who issued the creation of the settlement
 	 * @throws SQLException
 	 */
 	public void createSettlement(String name, CommandSender sender)
 			throws SQLException {
 		if (!settlementExists(name)) {
 			Player p = (Player) sender;
-			if (getPlayerSettlement(sender.getName()) == null) {
+			if (getPlayerSettlement(p.getUniqueId()) == null) {
 				final Settlement s = new Settlement(name);
 				s.setLeader(p.getUniqueId());
 				settlements.add(s);
-				DatabaseUtils
-						.queryOut("INSERT INTO settlements (id, name, leader)"
-								+ "VALUES ('" + s.getId() + "','" + s.getName()
-								+ "','" + s.getLeader().toString() + "');");
-				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY
-						+ "Successfully created " + ChatColor.AQUA
-						+ s.getName());
-				sender.sendMessage(ChatColor.GRAY
-						+ "You can now set a description by doing "
-						+ ChatColor.AQUA + "/s desc <description>");
-				sender.sendMessage(ChatColor.GRAY
-						+ "For more things you can do, type " + ChatColor.AQUA
-						+ "/s");
+				DatabaseUtils.queryOut("INSERT INTO settlements (id, name, leader)" + "VALUES ('" + s.getId() + "','" + s.getName()
+							+ "','" + s.getLeader().toString() + "');");
+				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully created " + ChatColor.AQUA + s.getName());
+				sender.sendMessage(ChatColor.GRAY + "You can now set a description by doing " + ChatColor.AQUA + "/s desc <description>");
+				sender.sendMessage(ChatColor.GRAY + "For more things you can do, type " + ChatColor.AQUA + "/s");
 			} else {
 				sender.sendMessage(MessageType.CREATE_IN_SETTLEMENT.getMsg());
 			}
@@ -243,10 +196,8 @@ public class SettlementManager extends Thread {
 	 * Delete a settlement. Only works if the settlement exists and the sender
 	 * is the leader of the settlement
 	 * 
-	 * @param name
-	 *            : The name of the settlement to delete
-	 * @param sender
-	 *            : Who issued the deletion of the settlement
+	 * @param name: The name of the settlement to delete
+	 * @param sender: Who issued the deletion of the settlement
 	 * @throws SQLException
 	 */
 	public void deleteSettlement(final CommandSender sender)
@@ -260,15 +211,10 @@ public class SettlementManager extends Thread {
 					@Override
 					public void run() {
 						try {
-							DatabaseUtils
-									.queryOut("DELETE FROM settlements WHERE id="
-											+ s.getId() + ";");
-							DatabaseUtils
-									.queryOut("DELETE FROM chunks WHERE settlement="
-											+ s.getId() + ";");
+							DatabaseUtils.queryOut("DELETE FROM settlements WHERE id=" + s.getId() + ";");
+							DatabaseUtils.queryOut("DELETE FROM chunks WHERE settlement=" + s.getId() + ";");
 
-							List<ClaimedChunk> cc = ChunkManager.getInstance().map
-									.get(s);
+							List<ClaimedChunk> cc = ChunkManager.getInstance().map.get(s);
 							if (cc != null) {
 								ChunkManager.getInstance().map.remove(s);
 								ClaimedChunk.instances.remove(cc);
@@ -285,8 +231,6 @@ public class SettlementManager extends Thread {
 
 						} catch (SQLException e) {
 							e.printStackTrace();
-						} catch (Throwable e) {
-							e.printStackTrace();
 						}
 					}
 				}.start();
@@ -300,10 +244,8 @@ public class SettlementManager extends Thread {
 	 * Delete a settlement. Will work for any settlement, even if the sender
 	 * isn't the leader
 	 * 
-	 * @param name
-	 *            : The name of the settlement to delete
-	 * @param sender
-	 *            : Who issued the deletion of the settlement
+	 * @param name: The name of the settlement to delete
+	 * @param sender: Who issued the deletion of the settlement
 	 * @throws SQLException
 	 */
 	public void deleteSettlement(final CommandSender sender, final String name)
@@ -314,11 +256,9 @@ public class SettlementManager extends Thread {
 				@Override
 				public void run() {
 					try {
-						DatabaseUtils
-								.queryOut("DELETE FROM settlements WHERE id="
+						DatabaseUtils.queryOut("DELETE FROM settlements WHERE id="
 										+ s.getId() + ";");
-						DatabaseUtils
-								.queryOut("DELETE FROM chunks WHERE settlement='"
+						DatabaseUtils.queryOut("DELETE FROM chunks WHERE settlement='"
 										+ s.getId() + "';");
 
 						List<ClaimedChunk> cc = ChunkManager.getInstance().map
@@ -333,15 +273,12 @@ public class SettlementManager extends Thread {
 
 						settlements.remove(s);
 
-						sender.sendMessage(MessageType.PREFIX.getMsg()
-								+ ChatColor.GRAY + "Successfully deleted "
+						sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully deleted "
 								+ ChatColor.AQUA + s.getName());
 
 					} catch (SQLException e) {
 						e.printStackTrace();
-					} catch (Throwable e) {
-						e.printStackTrace();
-					}
+					} 
 				}
 			}.start();
 		} else {
@@ -353,24 +290,21 @@ public class SettlementManager extends Thread {
 	 * Invite a player to join the Settlement. The command sender must be an
 	 * Officer or higher in the Settlement
 	 * 
-	 * @param player
-	 *            : The player to invite
-	 * @param sender
-	 *            : Who issued the invite
+	 * @param invite: The player to invite
+	 * @param sender: Who issued the invite
 	 */
-	public void inviteCitizen(String player, CommandSender sender) {
-		if (!invitedPlayers.containsKey(player)) {
+	public void inviteCitizen(String invite, CommandSender sender) {
+		if (!invitedPlayers.containsKey(invite)) {
 			Settlement s = getPlayerSettlement(sender.getName());
 			if (s != null) {
-				Player p = Bukkit.getPlayer(player);
+				Player p = Bukkit.getPlayer(invite);
 				if (!s.hasMember(p.getUniqueId())) {
 					Player pl = (Player) sender;
-					if (s.isOfficer(pl.getUniqueId())
-							|| s.isLeader(pl.getUniqueId())) {
-						invitedPlayers.put(player, s);
+					if (s.isOfficer(pl.getUniqueId()) || s.isLeader(pl.getUniqueId())) {
+						invitedPlayers.put(invite, s);
 						s.sendSettlementMessage(MessageType.PREFIX.getMsg()
 								+ pl.getDisplayName() + ChatColor.GRAY
-								+ " invited " + ChatColor.AQUA + player
+								+ " invited " + ChatColor.AQUA + invite
 								+ ChatColor.GRAY + " to your Settlement");
 						p.sendMessage(MessageType.PREFIX.getMsg()
 								+ ChatColor.AQUA + sender.getName()
@@ -381,7 +315,7 @@ public class SettlementManager extends Thread {
 					}
 				} else {
 					sender.sendMessage(MessageType.PREFIX.getMsg()
-							+ ChatColor.AQUA + player + ChatColor.GRAY
+							+ ChatColor.AQUA + invite + ChatColor.GRAY
 							+ " is already in your Settlement!");
 				}
 			} else {
@@ -394,8 +328,7 @@ public class SettlementManager extends Thread {
 	 * Accept an invite to a Settlement. Will only work if the player has a
 	 * pending invite
 	 * 
-	 * @param player
-	 *            : The player who is accepting the invite
+	 * @param player: The player who is accepting the invite
 	 * @throws SQLException
 	 */
 	public void acceptInvite(final String player) throws SQLException {
@@ -406,10 +339,8 @@ public class SettlementManager extends Thread {
 				final Settlement s = invitedPlayers.get(player);
 				s.giveCitizenship(id);
 				invitedPlayers.remove(player);
-				DatabaseUtils.queryOut("DELETE FROM citizens WHERE uuid='"
-						+ id.toString() + "';");
-				DatabaseUtils
-						.queryOut("INSERT INTO citizens(uuid, settlement, rank) VALUES ('"
+				DatabaseUtils.queryOut("DELETE FROM citizens WHERE uuid='" + id.toString() + "';");
+				DatabaseUtils.queryOut("INSERT INTO citizens(uuid, settlement, rank) VALUES ('"
 								+ id.toString()
 								+ "','"
 								+ s.getName()
@@ -431,8 +362,7 @@ public class SettlementManager extends Thread {
 	/**
 	 * Determine if a player has a pending invite
 	 * 
-	 * @param player
-	 *            : The player to check
+	 * @param player: The player to check
 	 * @return True if the player has an invite
 	 */
 	public boolean hasInvite(String player) {
@@ -442,8 +372,7 @@ public class SettlementManager extends Thread {
 	/**
 	 * Decline an invite to a Settlement. Player must have a valid invite
 	 * 
-	 * @param player
-	 *            : The player who is declining the invite
+	 * @param player: The player who is declining the invite
 	 */
 	public void declineInvite(String player) {
 		Player p = Bukkit.getPlayer(player);
@@ -460,8 +389,7 @@ public class SettlementManager extends Thread {
 	/**
 	 * Remove a player from a Settlement
 	 * 
-	 * @param name
-	 *            : The player to remove from the Settlement
+	 * @param name: The player to remove from the Settlement
 	 * @throws SQLException
 	 */
 	public void leaveSettlement(String name) throws SQLException {
@@ -489,10 +417,8 @@ public class SettlementManager extends Thread {
 	/**
 	 * Kick a player from a Settlement
 	 * 
-	 * @param sender
-	 *            : The sender who issued the command
-	 * @param name
-	 *            : The name of the player to kick
+	 * @param sender: The sender who issued the command
+	 * @param name: The name of the player to kick
 	 * @throws SQLException
 	 */
 	public void kickPlayer(CommandSender sender, String name)
@@ -513,10 +439,7 @@ public class SettlementManager extends Thread {
 								+ ChatColor.GRAY + " kicked " + ChatColor.AQUA
 								+ name + ChatColor.GRAY
 								+ " from the Settlement!");
-						DatabaseUtils
-								.queryOut("DELETE FROM citizens WHERE uuid='"
-										+ id.toString() + "';");
-
+						DatabaseUtils.queryOut("DELETE FROM citizens WHERE uuid='" + id.toString() + "';");
 					}
 				} else {
 					sender.sendMessage(MessageType.KICK_NOT_LEADER.getMsg());
@@ -534,15 +457,11 @@ public class SettlementManager extends Thread {
 	/**
 	 * Set the description for a Settlement
 	 * 
-	 * @param sender
-	 *            : Who issued the command
-	 * @param desc
-	 *            : The description for the Settlement
+	 * @param sender: Who issued the command
+	 * @param desc: The description for the Settlement
 	 * @throws SQLException
 	 */
-
-	public void setDescription(CommandSender sender, final String desc)
-			throws SQLException {
+	public void setDescription(CommandSender sender, final String desc) throws SQLException {
 		final Settlement s = getPlayerSettlement(sender.getName());
 		if (s != null) {
 			Player p = (Player) sender;
@@ -564,20 +483,15 @@ public class SettlementManager extends Thread {
 	/**
 	 * Calculate the power for a Settlement
 	 * 
-	 * @param s
-	 *            : The settlement to calculate the power for
+	 * @param s: The settlement to calculate the power for
 	 * @deprecated Shitty method that needs replacing again
 	 */
-	@Deprecated
 	public void calculatePower(Settlement s) {
 		// int citizens = s.getCitizens().size();
 		// int officers = s.getOfficers().size();
 		for (ClaimedChunk cc : ClaimedChunk.instances) {
 			if (cc.getSettlement().equals(s)) {
-				s.setPower( /* ((citizens + officers + 1)/ */ChunkManager
-						.getInstance().map.get(s).size()); // will readd members
-															// after more
-															// testing
+				s.setPower( /* ((citizens + officers + 1)/ */ChunkManager.getInstance().map.get(s).size());
 			}
 		}
 	}
@@ -585,21 +499,17 @@ public class SettlementManager extends Thread {
 	/**
 	 * Ally a Settlement
 	 * 
-	 * @param s1
-	 *            : The Settlement that is issuing the request
-	 * @param s2
-	 *            : The name of the Settlement that will be added to s1's allies
+	 * @param s1: The Settlement that is issuing the request
+	 * @param s2: The name of the Settlement that will be added to s1's allies
 	 * @return True if successful
 	 */
 	public boolean allySettlement(Settlement s1, String s2) {
 		Settlement s = getSettlement(s2);
 		if (s != null) {
 			s1.addAlly(s);
-			s1.sendSettlementMessage(MessageType.PREFIX.getMsg()
-					+ ChatColor.AQUA + s2 + ChatColor.GRAY
+			s1.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + s2 + ChatColor.GRAY
 					+ " has been added to your Settlement's alliance!");
-			s.sendSettlementMessage(""); // should an alliance message be sent
-											// instead?
+			s.sendSettlementMessage(""); // should an alliance message be sent instead?
 			return true;
 		}
 		return false;
@@ -608,10 +518,8 @@ public class SettlementManager extends Thread {
 	/**
 	 * Remove a Settlement's ally
 	 * 
-	 * @param s1
-	 *            : The Settlement issuing the request
-	 * @param s2
-	 *            : The name of the Settlement that will be removed
+	 * @param s1: The Settlement issuing the request
+	 * @param s2: The name of the Settlement that will be removed
 	 * @return True if successful
 	 */
 	public boolean removeAlly(Settlement s1, String s2) {
@@ -626,17 +534,13 @@ public class SettlementManager extends Thread {
 	/**
 	 * Display the members of a Settlement in a GUI
 	 * 
-	 * @param player
-	 *            : The player who issued the command & will view the GUI
-	 * @param settlement
-	 *            : The Settlement who's members will be listed
+	 * @param player: The player who issued the command & will view the GUI
+	 * @param settlement: The Settlement who's members will be listed
 	 */
 	public void displayMembers(Player player, String settlement) {
 		Settlement s = getSettlement(settlement);
 		if (s != null) {
-			Inventory inv = Bukkit.createInventory(null,
-					getInventorySize(s.memberSize()), ChatColor.BLUE
-							+ "Members of " + s.getName());
+			Inventory inv = Bukkit.createInventory(null, getInventorySize(s.memberSize()), ChatColor.BLUE + "Members of " + s.getName());
 			ItemStack is = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 			SkullMeta sm = (SkullMeta) is.getItemMeta();
 
@@ -644,10 +548,8 @@ public class SettlementManager extends Thread {
 				Player p = s.getPlayer(i);
 				sm.setOwner(p.getName());
 				sm.setDisplayName(p.getDisplayName());
-				sm.setLore(Arrays.asList(ChatColor.GREEN + "Rank: "
-						+ ChatColor.RED + s.getRank(p),
-						ChatColor.GRAY + "Status: " + ChatColor.AQUA
-								+ PlayerUtils.getStatus(p)));
+				sm.setLore(Arrays.asList(ChatColor.GREEN + "Rank: " + ChatColor.RED + s.getRank(p),
+						ChatColor.GRAY + "Status: " + ChatColor.AQUA + PlayerUtils.getStatus(p)));
 				is.setItemMeta(sm);
 				inv.setItem(i, is);
 			}
@@ -663,12 +565,11 @@ public class SettlementManager extends Thread {
 	 * This ensures than no matter what the number is, a GUI's size will always
 	 * be set to a multiple of 9.
 	 * 
-	 * @param max
-	 *            : The maximum size of the inventory
+	 * @param max: The maximum size of the inventory
 	 * @return The size of the inventory, based on a multiple of 9
 	 */
 	public static int getInventorySize(int max) {
-		if (max <= 0)
+		if (max <= 0) 
 			return 9;
 		int quotient = (int) Math.ceil(max / 9.0);
 		return quotient > 5 ? 54 : quotient * 9;
@@ -677,43 +578,43 @@ public class SettlementManager extends Thread {
 	/**
 	 * List all of the existing Settlements in a GUI
 	 * 
-	 * @param player
-	 *            : The player who issued the command and will view the GUI
+	 * @param player: The player who issued the command and will view the GUI
 	 */
 	public void listSettlements(Player player) {
-		Inventory inv = Bukkit.createInventory(null,
-				getInventorySize(settlements.size()), ChatColor.BLUE
-						+ "All Current Settlements:");
+		Inventory inv = Bukkit.createInventory(null, getInventorySize(settlements.size()), ChatColor.BLUE + "All Current Settlements:");
 		ItemStack is = new ItemStack(Material.DIAMOND);
 		ItemMeta im = is.getItemMeta();
 
 		for (int i = 0; i < settlements.size(); i++) {
 			Settlement s = settlements.get(i);
 			im.setDisplayName(ChatColor.AQUA + s.getName());
-			im.setLore(Arrays.asList(
-					ChatColor.GOLD + "Owner: " + ChatColor.GREEN
-							+ Bukkit.getPlayer(s.getLeader()).getName(),
-					ChatColor.DARK_GREEN + "Members: " + ChatColor.RED
-							+ s.memberSize())); // TODO add settlement desc,
-												// power, & bal
+			im.setLore(Arrays.asList(ChatColor.GOLD + "Owner: " + ChatColor.GREEN + Bukkit.getPlayer(s.getLeader()).getName(),
+					ChatColor.DARK_GREEN + "Members: " + ChatColor.RED+ s.memberSize())); // TODO add settlement desc, power, & bal
 			is.setItemMeta(im);
 			inv.setItem(i, is);
 		}
 		player.openInventory(inv);
 	}
 
-	public void promotePlayer(Player player) { // untested
+	public void promotePlayer(Player sender, Player player) { // untested
 		UUID id = player.getUniqueId();
 		Settlement s = getPlayerSettlement(id);
 		if (s != null) {
-			if (!s.isOfficer(id))
+			if (!s.isOfficer(id)){
 				s.setOfficer(id);
-			try {
-				DatabaseUtils.queryOut("UPDATE citizens WHERE uuid='"
-						+ id.toString() + "' SET rank='2';");
-			} catch (SQLException e) {
-				e.printStackTrace();
+				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + player.getDisplayName() + 
+						ChatColor.GRAY + " has been promoted to " + ChatColor.BLUE + "Officer");
+				try {
+					DatabaseUtils.queryOut("UPDATE citizens WHERE uuid='"
+							+ id.toString() + "' SET rank='2';");
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}else{
+				sender.sendMessage(MessageType.PREFIX.getMsg() + player.getDisplayName() + ChatColor.GRAY + " is already an Officer!");
 			}
+		}else{
+			sender.sendMessage(MessageType.SETTLEMENT_NO_MEMBER.getMsg());
 		}
 	}
 }

@@ -1,10 +1,8 @@
 package me.projectx.Settlements.Models;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import me.projectx.Economy.Utils.DatabaseUtils;
 import me.projectx.Settlements.Managers.SettlementManager;
 
 import org.bukkit.Bukkit;
@@ -47,8 +45,7 @@ public class Settlement {
 	/**
 	 * Set the ID of the settlement
 	 * 
-	 * @param id
-	 *            : The ID to give the Settlement
+	 * @param id: The ID to give the Settlement
 	 */
 	public void setId(long id) {
 		this.id = id;
@@ -66,8 +63,7 @@ public class Settlement {
 	/**
 	 * Set the balance of the settlement
 	 * 
-	 * @param balance
-	 *            : The value to set the balance to
+	 * @param balance: The value to set the balance to
 	 */
 	public void setBalance(double balance) {
 		this.balance = balance;
@@ -85,8 +81,7 @@ public class Settlement {
 	/**
 	 * Set the power of the Settlement
 	 * 
-	 * @param value
-	 *            : The value to set it to
+	 * @param value: The value to set it to
 	 */
 	public void setPower(int value) {
 		this.power = value;
@@ -95,8 +90,7 @@ public class Settlement {
 	/**
 	 * Set the name for the Settlement
 	 * 
-	 * @param name
-	 *            : The name for the settlement
+	 * @param name: The name for the settlement
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -114,8 +108,7 @@ public class Settlement {
 	/**
 	 * Set the leader of the settlement
 	 * 
-	 * @param uuid
-	 *            : The UUID of the new leader
+	 * @param uuid: The UUID of the new leader
 	 */
 	public void setLeader(UUID uuid) {
 		this.owner = uuid;
@@ -124,8 +117,7 @@ public class Settlement {
 	/**
 	 * Set the leader of the Settlement
 	 * 
-	 * @param uuid
-	 *            : The string that will be converted to UUID
+	 * @param uuid: The string that will be converted to UUID
 	 */
 	public void setLeader(String uuid) {
 		this.owner = UUID.fromString(uuid);
@@ -143,8 +135,7 @@ public class Settlement {
 	/**
 	 * Set the description of the Settlement
 	 * 
-	 * @param description
-	 *            : The description of the Settlement
+	 * @param description: The description of the Settlement
 	 */
 	public void setDescription(String description) {
 		this.desc = description;
@@ -153,11 +144,10 @@ public class Settlement {
 	/**
 	 * Grant citizenship to a player
 	 * 
-	 * @param uuid
-	 *            : The UUID of the player to grant citizenship
+	 * @param uuid: The UUID of the player to grant citizenship
 	 */
 	public void giveCitizenship(UUID uuid) {
-		if (!isCitizen(uuid)) {
+		if (!isCitizen(uuid)) { //should be hasMember()
 			citizens.add(uuid);
 		}
 	}
@@ -165,15 +155,13 @@ public class Settlement {
 	/**
 	 * Grant citizenship to a player
 	 * 
-	 * @param uuid
-	 *            : The string that will be converted to a UUID
+	 * @param uuid: The string that will be converted to a UUID
 	 */
 	public void giveCitizenship(String uuid) {
 		if (uuid != null) {
 			UUID id = UUID.fromString(uuid);
 			if (!isCitizen(id)) {
 				citizens.add(id);
-
 			}
 		}
 	}
@@ -181,8 +169,7 @@ public class Settlement {
 	/**
 	 * Revoke citizenship from a player
 	 * 
-	 * @param uuid
-	 *            : The UUID of the player who will lose citizenship
+	 * @param uuid: The UUID of the player who will lose citizenship
 	 */
 	public void revokeCitizenship(UUID uuid) {
 		if (isCitizen(uuid)) {
@@ -194,8 +181,7 @@ public class Settlement {
 	/**
 	 * Set a player as an officer of the settlement
 	 * 
-	 * @param uuid
-	 *            : The UUID of the player who will become an officer
+	 * @param uuid: The UUID of the player who will become an officer
 	 */
 	public void setOfficer(UUID uuid) {
 		if (isCitizen(uuid)) {
@@ -208,8 +194,7 @@ public class Settlement {
 	/**
 	 * Set a player as an officer of the Settlement
 	 * 
-	 * @param uuid
-	 *            : The string that will be converted to UUID.
+	 * @param uuid: The string that will be converted to UUID.
 	 */
 	public void setOfficer(String uuid) {
 		if (uuid != null) {
@@ -225,8 +210,7 @@ public class Settlement {
 	/**
 	 * Determine if a player is a citizen of the settlement
 	 * 
-	 * @param uuid
-	 *            : The UUID of the player to check
+	 * @param uuid: The UUID of the player to check
 	 * @return True if the player is a citizen
 	 */
 	public boolean isCitizen(UUID uuid) {
@@ -236,8 +220,7 @@ public class Settlement {
 	/**
 	 * Determine if a player is an officer in the settlement
 	 * 
-	 * @param uuid
-	 *            : The UUID of the player to check
+	 * @param uuid: The UUID of the player to check
 	 * @return True if the player is an officer
 	 */
 	public boolean isOfficer(UUID uuid) {
@@ -247,8 +230,7 @@ public class Settlement {
 	/**
 	 * Determine if a player is the leader of the settlement
 	 * 
-	 * @param uuid
-	 *            : The UUID of the player to check
+	 * @param uuid: The UUID of the player to check
 	 * @return True if the player is the leader of the settlement
 	 */
 	public boolean isLeader(UUID uuid) {
@@ -258,8 +240,7 @@ public class Settlement {
 	/**
 	 * Determine if a player is a member of the settlement
 	 * 
-	 * @param uuid
-	 *            : The UUID of the player to check
+	 * @param uuid: The UUID of the player to check
 	 * @return True if the player is a citizen, officer, or leader
 	 */
 	public boolean hasMember(UUID uuid) {
@@ -290,15 +271,13 @@ public class Settlement {
 	 * @return How many members are in the Settlement
 	 */
 	public int memberSize() {
-		return (citizens.size() + officers.size() + 1); // +1 is to include the
-														// leader
+		return (citizens.size() + officers.size() + 1);
 	}
 
 	/**
 	 * Send a message to all the players in the Settlement
 	 * 
-	 * @param message
-	 *            : The message to send to the Settlement members
+	 * @param message: The message to send to the Settlement members
 	 */
 	public void sendSettlementMessage(String message) {
 		for (Player p : Bukkit.getOnlinePlayers()) {
@@ -311,8 +290,7 @@ public class Settlement {
 	/**
 	 * Send a message to all members in this settlement's alliance
 	 * 
-	 * @param message
-	 *            : The message to send to the alliance members
+	 * @param message: The message to send to the alliance members
 	 */
 	public void sendAllianceMessage(String message) {
 		// Mental note: This could probably be more efficient
@@ -344,8 +322,7 @@ public class Settlement {
 	/**
 	 * Determine if the Settlement is allied with a designated Settlement
 	 * 
-	 * @param s
-	 *            : The Settlement to check
+	 * @param s: The Settlement to check
 	 * @return True if the Settlement is allied with the other Settlement
 	 */
 	public boolean hasAlly(Settlement s) {
@@ -355,9 +332,9 @@ public class Settlement {
 	/**
 	 * Get one of the allies of the Settlement
 	 * 
-	 * @param s
-	 *            : The ally to get
+	 * @param s: The ally to get
 	 * @return The allied Settlement
+	 * @deprecated Needs improvement. Parameter should be a String instead, imo.
 	 */
 	public Settlement getAlly(Settlement s) {
 		return SettlementManager.getManager().getSettlement(s.getName());
@@ -384,8 +361,7 @@ public class Settlement {
 	/**
 	 * Add an ally to the Settlement
 	 * 
-	 * @param s
-	 *            : The Settlement to add
+	 * @param s: The Settlement to add
 	 * @return True if the ally was successfully added
 	 */
 	public boolean addAlly(Settlement s) {
@@ -400,8 +376,7 @@ public class Settlement {
 	/**
 	 * Remove one of the Settlement's allies
 	 * 
-	 * @param s
-	 *            : The Settlement who will no longer be in the alliance
+	 * @param s: The Settlement who will no longer be in the alliance
 	 * @return True if the ally was successfully removed
 	 */
 	public boolean removeAlly(Settlement s) {
@@ -413,18 +388,10 @@ public class Settlement {
 		return false;
 	}
 
-	/*
-	 * public Player getPlayer(int i){ List<UUID> temp = new ArrayList<UUID>();
-	 * temp.addAll(citizens); temp.addAll(officers); temp.add(owner);
-	 * 
-	 * return Bukkit.getPlayer(temp.get(i)); }
-	 */
-
 	/**
 	 * Get a member from the Settlement. This method is used for iteration only!
 	 * 
-	 * @param i
-	 *            - The integer value of the player to get
+	 * @param i- The integer value of the player to get
 	 * @return The player based on the integer specified
 	 */
 	public Player getPlayer(int i) {
@@ -444,16 +411,16 @@ public class Settlement {
 	 * <p>
 	 * Ex. "Citizen", "Officer", "Leader"
 	 * 
-	 * @param p
-	 *            : The player
+	 * @param p: The player
 	 * @return The rank of the player
 	 */
 	public String getRank(Player p) {
-		if (isCitizen(p.getUniqueId()))
+		UUID id = p.getUniqueId();
+		if (isCitizen(id))
 			return "Citizen";
-		else if (isOfficer(p.getUniqueId()))
+		else if (isOfficer(id))
 			return "Officer";
-		else if (isLeader(p.getUniqueId()))
+		else if (isLeader(id))
 			return "Leader";
 		return null;
 	}
