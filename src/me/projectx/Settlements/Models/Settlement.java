@@ -147,7 +147,7 @@ public class Settlement {
 	 * @param uuid: The UUID of the player to grant citizenship
 	 */
 	public void giveCitizenship(UUID uuid) {
-		if (!isCitizen(uuid)) { //should be hasMember()
+		if (!hasMember(uuid)) {
 			citizens.add(uuid);
 		}
 	}
@@ -160,7 +160,7 @@ public class Settlement {
 	public void giveCitizenship(String uuid) {
 		if (uuid != null) {
 			UUID id = UUID.fromString(uuid);
-			if (!isCitizen(id)) {
+			if (!hasMember(id)) {
 				citizens.add(id);
 			}
 		}
@@ -174,6 +174,8 @@ public class Settlement {
 	public void revokeCitizenship(UUID uuid) {
 		if (isCitizen(uuid)) {
 			citizens.remove(uuid);
+		}
+		else if (isOfficer(uuid)){
 			officers.remove(uuid);
 		}
 	}
@@ -184,7 +186,7 @@ public class Settlement {
 	 * @param uuid: The UUID of the player who will become an officer
 	 */
 	public void setOfficer(UUID uuid) {
-		if (isCitizen(uuid)) {
+		if (hasMember(uuid)) {
 			if (!isOfficer(uuid)) {
 				officers.add(uuid);
 			}
@@ -199,7 +201,7 @@ public class Settlement {
 	public void setOfficer(String uuid) {
 		if (uuid != null) {
 			UUID id = UUID.fromString(uuid);
-			if (isCitizen(id)) {
+			if (hasMember(id)) {
 				if (!isOfficer(id)) {
 					officers.add(id);
 				}
@@ -309,6 +311,7 @@ public class Settlement {
 	 * Determine if the settlement is currently at war
 	 * 
 	 * @return True if the Settlement is at war
+	 * @deprecated No current use
 	 */
 	public boolean isInWar() {
 		for (War w : War.instances) {
@@ -334,10 +337,9 @@ public class Settlement {
 	 * 
 	 * @param s: The ally to get
 	 * @return The allied Settlement
-	 * @deprecated Needs improvement. Parameter should be a String instead, imo.
 	 */
-	public Settlement getAlly(Settlement s) {
-		return SettlementManager.getManager().getSettlement(s.getName());
+	public Settlement getAlly(String setName) {
+		return SettlementManager.getManager().getSettlement(setName);
 	}
 
 	/**
