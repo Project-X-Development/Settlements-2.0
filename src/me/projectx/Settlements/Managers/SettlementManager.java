@@ -422,7 +422,7 @@ public class SettlementManager extends Thread {
 				final Settlement s = invitedPlayers.get(player);
 				s.giveCitizenship(id);
 				invitedPlayers.remove(player);
-				DatabaseUtils.queryOut("DELETE FROM citixens WHERE uuid='"
+				DatabaseUtils.queryOut("DELETE FROM citizens WHERE uuid='"
 						+ id.toString() + "';");
 				DatabaseUtils
 						.queryOut("INSERT INTO citizens(uuid, settlement, rank) VALUES '"
@@ -492,7 +492,7 @@ public class SettlementManager extends Thread {
 						+ ChatColor.AQUA + name + ChatColor.GRAY
 						+ " left the Settlement :(");
 				s.revokeCitizenship(p.getUniqueId());
-				DatabaseUtils.queryOut("DELETE FROM citixens WHERE uuid='"
+				DatabaseUtils.queryOut("DELETE FROM citizens WHERE uuid='"
 						+ id.toString() + "';");
 			} else {
 				p.sendMessage(MessageType.MUST_APPOINT_NEW_LEADER.getMsg());
@@ -530,7 +530,7 @@ public class SettlementManager extends Thread {
 								+ name + ChatColor.GRAY
 								+ " from the Settlement!");
 						DatabaseUtils
-								.queryOut("DELETE FROM citixens WHERE uuid='"
+								.queryOut("DELETE FROM citizens WHERE uuid='"
 										+ id.toString() + "';");
 
 					}
