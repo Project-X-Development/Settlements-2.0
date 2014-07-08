@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import me.projectx.Economy.API.EconomyAPI;
 import me.projectx.Settlements.Models.ClaimedChunk;
 import me.projectx.Settlements.Models.Settlement;
 import me.projectx.Settlements.Utils.DatabaseUtils;
@@ -253,13 +252,20 @@ public class SettlementManager extends Thread {
 			throws SQLException {
 		Player p = (Player) sender;
 		final UUID id = p.getUniqueId();
-		Settlement s = getPlayerSettlement(id);
+		final Settlement s = getPlayerSettlement(id);
 		if (s != null) {
 			if (s.isLeader(id)) {
 				new Thread() {
 					@Override
 					public void run() {
 						try {
+							DatabaseUtils
+									.queryOut("DELETE FROM settlements WHERE id="
+											+ s.getId() + ";");
+							DatabaseUtils
+									.queryOut("DELETE FROM chunks WHERE settlement="
+											+ s.getId() + ";");
+
 							Settlement s = getPlayerSettlement(id);
 							DatabaseUtils
 									.queryOut("DELETE FROM settlements WHERE id="
@@ -309,11 +315,19 @@ public class SettlementManager extends Thread {
 	 */
 	public void deleteSettlement(final CommandSender sender, final String name)
 			throws SQLException {
-		if (settlementExists(name)) {
+		final Settlement s = getSettlement(name);
+		if (s != null) {
 			new Thread() {
 				@Override
 				public void run() {
 					try {
+						DatabaseUtils
+								.queryOut("DELETE FROM settlements WHERE id="
+										+ s.getId() + ";");
+						DatabaseUtils
+								.queryOut("DELETE FROM chunks WHERE settlement="
+										+ s.getId() + ";");
+
 						Settlement s = getSettlement(name);
 						DatabaseUtils
 								.queryOut("DELETE FROM settlements WHERE id="
@@ -345,6 +359,8 @@ public class SettlementManager extends Thread {
 					}
 				}
 			}.start();
+		} else {
+			sender.sendMessage(MessageType.SETTLEMENT_NOT_EXIST.getMsg());
 		}
 	}
 
@@ -366,21 +382,15 @@ public class SettlementManager extends Thread {
 					Player pl = (Player) sender;
 					if (s.isOfficer(pl.getUniqueId())
 							|| s.isLeader(pl.getUniqueId())) {
-						invitedPlayers.put(player,
-								getPlayerSettlement(sender.getName()));
-						sender.sendMessage(MessageType.PREFIX.getMsg()
-								+ ChatColor.GRAY + "Invited " + ChatColor.AQUA
-								+ player + ChatColor.GRAY
-								+ " to your Settlement");
+						invitedPlayers.put(player, s);
+						s.sendSettlementMessage(MessageType.PREFIX.getMsg()
+								+ pl.getDisplayName() + ChatColor.GRAY
+								+ " invited " + ChatColor.AQUA + player
+								+ ChatColor.GRAY + " to your Settlement");
 						p.sendMessage(MessageType.PREFIX.getMsg()
-								+ ChatColor.AQUA
-								+ sender.getName()
-								+ ChatColor.GRAY
-								+ " invited you to join "
-								+ ChatColor.AQUA
-								+ getPlayerSettlement(sender.getName())
-										.getName()); // throws NPE if player is
-														// null/not online
+								+ ChatColor.AQUA + sender.getName()
+								+ ChatColor.GRAY + " invited you to join "
+								+ ChatColor.AQUA + s.getName());
 					} else {
 						sender.sendMessage(MessageType.INVITE_NOT_RANK.getMsg());
 					}
@@ -521,6 +531,7 @@ public class SettlementManager extends Thread {
 						DatabaseUtils
 								.queryOut("DELETE FROM citixens WHERE uuid='"
 										+ id.toString() + "';");
+
 					}
 				} else {
 					sender.sendMessage(MessageType.KICK_NOT_LEADER.getMsg());
@@ -544,6 +555,7 @@ public class SettlementManager extends Thread {
 	 *            : The description for the Settlement
 	 * @throws SQLException
 	 */
+
 	public void setDescription(CommandSender sender, final String desc)
 			throws SQLException {
 		final Settlement s = getPlayerSettlement(sender.getName());
@@ -552,7 +564,8 @@ public class SettlementManager extends Thread {
 			if (s.isOfficer(p.getUniqueId()) || s.isLeader(p.getUniqueId())) {
 				s.setDescription(desc);
 				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY
-						+ "Set your Settlement's description to " + desc);
+						+ "Set your Settlement's description to "
+						+ ChatColor.AQUA + desc);
 				DatabaseUtils.queryOut("UPDATE settlements SET description='"
 						+ desc + "' WHERE id=" + s.getId() + ";");
 			} else {
@@ -568,7 +581,9 @@ public class SettlementManager extends Thread {
 	 * 
 	 * @param s
 	 *            : The settlement to calculate the power for
+	 * @deprecated Shitty method that needs replacing again
 	 */
+	@Deprecated
 	public void calculatePower(Settlement s) {
 		// int citizens = s.getCitizens().size();
 		// int officers = s.getOfficers().size();
@@ -592,8 +607,8 @@ public class SettlementManager extends Thread {
 	 * @return True if successful
 	 */
 	public boolean allySettlement(Settlement s1, String s2) {
-		if (settlementExists(s2)) {
-			Settlement s = getSettlement(s2);
+		Settlement s = getSettlement(s2);
+		if (s != null) {
 			s1.addAlly(s);
 			s1.sendSettlementMessage(MessageType.PREFIX.getMsg()
 					+ ChatColor.AQUA + s2 + ChatColor.GRAY
@@ -615,8 +630,9 @@ public class SettlementManager extends Thread {
 	 * @return True if successful
 	 */
 	public boolean removeAlly(Settlement s1, String s2) {
-		if (s1.hasAlly(getSettlement(s2))) {
-			s1.removeAlly(getSettlement(s2));
+		Settlement s = getSettlement(s2);
+		if (s1.hasAlly(s)) {
+			s1.removeAlly(s);
 			return true;
 		}
 		return false;
@@ -650,7 +666,6 @@ public class SettlementManager extends Thread {
 				is.setItemMeta(sm);
 				inv.setItem(i, is);
 			}
-
 			player.openInventory(inv);
 		} else {
 			player.sendMessage(MessageType.SETTLEMENT_NOT_EXIST.getMsg());
@@ -702,11 +717,19 @@ public class SettlementManager extends Thread {
 		player.openInventory(inv);
 	}
 
-	public void depositIntoSettlement(Player player, Settlement s, double amount)
-			throws SQLException {
-		EconomyAPI.getAccountManager().withdraw(player, amount);
-		s.setBalance(s.getBalance() + amount);
-		DatabaseUtils.queryOut("UPDATE settlements SET balance="
-				+ s.getBalance() + " WHERE id=" + s.getId() + ";");
+	public void promotePlayer(Player player) { // untested
+		UUID id = player.getUniqueId();
+		Settlement s = getPlayerSettlement(id);
+		if (s != null) {
+			if (!s.isOfficer(id))
+				s.setOfficer(id);
+			try {
+				DatabaseUtils.queryOut("UPDATE settlements SET officers='"
+						+ s.getOfficers().toString() + "' WHERE id="
+						+ s.getId() + ";");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }

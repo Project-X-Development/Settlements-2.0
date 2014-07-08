@@ -1,27 +1,18 @@
 package me.projectx.Settlements.Commands;
 
 import java.sql.SQLException;
-import java.util.UUID;
 
 import me.projectx.Settlements.Managers.ChunkManager;
-import me.projectx.Settlements.Managers.MapManager;
 import me.projectx.Settlements.Managers.PlayerManager;
 import me.projectx.Settlements.Managers.SettlementManager;
 import me.projectx.Settlements.Models.CommandModel;
 import me.projectx.Settlements.Models.Settlement;
 import me.projectx.Settlements.Utils.ClaimType;
 import me.projectx.Settlements.Utils.CommandType;
-import me.projectx.Settlements.Utils.DatabaseUtils;
 import me.projectx.Settlements.Utils.MessageType;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.map.MapView;
 
 public class CommandSettlementPlayer extends CommandModel {
 
