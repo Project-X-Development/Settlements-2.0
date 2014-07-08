@@ -59,9 +59,22 @@ public class SettlementManager extends Thread {
 						Settlement set = new Settlement(name);
 						set.setLeader(result.getString(("leader")));
 						set.setDescription(result.getString("description"));
-						set.setOfficer(result.getString("officers"));
-						set.giveCitizenship(result.getString("citizens"));
 						set.setBalance(result.getDouble("balance"));
+						ResultSet citizens = DatabaseUtils
+								.queryIn("SELECT * FROM citizens WHERE settlement="
+										+ set.getName() + ";");
+						while (citizens.next()) {
+							UUID uuid = UUID.fromString(result
+									.getString("uuid"));
+							String rank = result.getString("rank");
+							set.getCitizens().add(uuid);
+							/*
+							 * Rank 1 = Citizen Rank 2 = Officer Rank 3 = Leader
+							 */
+							if (rank.equalsIgnoreCase("2")) {
+								set.getOfficers().add(uuid);
+							}
+						}
 						settlements.add(set);
 					}
 				} catch (SQLException e) {
@@ -86,14 +99,11 @@ public class SettlementManager extends Thread {
 					long tempId = set.getId();
 					String tempLeader = set.getLeader().toString();
 					String tempDesc = set.getDescription();
-					String tempCits = set.getCitizens().toString();
-					String tempOffs = set.getOfficers().toString();
 					try {
 						DatabaseUtils.queryOut("UPDATE settlements"
 								+ "SET name='" + tempName + "', leader='"
 								+ tempLeader + "', description='" + tempDesc
-								+ "', citizens='" + tempCits + "', officers='"
-								+ tempOffs + "'WHERE id='" + tempId + "';");
+								+ "'WHERE id='" + tempId + "';");
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
@@ -401,9 +411,14 @@ public class SettlementManager extends Thread {
 				final Settlement s = invitedPlayers.get(player);
 				s.giveCitizenship(id);
 				invitedPlayers.remove(player);
-				DatabaseUtils.queryOut("UPDATE settlements SET citizens='"
-						+ s.getCitizens().toString() + "' WHERE id='"
-						+ s.getId() + "';");
+				DatabaseUtils.queryOut("DELETE FROM citixens WHERE uuid='"
+						+ id.toString() + "';");
+				DatabaseUtils
+						.queryOut("INSERT INTO citizens(uuid, settlement, rank) VALUES '"
+								+ id.toString()
+								+ "','"
+								+ s.getName()
+								+ "','1';");
 				p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY
 						+ "Successfully joined " + ChatColor.AQUA
 						+ getPlayerSettlement(id).getName());
@@ -457,6 +472,7 @@ public class SettlementManager extends Thread {
 	public void leaveSettlement(String name) throws SQLException {
 		final Settlement s = getPlayerSettlement(name);
 		Player p = Bukkit.getPlayer(name);
+		UUID id = p.getUniqueId();
 		if (s != null) {
 			if (!s.isLeader(p.getUniqueId())) {
 				p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY
@@ -465,9 +481,8 @@ public class SettlementManager extends Thread {
 						+ ChatColor.AQUA + name + ChatColor.GRAY
 						+ " left the Settlement :(");
 				s.revokeCitizenship(p.getUniqueId());
-				DatabaseUtils.queryOut("UPDATE settlements SET citizens='"
-						+ s.getCitizens().toString() + "' WHERE id="
-						+ s.getId() + ";");
+				DatabaseUtils.queryOut("DELETE FROM citixens WHERE uuid='"
+						+ id.toString() + "';");
 			} else {
 				p.sendMessage(MessageType.MUST_APPOINT_NEW_LEADER.getMsg());
 			}
@@ -490,6 +505,7 @@ public class SettlementManager extends Thread {
 		final Settlement s = getPlayerSettlement(sender.getName());
 		if (s != null) {
 			Player p = Bukkit.getPlayer(name);
+			UUID id = p.getUniqueId();
 			if (s.hasMember(p.getUniqueId())) {
 				if (!s.isLeader(p.getUniqueId())) {
 					s.revokeCitizenship(p.getUniqueId());
@@ -503,13 +519,8 @@ public class SettlementManager extends Thread {
 								+ name + ChatColor.GRAY
 								+ " from the Settlement!");
 						DatabaseUtils
-								.queryOut("UPDATE settlements SET citizens='"
-										+ s.getCitizens().toString()
-										+ "' WHERE id=" + s.getId() + ";");
-						DatabaseUtils
-								.queryOut("UPDATE settlements SET officers='"
-										+ s.getOfficers().toString()
-										+ "' WHERE id=" + s.getId() + ";");
+								.queryOut("DELETE FROM citixens WHERE uuid='"
+										+ id.toString() + "';");
 					}
 				} else {
 					sender.sendMessage(MessageType.KICK_NOT_LEADER.getMsg());
