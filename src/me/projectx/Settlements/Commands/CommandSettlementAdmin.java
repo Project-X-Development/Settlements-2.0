@@ -21,29 +21,33 @@ public class CommandSettlementAdmin extends CommandModel{
 	public boolean onCmd(CommandSender sender, String cml, String[] args) throws SQLException {
 		if (cml.equalsIgnoreCase("sa")){
 			if (args.length > 0){
-				if (args[0].equalsIgnoreCase("claim")){
-					if (args.length == 2){
-						if (sender instanceof Player){
+				switch(args[0]){
+					case "claim":
+						if (args.length == 2)
+							ChunkManager.getInstance().claimSpecialChunk((Player)sender, ClaimType.valueOf(args[1].toUpperCase()));
+						else
+							sender.sendMessage(MessageType.COMMAND_INVALID_ARGS + "Try /sa claim <ClaimType>");
+						break;
+					case "delete":
+						if (args.length == 2)
+							SettlementManager.getManager().deleteSettlement(sender, args[1]);
+						else
+							sender.sendMessage(MessageType.COMMAND_INVALID_ARGS + "Try /sa delete <Settlement>");
+						break;
+					case "unclaim":
+						if (args.length == 1){
 							Player p = (Player) sender;
-							ChunkManager.getInstance().claimSpecialChunk(p, ClaimType.valueOf(args[1].toUpperCase()));
+							if (ChunkManager.getInstance().unclaimChunk(p.getLocation().getChunk().getX(), p.getLocation().getChunk().getZ())) 
+								p.sendMessage(MessageType.CHUNK_UNCLAIM_SUCCESS.getMsg());
+							else 
+								p.sendMessage(MessageType.CHUNK_UNCLAIM_FAIL.getMsg());
+						}else{
+							sender.sendMessage(MessageType.COMMAND_INVALID_ARGS + "Try /sa unclaim");
 						}
-					}
-				}
-				
-				if (args[0].equalsIgnoreCase("delete")){
-					if (args.length == 2){
-						SettlementManager.getManager().deleteSettlement(sender, args[1]);
-					}
-				}
-				
-				if (args[0].equalsIgnoreCase("unclaim")){
-					if (sender instanceof Player){
-						Player p = (Player) sender;
-						if (ChunkManager.getInstance().unclaimChunk(p.getLocation().getChunk().getX(), p.getLocation().getChunk().getZ())) 
-							p.sendMessage(MessageType.CHUNK_UNCLAIM_SUCCESS.getMsg());
-						else 
-							p.sendMessage(MessageType.CHUNK_UNCLAIM_FAIL.getMsg());
-					}
+						break;
+					default:
+						sender.sendMessage(MessageType.COMMAND_INVALID_ARGUMENT.getMsg());
+						break;	
 				}
 			}
 		}
