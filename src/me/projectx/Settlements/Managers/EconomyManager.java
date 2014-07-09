@@ -8,9 +8,9 @@ import me.projectx.Settlements.Models.Settlement;
 import me.projectx.Settlements.Utils.DatabaseUtils;
 import me.projectx.Settlements.Utils.MessageType;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class EconomyManager {
 	
@@ -82,14 +82,12 @@ public class EconomyManager {
 					"Your Settlement has been charged " + ChatColor.AQUA + "$" + cost + ChatColor.GRAY + " in land taxes");
 		}
 	}
-	
-	@SuppressWarnings("deprecation")
+
 	public void scheduleTaxCollection(int minutes){
-		Bukkit.getScheduler().scheduleAsyncRepeatingTask(Main.getInstance(), new Runnable(){
-			@Override
+		new BukkitRunnable(){
 			public void run(){
 				taxSettlements();
 			}
-		}, 120, 120 * minutes); //wait 1 minute to start, then collect taxes every x minutes
+		}.runTaskTimerAsynchronously(Main.getInstance(), 1200, 1200 * minutes); //wait 1 minute to start, then collect taxes every x minutes
 	}
 } 

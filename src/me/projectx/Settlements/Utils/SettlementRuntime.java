@@ -7,7 +7,7 @@ import me.projectx.Settlements.Main;
 import me.projectx.Settlements.Managers.SettlementManager;
 import me.projectx.Settlements.Models.Settlement;
 
-import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class SettlementRuntime {
 	
@@ -22,10 +22,13 @@ public class SettlementRuntime {
 	 * 
 	 * @param s : The Settlement
 	 */
-	public void sortMembers(Settlement s){
-		Collections.sort(s.getCitizens());
-		Collections.sort(s.getOfficers());
-		
+	public void sortMembers(final Settlement s){
+		new BukkitRunnable(){
+			public void run(){
+				Collections.sort(s.getCitizens());
+				Collections.sort(s.getOfficers());
+			}
+		}.runTaskAsynchronously(Main.getInstance());
 		//debug
 		for (UUID id : s.getCitizens())
 			System.out.println("Citizen: " + id);
@@ -37,7 +40,11 @@ public class SettlementRuntime {
 	 * Sort all Settlements
 	 */
 	public void sortSettlements(){
-		Collections.sort(SettlementManager.getManager().settlements, Settlement.comparator);
+		new BukkitRunnable(){
+			public void run(){
+				Collections.sort(SettlementManager.getManager().settlements, Settlement.comparator);
+			}
+		}.runTaskAsynchronously(Main.getInstance());
 		
 		//Debug
 		for (Settlement s : SettlementManager.getManager().settlements)
@@ -49,9 +56,8 @@ public class SettlementRuntime {
 	 * 
 	 * @param minutes : How often sorting should be done
 	 */
-	@SuppressWarnings("deprecation")
 	public void scheduleSorting(int minutes){ //just incase we want to do it automatically...
-		Bukkit.getScheduler().scheduleAsyncRepeatingTask(Main.getInstance(), new Runnable(){
+		new BukkitRunnable(){
 			@Override
 			public void run() {
 				sortSettlements();
@@ -59,6 +65,6 @@ public class SettlementRuntime {
 					sortMembers(s);
 			}
 			
-		}, 0, 1200 * minutes);
+		}.runTaskTimerAsynchronously(Main.getInstance(), 0, 1200 * minutes);
 	}
 }
