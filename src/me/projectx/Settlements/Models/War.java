@@ -9,44 +9,48 @@ public class War {
 
 	public static List<War> instances = new ArrayList<War>();
 
-	private final long id; //Id system same as settlements; ids are cleared on reload
-	private final long setA, setB; //Set A is the one who starts the war; Set B is the one who accepts
-	private double time  = 0.0; //Time is stored as a double
+	private final long id; // Id system same as settlements; ids are cleared on
+							// reload
+	private final String setA, setB; // Set A is the one who starts the war; Set
+										// B is the one who accepts
+	private double time = 0.0; // Time is stored as a double
 
 	/**
 	 * Create a new war...
-	 *
-	 * @param settlementA (The settlement that started the war)
-	 * @param settlementB (The settlement that accepted the war)
+	 * 
+	 * @param settlementA
+	 *            (The settlement that started the war)
+	 * @param settlementB
+	 *            (The settlement that accepted the war)
 	 */
-	public War(Settlement settlementA, Settlement settlementB){
-		this.setA = settlementA.getId();
-		this.setB = settlementB.getId();
+	public War(Settlement settlementA, Settlement settlementB) {
+		this.setA = settlementA.getName();
+		this.setB = settlementB.getName();
 		id = instances.size() + 1;
 		instances.add(this);
 	}
 
-	public long getId(){
+	public long getId() {
 		return this.id;
 	}
 
-	public Settlement getStarter(){
+	public Settlement getStarter() {
 		return SettlementManager.getManager().getSettlement(this.setA);
 	}
 
-	public Settlement getAccepter(){
+	public Settlement getAccepter() {
 		return SettlementManager.getManager().getSettlement(this.setB);
 	}
 
-	public double getWarLength(){
+	public double getWarLength() {
 		return this.time;
 	}
 
-	public void setWarLength(double value){
+	public void setWarLength(double value) {
 		this.time = value;
 	}
 
-	public void addWarLength(double value){
+	public void addWarLength(double value) {
 		this.time = this.time + value;
 	}
 
