@@ -4,9 +4,9 @@ import java.sql.SQLException;
 
 import me.projectx.Economy.Main;
 import me.projectx.Settlements.Managers.ChunkManager;
+import me.projectx.Settlements.Managers.ChunkManagerTEST;
 import me.projectx.Settlements.Managers.MapManager;
-import me.projectx.Settlements.Managers.PlayerManager;
-import me.projectx.Settlements.Models.ClaimedChunk;
+import me.projectx.Settlements.Models.ClaimedChunkTEST;
 import me.projectx.Settlements.Models.Settlement;
 import me.projectx.Settlements.Utils.ClaimType;
 
@@ -21,8 +21,8 @@ public class PlayerMove implements Listener{
 	@EventHandler
 	public void onMove(final PlayerMoveEvent e){
 		if (e.getFrom().getChunk() != e.getTo().getChunk()){
-			ClaimedChunk c = ChunkManager.getInstance().getChunk(e.getFrom().getChunk().getX(), e.getFrom().getChunk().getZ());
-			ClaimedChunk d = ChunkManager.getInstance().getChunk(e.getTo().getChunk().getX(), e.getTo().getChunk().getZ());
+			ClaimedChunkTEST c = ChunkManagerTEST.getManager().getChunk(e.getFrom().getChunk().getX(), e.getFrom().getChunk().getZ());
+			ClaimedChunkTEST d = ChunkManagerTEST.getManager().getChunk(e.getTo().getChunk().getX(), e.getTo().getChunk().getZ());
 			if(c==null&&d==null){
 			}else if(c!=null&&d==null){ //Leaving b to non claimed
 				e.getPlayer().sendMessage(ChatColor.GREEN + "~Wilderness");
@@ -60,7 +60,7 @@ public class PlayerMove implements Listener{
 				}
 				
 			},1);
-		}	     
+		}
 
 
 		if (ChunkManager.getInstance().isAutoClaiming(e.getPlayer())){
