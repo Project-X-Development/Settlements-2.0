@@ -19,6 +19,7 @@ public enum MessageType {
 	SETTLEMENT_CHAT_START(PREFIX.getMsg() + "&7Now privately chatting with your Settlement members"),
 	SETTLEMENT_CHAT_END(PREFIX.getMsg() + "&7No longer privately chatting with your Settlement members"),
 	SETTLEMENT_MEMBER_DAMAGE(PREFIX.getMsg() + "&7You cannot hurt members of your own Settlement!"),
+	SETTLEMENT_NO_MEMBER(PREFIX.getMsg() + "&4That player is not in your Settlement"),
 	CREATE_IN_SETTLEMENT(PREFIX.getMsg() + "&4You cannot be a member of a Settlement when creating a new one!"),
 	NOT_IN_SETTLEMENT(PREFIX.getMsg() + "&4You are not in a Settlement!"),
 	MUST_APPOINT_NEW_LEADER(PREFIX.getMsg() + "&e Please appoint a new leader before leaving!"),
@@ -29,6 +30,7 @@ public enum MessageType {
 	CHUNK_UNCLAIM_SUCCESS(PREFIX.getMsg() + "&7Successfully unclaimed your current chunk!"),
 	CHUNK_UNCLAIM_FAIL(PREFIX.getMsg() + "&4You can't unclaim a chunk you don't own!"),
 	COMMAND_INVALID_ARGS(PREFIX.getMsg() + "&4Invalid arguments. "),
+	COMMAND_INVALID_ARGUMENT(PREFIX.getMsg() + "&4Invalid command argument specified"),
 	NO_PERM(PREFIX.getMsg() + "&4You don't have permission to use that command!");
 
 	private String msg;
