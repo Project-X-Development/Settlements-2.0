@@ -3,6 +3,7 @@ package me.projectx.Settlements.Managers;
 import me.projectx.Settlements.Models.Settlement;
 import me.projectx.Settlements.Utils.Fanciful.FancyMessage;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -14,21 +15,37 @@ public class ChatManager {
 		return cm;
 	}
 	
-	//Need to fix this
-	public void formatMessage(Player player, String message){
-		Settlement s = SettlementManager.getManager().getPlayerSettlement(player.getUniqueId());
+	public void formatMessage(Player sendTo, String playerName, String message){
+		Player p = Bukkit.getPlayer(playerName);
+		Settlement s = SettlementManager.getManager().getPlayerSettlement(p.getUniqueId());
 		if (s != null){
 			new FancyMessage("[")
 				.color(ChatColor.DARK_GRAY)
 			.then(s.getName())
-				.tooltip(s.getDescription())
-				.color(ChatColor.AQUA)
-			.then("]")
+				.tooltip(ChatColor.DARK_GREEN + "Leader: " + Bukkit.getPlayer(s.getLeader()).getDisplayName(), //temp. Will throw NPE if offline
+						ChatColor.GOLD + "Description: " + ChatColor.GREEN + s.getDescription())
+				.color(getColor(p))
+			.then("] ")
 				.color(ChatColor.DARK_GRAY)
-			.then(player.getDisplayName() + ": ")
-			.then(message)
-			.send(player);
+			.then(p.getDisplayName() + ": ")
+			.then(ChatColor.translateAlternateColorCodes('&', message))
+			.send(sendTo);
 		}
+	}
+	
+	private ChatColor getColor(Player player){
+		Settlement s = SettlementManager.getManager().getPlayerSettlement(player.getUniqueId());
+		if (s != null){
+			switch(s.getRank(player)){
+				case "Leader":
+					return ChatColor.GOLD;
+				case "Officer":
+					return ChatColor.YELLOW;
+				default:
+					return ChatColor.AQUA;
+			}
+		}
+		return null;
 	}
 	
 }
