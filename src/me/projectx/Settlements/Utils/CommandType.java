@@ -30,7 +30,9 @@ public enum CommandType {
 	SETTLEMENT_UNCLAIM("/s unclaim", "Unlaim the chunk you are standing in", "settlements.player.unclaim"),
 	SETTLEMENT_ALLY("/s ally <Settlement>", "Ally another Settlement", "settlements.player.ally"),
 	SETTLEMENT_NO_ALLY("/s removeally <Settlement>", "Remove a Settlement from your alliance", "settlements.player.unally"),
-	SETTLEMENT_CHAT("/s chat", "Toggle private Settlement chatting on/off", "settlements.player.chat");
+	SETTLEMENT_CHAT("/s chat", "Toggle private Settlement chatting on/off", "settlements.player.chat"),
+	SETTTLEMENT_SETHOME("/s sethome", "Set your Settlement's home to your location", "settlements.player.home.set"),
+	SETTLEMENT_HOME("/s home", "Teleport to your Settlement's home", "settlements.player.home.tp");
 	
 	private String usage, info, perm;
 	private static ArrayList<String> list = new ArrayList<String>();

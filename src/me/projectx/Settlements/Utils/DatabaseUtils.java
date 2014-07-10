@@ -36,6 +36,7 @@ public class DatabaseUtils extends Thread {
 		queryOut("CREATE TABLE IF NOT EXISTS settlements(id BIGINT, name varchar(255), "
 				+ "leader varchar(255), description varchar(255), tag VARCHAR(4), balance BIGINT);");
 		queryOut("CREATE TABLE IF NOT EXISTS citizens(uuid varchar(255), settlement varchar(255), rank varchar(255));");
+		queryOut("CREATE TABLE IF NOT EXISTS sethomes(name VARCHAR(255), world VARCHAR(255), x BIGINT, y BIGINT, z BIGINT, yaw BIGINT, pitch BIGINT);");
 		queryOut("CREATE TABLE IF NOT EXISTS chunks(x BIGINT, z BIGINT, player VARCHAR(255), settlement BIGINT, world VARCHAR(255), type VARCHAR(255));");
 	}
 

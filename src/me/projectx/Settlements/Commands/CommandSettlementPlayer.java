@@ -3,6 +3,7 @@ package me.projectx.Settlements.Commands;
 import java.sql.SQLException;
 
 import me.projectx.Settlements.Managers.ChunkManager;
+import me.projectx.Settlements.Managers.ChunkManagerTEST;
 import me.projectx.Settlements.Managers.PlayerManager;
 import me.projectx.Settlements.Managers.SettlementManager;
 import me.projectx.Settlements.Models.CommandModel;
@@ -10,7 +11,9 @@ import me.projectx.Settlements.Models.Settlement;
 import me.projectx.Settlements.Utils.ClaimType;
 import me.projectx.Settlements.Utils.CommandType;
 import me.projectx.Settlements.Utils.MessageType;
+import me.projectx.Settlements.Utils.PlayerUtils;
 
+import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -148,6 +151,13 @@ public class CommandSettlementPlayer extends CommandModel {
 							SettlementManager.getManager().teleportToHome((Player)sender);		
 						else
 							sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s home");
+						break;
+					case "id":
+						Player p = (Player)sender;
+						p.sendMessage(PlayerUtils.getNameFromUUID(p.getUniqueId()));
+						break;
+					case "testclaim":
+						ChunkManagerTEST.getManager().claim((Player)sender, ClaimType.NORMAL);
 						break;
 					default:
 						sender.sendMessage(MessageType.COMMAND_INVALID_ARGUMENT.getMsg() + " Type /s for help");
