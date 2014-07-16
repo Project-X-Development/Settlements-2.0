@@ -1,4 +1,4 @@
-package me.projectx.Settlements.Utils;
+package me.projectx.Settlements.enums;
 
 public enum ClaimType {
 	
@@ -6,7 +6,5 @@ public enum ClaimType {
 	SAFEZONE,
 	BATTLEGROUND,
 	CAPITAL,
-	//Future stuff
-	TRAP; 
-	
+	TRAP,	
 }

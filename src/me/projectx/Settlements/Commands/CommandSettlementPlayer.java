@@ -2,18 +2,16 @@ package me.projectx.Settlements.Commands;
 
 import java.sql.SQLException;
 
-import me.projectx.Settlements.Managers.ChunkManager;
 import me.projectx.Settlements.Managers.ChunkManagerTEST;
 import me.projectx.Settlements.Managers.PlayerManager;
 import me.projectx.Settlements.Managers.SettlementManager;
 import me.projectx.Settlements.Models.CommandModel;
 import me.projectx.Settlements.Models.Settlement;
-import me.projectx.Settlements.Utils.ClaimType;
-import me.projectx.Settlements.Utils.CommandType;
-import me.projectx.Settlements.Utils.MessageType;
 import me.projectx.Settlements.Utils.PlayerUtils;
+import me.projectx.Settlements.enums.ClaimType;
+import me.projectx.Settlements.enums.CommandType;
+import me.projectx.Settlements.enums.MessageType;
 
-import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -81,13 +79,13 @@ public class CommandSettlementPlayer extends CommandModel {
 						break;
 					case "claim":
 						if (args.length == 1)
-							ChunkManager.getInstance().claimChunk((Player)sender, ClaimType.NORMAL);
+							ChunkManagerTEST.getManager().claim((Player)sender, ClaimType.NORMAL);
 						else
 							sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s claim");
 						break;
 					case "map":
 						if (args.length == 1)
-							ChunkManager.getInstance().issueMap((Player)sender);
+							ChunkManagerTEST.getManager().issueMap((Player)sender);
 						else
 							sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s map");
 						break;
@@ -112,16 +110,12 @@ public class CommandSettlementPlayer extends CommandModel {
 					case "unclaim":
 						if (args.length == 1){
 							Player p = (Player) sender;
-							if (ChunkManager.getInstance().unclaimChunk(p.getName(), 
-									p.getLocation().getChunk().getX(), p.getLocation().getChunk().getZ())) 
-								p.sendMessage(MessageType.CHUNK_UNCLAIM_SUCCESS.getMsg());
-							else 
-								p.sendMessage(MessageType.CHUNK_UNCLAIM_FAIL.getMsg());
+							ChunkManagerTEST.getManager().unclaim(p, p.getLocation().getChunk().getX(), p.getLocation().getChunk().getZ(), false);
 						}else
 							sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s unclaim");
 						break;
 					case "autoclaim":
-						ChunkManager.getInstance().setAutoClaiming((Player)sender);
+						ChunkManagerTEST.getManager().setAutoClaiming((Player)sender, ClaimType.NORMAL);
 						break;
 					case "chat": //needs some work
 						if (args.length == 1){
@@ -157,7 +151,10 @@ public class CommandSettlementPlayer extends CommandModel {
 						p.sendMessage(PlayerUtils.getNameFromUUID(p.getUniqueId()));
 						break;
 					case "testclaim":
-						ChunkManagerTEST.getManager().claim((Player)sender, ClaimType.NORMAL);
+						if (args.length == 1)
+							ChunkManagerTEST.getManager().claim((Player)sender, ClaimType.NORMAL);
+						else if (args.length == 2)
+							ChunkManagerTEST.getManager().claim((Player)sender, ClaimType.SAFEZONE);
 						break;
 					default:
 						sender.sendMessage(MessageType.COMMAND_INVALID_ARGUMENT.getMsg() + " Type /s for help");
