@@ -1,10 +1,10 @@
 package me.projectx.Settlements.Events;
 
-import me.projectx.Settlements.Managers.ChunkManager;
+import me.projectx.Settlements.Managers.ChunkManagerTEST;
 import me.projectx.Settlements.Managers.SettlementManager;
-import me.projectx.Settlements.Models.ClaimedChunk;
-import me.projectx.Settlements.Utils.ClaimType;
-import me.projectx.Settlements.Utils.MessageType;
+import me.projectx.Settlements.Models.ClaimedChunkTEST;
+import me.projectx.Settlements.enums.ClaimType;
+import me.projectx.Settlements.enums.MessageType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -30,8 +30,8 @@ public class BlockEvent implements Listener{
 		int x = c.getX();
 		int z = c.getZ();
 
-		if (ChunkManager.getInstance().isClaimed(x, z)){
-			ClaimedChunk chunk = ChunkManager.getInstance().getChunk(x, z);
+		if (ChunkManagerTEST.getManager().isClaimed(x, z, c.getWorld())){
+			ClaimedChunkTEST chunk = ChunkManagerTEST.getManager().getChunk(x, z);
 			Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
 			if (chunk.getType() == ClaimType.SAFEZONE){
 				e.setCancelled(true);
@@ -54,8 +54,8 @@ public class BlockEvent implements Listener{
 		int x = c.getX();
 		int z = c.getZ();
 
-		if (ChunkManager.getInstance().isClaimed(x, z)){
-			ClaimedChunk chunk = ChunkManager.getInstance().getChunk(x, z);
+		if (ChunkManagerTEST.getManager().isClaimed(x, z, c.getWorld())){
+			ClaimedChunkTEST chunk = ChunkManagerTEST.getManager().getChunk(x, z);
 			Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
 			if (chunk.getType() == ClaimType.SAFEZONE){
 				e.setCancelled(true);
@@ -80,8 +80,8 @@ public class BlockEvent implements Listener{
 				int x = c.getX();
 				int z = c.getZ();
 	
-				if (ChunkManager.getInstance().isClaimed(x,  z)){
-					ClaimedChunk chunk = ChunkManager.getInstance().getChunk(x, z);
+				if (ChunkManagerTEST.getManager().isClaimed(x, z, c.getWorld())){
+					ClaimedChunkTEST chunk = ChunkManagerTEST.getManager().getChunk(x, z);
 					Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
 	
 					if (SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()) != null){

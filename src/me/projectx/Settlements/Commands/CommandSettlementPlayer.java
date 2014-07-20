@@ -12,6 +12,7 @@ import me.projectx.Settlements.enums.ClaimType;
 import me.projectx.Settlements.enums.CommandType;
 import me.projectx.Settlements.enums.MessageType;
 
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -110,12 +111,16 @@ public class CommandSettlementPlayer extends CommandModel {
 					case "unclaim":
 						if (args.length == 1){
 							Player p = (Player) sender;
-							ChunkManagerTEST.getManager().unclaim(p, p.getLocation().getChunk().getX(), p.getLocation().getChunk().getZ(), false);
+							Location l = p.getLocation();
+							ChunkManagerTEST.getManager().unclaim(p, l.getChunk().getX(), l.getChunk().getZ(), l.getWorld(), false);
 						}else
 							sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s unclaim");
 						break;
 					case "autoclaim":
-						ChunkManagerTEST.getManager().setAutoClaiming((Player)sender, ClaimType.NORMAL);
+						if (args.length == 1)
+							ChunkManagerTEST.getManager().setAutoClaiming((Player)sender, ClaimType.NORMAL);
+						else
+							sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s autoclaim");
 						break;
 					case "chat": //needs some work
 						if (args.length == 1){

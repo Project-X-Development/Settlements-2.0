@@ -1,4 +1,4 @@
-package me.projectx.Settlements.Utils;
+package me.projectx.Settlements.enums;
 
 import org.bukkit.ChatColor;
 
@@ -20,6 +20,7 @@ public enum MessageType {
 	SETTLEMENT_CHAT_END(PREFIX.getMsg() + "&7No longer privately chatting with your Settlement members"),
 	SETTLEMENT_MEMBER_DAMAGE(PREFIX.getMsg() + "&7You cannot hurt members of your own Settlement!"),
 	SETTLEMENT_NO_MEMBER(PREFIX.getMsg() + "&4That player is not in your Settlement"),
+	SETTLEMENT_NO_CLAIMS(PREFIX.getMsg() + "&eThat Settlement has no land claims!"),
 	CREATE_IN_SETTLEMENT(PREFIX.getMsg() + "&4You cannot be a member of a Settlement when creating a new one!"),
 	NOT_IN_SETTLEMENT(PREFIX.getMsg() + "&4You are not in a Settlement!"),
 	MUST_APPOINT_NEW_LEADER(PREFIX.getMsg() + "&e Please appoint a new leader before leaving!"),
@@ -29,6 +30,12 @@ public enum MessageType {
 	CHUNK_CLAIM_OWNED(PREFIX.getMsg() + "&4Someone already owns this chunk!"),
 	CHUNK_UNCLAIM_SUCCESS(PREFIX.getMsg() + "&7Successfully unclaimed your current chunk!"),
 	CHUNK_UNCLAIM_FAIL(PREFIX.getMsg() + "&4You can't unclaim a chunk you don't own!"),
+	CHUNK_UNCLAIM_ERROR(PREFIX.getMsg() + "&4An error occured: Claim map doesn't contain this chunk!"),
+	CHUNK_NOT_ADMIN(PREFIX.getMsg() + "&4You must be an admin in order to do that!"),
+	CHUNK_AUTOCLAIM_NORMAL_START(PREFIX.getMsg() + ChatColor.GRAY + "Now auto-claiming land for your Settlement"),
+	CHUNK_AUTOCLAIM_NORMAL_END(PREFIX.getMsg() + ChatColor.GRAY + "No longer auto-claiming land for your Settlement"),
+	CHUNK_AUTOCLAIM_SZONE_START(PREFIX.getMsg() + "&6Now auto-claiming land for SafeZone"),
+	CHUNK_AUTOCLAIM_SZONE_END(PREFIX.getMsg() + "&6No longer auto-claiming land for SafeZone"),
 	COMMAND_INVALID_ARGS(PREFIX.getMsg() + "&4Invalid arguments. "),
 	COMMAND_INVALID_ARGUMENT(PREFIX.getMsg() + "&4Invalid command argument specified"),
 	NO_PERM(PREFIX.getMsg() + "&4You don't have permission to use that command!");
