@@ -105,7 +105,7 @@ public class RenderMap extends MapRenderer {
 		int chunkx = pchunkx;
 		int row = 2;
 		int chunkz = pchunkz;
-		ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz);
+		ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz, w);
 		if(cm.isClaimed(chunkx, chunkz, w)){
 			if(c.getType() == ClaimType.SAFEZONE){
 				for(int a = 0; a<124; a++){
@@ -149,7 +149,7 @@ public class RenderMap extends MapRenderer {
 			for(int z = 1; z<=3; z++){
 				int row = (40*z)-37+(z-1);
 				int chunkz = pchunkz+(z-2);
-				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz);
+				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz, w);
 				if(cm.isClaimed(chunkx, chunkz, w)){
 					if(c.getType() == ClaimType.SAFEZONE){
 						for(int a = 0; a<40; a++){
@@ -197,7 +197,7 @@ public class RenderMap extends MapRenderer {
 			for(int z = 1; z<=5; z++){
 				int row = (24*z)-22+(z-1);
 				int chunkz = pchunkz+(z-3);
-				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz);
+				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz, w);
 				if(cm.isClaimed(chunkx, chunkz, w)){
 					if(c.getType() == ClaimType.SAFEZONE){
 						for(int a = 0; a<24; a++){
@@ -247,7 +247,7 @@ public class RenderMap extends MapRenderer {
 			for(int z = 1; z<=7; z++){
 				int row = (16*z)-11+(z-1);
 				int chunkz = pchunkz+(z-4);
-				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz);
+				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz, w);
 				if(cm.isClaimed(chunkx, chunkz, w)){
 					if(c.getType() == ClaimType.SAFEZONE){
 						for(int a = 0; a<16; a++){
@@ -295,7 +295,7 @@ public class RenderMap extends MapRenderer {
 			for(int z = 1; z<=9; z++){
 				int row = (12*z)-6+(z-1);
 				int chunkz = pchunkz+(z-5);
-				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz);
+				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz, w);
 				if(cm.isClaimed(chunkx, chunkz, w)){
 					if(c.getType() == ClaimType.SAFEZONE){
 						for(int a = 0; a<12; a++){
@@ -343,7 +343,7 @@ public class RenderMap extends MapRenderer {
 			for(int z = 1; z<=11; z++){
 				int row = (10*z)-6+(z-1);
 				int chunkz = pchunkz+(z-6);
-				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz);
+				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz, w);
 				if(cm.isClaimed(chunkx, chunkz, w)){
 					if(c.getType() == ClaimType.SAFEZONE){
 						for(int a = 0; a<10; a++){
@@ -391,7 +391,7 @@ public class RenderMap extends MapRenderer {
 			for(int z = 1; z<=13; z++){
 				int row = (8*z)-2+(z-1);
 				int chunkz = pchunkz+(z-7);
-				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz);
+				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz, w);
 				if(cm.isClaimed(chunkx, chunkz, w)){
 					if(c.getType() == ClaimType.SAFEZONE){
 						for(int a = 0; a<8; a++){
@@ -439,7 +439,7 @@ public class RenderMap extends MapRenderer {
 			for(int z = 1; z<=17; z++){
 				int row = (6*z)-1+(z-1);
 				int chunkz = pchunkz+(z-9);
-				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz);
+				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz, w);
 				if(cm.isClaimed(chunkx, chunkz, w)){
 					if(c.getType() == ClaimType.SAFEZONE){
 						for(int a = 0; a<6; a++){
@@ -487,7 +487,7 @@ public class RenderMap extends MapRenderer {
 			for(int z = 1; z<=25; z++){
 				int row = (4*z)-2+(z-1);
 				int chunkz = pchunkz+(z-13);
-				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz);
+				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz, w);
 				if(cm.isClaimed(chunkx, chunkz, w)){
 					if(c.getType() == ClaimType.SAFEZONE){
 						for(int a = 0; a<4; a++){
@@ -535,7 +535,7 @@ public class RenderMap extends MapRenderer {
 			for(int z = 1; z<=41; z++){
 				int row = 1+(2*z)+(z-1);
 				int chunkz = pchunkz+(z-21);
-				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz);
+				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz, w);
 				if(cm.isClaimed(chunkx, chunkz, w)){
 					if(c.getType() == ClaimType.SAFEZONE){
 						for(int a = 0; a<2; a++){
@@ -583,7 +583,7 @@ public class RenderMap extends MapRenderer {
 			for(int z = 1; z<=63; z++){
 				int row = z+(z-1);;
 				int chunkz = pchunkz+(z-32);
-				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz);
+				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz, w);
 				if(cm.isClaimed(chunkx, chunkz, w)){
 					if(c.getType() == ClaimType.SAFEZONE){
 						canvas.setPixel(column, row, MapPalette.BLUE);

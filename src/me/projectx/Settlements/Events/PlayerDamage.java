@@ -22,7 +22,7 @@ public class PlayerDamage implements Listener {
 			int z = c.getZ();
 
 			if (ChunkManagerTEST.getManager().isClaimed(x, z, c.getWorld())){
-				if (ChunkManagerTEST.getManager().getChunk(x, z).getType() == ClaimType.SAFEZONE){
+				if (ChunkManagerTEST.getManager().getChunk(x, z, c.getWorld()).getType() == ClaimType.SAFEZONE){
 					e.setCancelled(true);
 				}
 			}

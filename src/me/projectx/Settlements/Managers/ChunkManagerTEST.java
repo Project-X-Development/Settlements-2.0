@@ -107,7 +107,7 @@ public class ChunkManagerTEST {
 
 	private ClaimResult unclaimChunk(final String player, final int x, final int z, World world, boolean admin){
 		if (isClaimed(x, z, world)){
-			ClaimedChunkTEST cc = getChunk(x, z);
+			ClaimedChunkTEST cc = getChunk(x, z, world);
 			switch(cc.getType()){
 				case NORMAL:
 					if (!admin){
@@ -183,9 +183,9 @@ public class ChunkManagerTEST {
 		return false;
 	}
 	
-	public ClaimedChunkTEST getChunk(int x, int z){
+	public ClaimedChunkTEST getChunk(int x, int z, World world){
 		for (ClaimedChunkTEST cc : claimedChunks){
-			if (cc.getX() == x && cc.getZ() == z){
+			if (cc.getX() == x && cc.getZ() == z && cc.getWorld().getName().equals(world.getName())){
 				return cc;
 			}
 		}

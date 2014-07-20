@@ -31,7 +31,7 @@ public class BlockEvent implements Listener{
 		int z = c.getZ();
 
 		if (ChunkManagerTEST.getManager().isClaimed(x, z, c.getWorld())){
-			ClaimedChunkTEST chunk = ChunkManagerTEST.getManager().getChunk(x, z);
+			ClaimedChunkTEST chunk = ChunkManagerTEST.getManager().getChunk(x, z, c.getWorld());
 			Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
 			if (chunk.getType() == ClaimType.SAFEZONE){
 				e.setCancelled(true);
@@ -55,7 +55,7 @@ public class BlockEvent implements Listener{
 		int z = c.getZ();
 
 		if (ChunkManagerTEST.getManager().isClaimed(x, z, c.getWorld())){
-			ClaimedChunkTEST chunk = ChunkManagerTEST.getManager().getChunk(x, z);
+			ClaimedChunkTEST chunk = ChunkManagerTEST.getManager().getChunk(x, z, c.getWorld());
 			Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
 			if (chunk.getType() == ClaimType.SAFEZONE){
 				e.setCancelled(true);
@@ -81,7 +81,7 @@ public class BlockEvent implements Listener{
 				int z = c.getZ();
 	
 				if (ChunkManagerTEST.getManager().isClaimed(x, z, c.getWorld())){
-					ClaimedChunkTEST chunk = ChunkManagerTEST.getManager().getChunk(x, z);
+					ClaimedChunkTEST chunk = ChunkManagerTEST.getManager().getChunk(x, z, c.getWorld());
 					Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
 	
 					if (SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()) != null){

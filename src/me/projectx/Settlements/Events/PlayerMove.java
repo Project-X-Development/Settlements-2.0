@@ -19,8 +19,8 @@ public class PlayerMove implements Listener{
 	@EventHandler
 	public void onMove(final PlayerMoveEvent e){
 		if (e.getFrom().getChunk() != e.getTo().getChunk()){
-			ClaimedChunkTEST c = ChunkManagerTEST.getManager().getChunk(e.getFrom().getChunk().getX(), e.getFrom().getChunk().getZ());
-			ClaimedChunkTEST d = ChunkManagerTEST.getManager().getChunk(e.getTo().getChunk().getX(), e.getTo().getChunk().getZ());
+			ClaimedChunkTEST c = ChunkManagerTEST.getManager().getChunk(e.getFrom().getChunk().getX(), e.getFrom().getChunk().getZ(), e.getFrom().getChunk().getWorld());
+			ClaimedChunkTEST d = ChunkManagerTEST.getManager().getChunk(e.getTo().getChunk().getX(), e.getTo().getChunk().getZ(), e.getTo().getChunk().getWorld());
 			if(c==null&&d==null){
 			}
 			else if(c!=null&&d==null){ //Leaving b to non claimed
