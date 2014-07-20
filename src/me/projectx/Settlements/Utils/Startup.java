@@ -15,7 +15,7 @@ import me.projectx.Settlements.Events.PlayerInteract;
 import me.projectx.Settlements.Events.PlayerJoin;
 import me.projectx.Settlements.Events.PlayerMove;
 import me.projectx.Settlements.Events.PlayerQuit;
-import me.projectx.Settlements.Managers.ChunkManagerTEST;
+import me.projectx.Settlements.Managers.ChunkManager;
 //import me.projectx.Settlements.Managers.EconomyManager;
 import me.projectx.Settlements.Managers.MapManager;
 import me.projectx.Settlements.Managers.PlayerManager;
@@ -57,7 +57,7 @@ public class Startup extends Thread {
 		loadSettlements();
 
 		//ChunkManager.getInstance().loadChunks();
-		ChunkManagerTEST.getManager().loadChunks();
+		ChunkManager.getManager().loadChunks();
 		
 		for(Player p : Bukkit.getOnlinePlayers()){
 			Players pl = PlayerManager.getInstance().addPlayer(p);

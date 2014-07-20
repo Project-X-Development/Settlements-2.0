@@ -8,14 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 import me.projectx.Settlements.Main;
-import me.projectx.Settlements.Models.ClaimedChunkTEST;
+import me.projectx.Settlements.Models.ClaimedChunk;
 import me.projectx.Settlements.Models.Settlement;
 import me.projectx.Settlements.Utils.DatabaseUtils;
 import me.projectx.Settlements.enums.ClaimResult;
 import me.projectx.Settlements.enums.ClaimType;
 import me.projectx.Settlements.enums.MessageType;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -25,15 +24,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class ChunkManagerTEST {
+public class ChunkManager {
 	
-	public Map<String, List<ClaimedChunkTEST>> setClaims = new HashMap<String, List<ClaimedChunkTEST>>();
-	private List<ClaimedChunkTEST> claimedChunks = new ArrayList<ClaimedChunkTEST>();
+	public Map<String, List<ClaimedChunk>> setClaims = new HashMap<String, List<ClaimedChunk>>();
+	private List<ClaimedChunk> claimedChunks = new ArrayList<ClaimedChunk>();
 	private Map<String, ClaimType> autoClaim = new HashMap<String, ClaimType>();
-	//private final int BASE_CHUNK_COST = 50;
-	private static ChunkManagerTEST cm = new ChunkManagerTEST();
+	private final int BASE_CHUNK_COST = 50;
+	private static ChunkManager cm = new ChunkManager();
 	
-	public static ChunkManagerTEST getManager(){
+	public static ChunkManager getManager(){
 		return cm;
 	}
 	
@@ -45,17 +44,17 @@ public class ChunkManagerTEST {
 				if (!claimed){
 					new BukkitRunnable(){
 						public void run(){
-							ClaimedChunkTEST cc = new ClaimedChunkTEST(x, z, owner, s, world.getName(), type);
+							ClaimedChunk cc = new ClaimedChunk(x, z, owner, s, world.getName(), type);
 							claimedChunks.add(cc);
 							
 							/*
 							 * Charge the base chunk cost and tack on an additional amount for the amount of chunks they already own.
 							 * More chunks = higher cost
 							 */
-							//EconomyManager.getManager().withdrawFromSettlement(s, BASE_CHUNK_COST + setClaims.get(s).size());
+							EconomyManager.getManager().withdrawFromSettlement(s, BASE_CHUNK_COST + setClaims.get(s.getName()).size() + 1);
 							
 							if (!setClaims.containsKey(s.getName())){
-								List<ClaimedChunkTEST> claims = new ArrayList<ClaimedChunkTEST>();
+								List<ClaimedChunk> claims = new ArrayList<ClaimedChunk>();
 								claims.add(cc);
 								setClaims.put(s.getName(), claims);
 							}else{
@@ -80,10 +79,10 @@ public class ChunkManagerTEST {
 			if (!claimed){
 				new BukkitRunnable(){
 					public void run(){
-						ClaimedChunkTEST cc = new ClaimedChunkTEST(x, z, owner, null, world.getName(), type);
+						ClaimedChunk cc = new ClaimedChunk(x, z, owner, null, world.getName(), type);
 						claimedChunks.add(cc);
 						if (!setClaims.containsKey(null)){
-							List<ClaimedChunkTEST> claims = new ArrayList<ClaimedChunkTEST>();
+							List<ClaimedChunk> claims = new ArrayList<ClaimedChunk>();
 							claims.add(cc);
 							setClaims.put(null, claims);
 						}else{
@@ -107,7 +106,7 @@ public class ChunkManagerTEST {
 
 	private ClaimResult unclaimChunk(final String player, final int x, final int z, World world, boolean admin){
 		if (isClaimed(x, z, world)){
-			ClaimedChunkTEST cc = getChunk(x, z, world);
+			ClaimedChunk cc = getChunk(x, z, world);
 			switch(cc.getType()){
 				case NORMAL:
 					if (!admin){
@@ -115,7 +114,7 @@ public class ChunkManagerTEST {
 						if (s != null){
 							if (cc.getSettlement().getName().equals(s.getName())){
 								if (setClaims.containsKey(s.getName())){
-									List<ClaimedChunkTEST> l = setClaims.get(s.getName());
+									List<ClaimedChunk> l = setClaims.get(s.getName());
 									l.remove(cc);
 									claimedChunks.remove(cc);
 									try {
@@ -134,7 +133,7 @@ public class ChunkManagerTEST {
 							return ClaimResult.NOT_IN_SETTLEMENT;
 						}
 					}else{
-						List<ClaimedChunkTEST> list = setClaims.get(cc.getSettlement().getName());
+						List<ClaimedChunk> list = setClaims.get(cc.getSettlement().getName());
 						if (list.contains(cc)){
 							list.remove(cc);
 							claimedChunks.remove(cc);
@@ -149,7 +148,7 @@ public class ChunkManagerTEST {
 					break;
 				case SAFEZONE:
 					if (admin){
-						List<ClaimedChunkTEST> list = setClaims.get(null);
+						List<ClaimedChunk> list = setClaims.get(null);
 						System.out.println(list.size());
 						if (list.contains(cc)){
 							list.remove(cc);
@@ -175,7 +174,7 @@ public class ChunkManagerTEST {
 	}
 	
 	public boolean isClaimed(int x, int z, World world){
-		for (ClaimedChunkTEST cc : claimedChunks){
+		for (ClaimedChunk cc : claimedChunks){
 			if (cc.getX() == x && cc.getZ() == z && cc.getWorld().getName().equals(world.getName())){
 				return true;
 			}
@@ -183,8 +182,8 @@ public class ChunkManagerTEST {
 		return false;
 	}
 	
-	public ClaimedChunkTEST getChunk(int x, int z, World world){
-		for (ClaimedChunkTEST cc : claimedChunks){
+	public ClaimedChunk getChunk(int x, int z, World world){
+		for (ClaimedChunk cc : claimedChunks){
 			if (cc.getX() == x && cc.getZ() == z && cc.getWorld().getName().equals(world.getName())){
 				return cc;
 			}
@@ -192,7 +191,7 @@ public class ChunkManagerTEST {
 		return null;
 	}
 	
-	public List<ClaimedChunkTEST> getClaims(Settlement s){
+	public List<ClaimedChunk> getClaims(Settlement s){
 		return setClaims.get(s.getName());
 	}
 	
@@ -208,8 +207,8 @@ public class ChunkManagerTEST {
 						long setid = result.getLong("settlement");
 						String w = result.getString("world");
 						Settlement s = SettlementManager.getManager().getSettlement(setid);
-						ClaimedChunkTEST cc = new ClaimedChunkTEST(x, z, player, s, w, ClaimType.valueOf(result.getString("type")));
-						List<ClaimedChunkTEST> list = new ArrayList<ClaimedChunkTEST>();
+						ClaimedChunk cc = new ClaimedChunk(x, z, player, s, w, ClaimType.valueOf(result.getString("type")));
+						List<ClaimedChunk> list = new ArrayList<ClaimedChunk>();
 						list.add(cc);
 						claimedChunks.add(cc);
 						if (s != null)

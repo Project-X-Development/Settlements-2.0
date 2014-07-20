@@ -1,6 +1,6 @@
 package me.projectx.Settlements.Events;
 
-import me.projectx.Settlements.Managers.ChunkManagerTEST;
+import me.projectx.Settlements.Managers.ChunkManager;
 import me.projectx.Settlements.Managers.SettlementManager;
 import me.projectx.Settlements.Models.Settlement;
 import me.projectx.Settlements.enums.ClaimType;
@@ -21,8 +21,8 @@ public class PlayerDamage implements Listener {
 			int x = c.getX();
 			int z = c.getZ();
 
-			if (ChunkManagerTEST.getManager().isClaimed(x, z, c.getWorld())){
-				if (ChunkManagerTEST.getManager().getChunk(x, z, c.getWorld()).getType() == ClaimType.SAFEZONE){
+			if (ChunkManager.getManager().isClaimed(x, z, c.getWorld())){
+				if (ChunkManager.getManager().getChunk(x, z, c.getWorld()).getType() == ClaimType.SAFEZONE){
 					e.setCancelled(true);
 				}
 			}

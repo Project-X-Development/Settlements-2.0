@@ -2,7 +2,7 @@ package me.projectx.Settlements.Commands;
 
 import java.sql.SQLException;
 
-import me.projectx.Settlements.Managers.ChunkManagerTEST;
+import me.projectx.Settlements.Managers.ChunkManager;
 import me.projectx.Settlements.Managers.PlayerManager;
 import me.projectx.Settlements.Managers.SettlementManager;
 import me.projectx.Settlements.Models.CommandModel;
@@ -80,13 +80,13 @@ public class CommandSettlementPlayer extends CommandModel {
 						break;
 					case "claim":
 						if (args.length == 1)
-							ChunkManagerTEST.getManager().claim((Player)sender, ClaimType.NORMAL);
+							ChunkManager.getManager().claim((Player)sender, ClaimType.NORMAL);
 						else
 							sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s claim");
 						break;
 					case "map":
 						if (args.length == 1)
-							ChunkManagerTEST.getManager().issueMap((Player)sender);
+							ChunkManager.getManager().issueMap((Player)sender);
 						else
 							sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s map");
 						break;
@@ -112,13 +112,13 @@ public class CommandSettlementPlayer extends CommandModel {
 						if (args.length == 1){
 							Player p = (Player) sender;
 							Location l = p.getLocation();
-							ChunkManagerTEST.getManager().unclaim(p, l.getChunk().getX(), l.getChunk().getZ(), l.getWorld(), false);
+							ChunkManager.getManager().unclaim(p, l.getChunk().getX(), l.getChunk().getZ(), l.getWorld(), false);
 						}else
 							sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s unclaim");
 						break;
 					case "autoclaim":
 						if (args.length == 1)
-							ChunkManagerTEST.getManager().setAutoClaiming((Player)sender, ClaimType.NORMAL);
+							ChunkManager.getManager().setAutoClaiming((Player)sender, ClaimType.NORMAL);
 						else
 							sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s autoclaim");
 						break;
@@ -157,9 +157,9 @@ public class CommandSettlementPlayer extends CommandModel {
 						break;
 					case "testclaim":
 						if (args.length == 1)
-							ChunkManagerTEST.getManager().claim((Player)sender, ClaimType.NORMAL);
+							ChunkManager.getManager().claim((Player)sender, ClaimType.NORMAL);
 						else if (args.length == 2)
-							ChunkManagerTEST.getManager().claim((Player)sender, ClaimType.SAFEZONE);
+							ChunkManager.getManager().claim((Player)sender, ClaimType.SAFEZONE);
 						break;
 					default:
 						sender.sendMessage(MessageType.COMMAND_INVALID_ARGUMENT.getMsg() + " Type /s for help");

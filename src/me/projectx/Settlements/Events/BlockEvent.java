@@ -1,8 +1,8 @@
 package me.projectx.Settlements.Events;
 
-import me.projectx.Settlements.Managers.ChunkManagerTEST;
+import me.projectx.Settlements.Managers.ChunkManager;
 import me.projectx.Settlements.Managers.SettlementManager;
-import me.projectx.Settlements.Models.ClaimedChunkTEST;
+import me.projectx.Settlements.Models.ClaimedChunk;
 import me.projectx.Settlements.enums.ClaimType;
 import me.projectx.Settlements.enums.MessageType;
 
@@ -30,8 +30,8 @@ public class BlockEvent implements Listener{
 		int x = c.getX();
 		int z = c.getZ();
 
-		if (ChunkManagerTEST.getManager().isClaimed(x, z, c.getWorld())){
-			ClaimedChunkTEST chunk = ChunkManagerTEST.getManager().getChunk(x, z, c.getWorld());
+		if (ChunkManager.getManager().isClaimed(x, z, c.getWorld())){
+			ClaimedChunk chunk = ChunkManager.getManager().getChunk(x, z, c.getWorld());
 			Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
 			if (chunk.getType() == ClaimType.SAFEZONE){
 				e.setCancelled(true);
@@ -54,8 +54,8 @@ public class BlockEvent implements Listener{
 		int x = c.getX();
 		int z = c.getZ();
 
-		if (ChunkManagerTEST.getManager().isClaimed(x, z, c.getWorld())){
-			ClaimedChunkTEST chunk = ChunkManagerTEST.getManager().getChunk(x, z, c.getWorld());
+		if (ChunkManager.getManager().isClaimed(x, z, c.getWorld())){
+			ClaimedChunk chunk = ChunkManager.getManager().getChunk(x, z, c.getWorld());
 			Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
 			if (chunk.getType() == ClaimType.SAFEZONE){
 				e.setCancelled(true);
@@ -80,8 +80,8 @@ public class BlockEvent implements Listener{
 				int x = c.getX();
 				int z = c.getZ();
 	
-				if (ChunkManagerTEST.getManager().isClaimed(x, z, c.getWorld())){
-					ClaimedChunkTEST chunk = ChunkManagerTEST.getManager().getChunk(x, z, c.getWorld());
+				if (ChunkManager.getManager().isClaimed(x, z, c.getWorld())){
+					ClaimedChunk chunk = ChunkManager.getManager().getChunk(x, z, c.getWorld());
 					Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
 	
 					if (SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()) != null){

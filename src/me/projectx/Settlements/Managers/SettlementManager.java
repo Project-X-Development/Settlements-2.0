@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 import me.projectx.Settlements.Main;
-import me.projectx.Settlements.Models.ClaimedChunkTEST;
+import me.projectx.Settlements.Models.ClaimedChunk;
 import me.projectx.Settlements.Models.Settlement;
 import me.projectx.Settlements.Utils.DatabaseUtils;
 import me.projectx.Settlements.Utils.PlayerUtils;
@@ -225,10 +225,10 @@ public class SettlementManager extends Thread {
 							DatabaseUtils.queryOut("DELETE FROM settlements WHERE id=" + s.getId() + ";");
 							DatabaseUtils.queryOut("DELETE FROM chunks WHERE settlement=" + s.getId() + ";");
 
-							List<ClaimedChunkTEST> cc = ChunkManagerTEST.getManager().getClaims(s);
+							List<ClaimedChunk> cc = ChunkManager.getManager().getClaims(s);
 							if (cc != null) {
 								cc.clear();
-								ChunkManagerTEST.getManager().setClaims.remove(s.getName());
+								ChunkManager.getManager().setClaims.remove(s.getName());
 							}
 
 							if (invitedPlayers.containsValue(s))
@@ -272,10 +272,10 @@ public class SettlementManager extends Thread {
 						DatabaseUtils.queryOut("DELETE FROM chunks WHERE settlement='"
 										+ s.getId() + "';");
 
-						List<ClaimedChunkTEST> cc = ChunkManagerTEST.getManager().getClaims(s);
+						List<ClaimedChunk> cc = ChunkManager.getManager().getClaims(s);
 						if (cc != null) {
 							cc.clear();
-							ChunkManagerTEST.getManager().setClaims.remove(s.getName());
+							ChunkManager.getManager().setClaims.remove(s.getName());
 						}
 
 						if (invitedPlayers.containsValue(s))

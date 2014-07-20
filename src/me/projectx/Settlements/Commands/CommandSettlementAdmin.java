@@ -2,7 +2,7 @@ package me.projectx.Settlements.Commands;
 
 import java.sql.SQLException;
 
-import me.projectx.Settlements.Managers.ChunkManagerTEST;
+import me.projectx.Settlements.Managers.ChunkManager;
 import me.projectx.Settlements.Managers.SettlementManager;
 import me.projectx.Settlements.Models.CommandModel;
 import me.projectx.Settlements.enums.ClaimType;
@@ -25,7 +25,7 @@ public class CommandSettlementAdmin extends CommandModel{
 				switch(args[0]){
 					case "claim":
 						if (args.length == 2)
-							ChunkManagerTEST.getManager().claim((Player)sender, ClaimType.valueOf(args[1].toUpperCase()));
+							ChunkManager.getManager().claim((Player)sender, ClaimType.valueOf(args[1].toUpperCase()));
 						else
 							sender.sendMessage(MessageType.COMMAND_INVALID_ARGS + "Try /sa claim <ClaimType>");
 						break;
@@ -39,13 +39,13 @@ public class CommandSettlementAdmin extends CommandModel{
 						if (args.length == 1){
 							Player p = (Player) sender;
 							Location l = p.getLocation();
-							ChunkManagerTEST.getManager().unclaim(p, l.getChunk().getX(), l.getChunk().getZ(), l.getWorld(), true);
+							ChunkManager.getManager().unclaim(p, l.getChunk().getX(), l.getChunk().getZ(), l.getWorld(), true);
 						}else
 							sender.sendMessage(MessageType.COMMAND_INVALID_ARGS + "Try /sa unclaim");
 						break;
 					case "autoclaim":
 						if (args.length == 2)
-							ChunkManagerTEST.getManager().setAutoClaiming((Player)sender, ClaimType.valueOf(args[1].toUpperCase()));
+							ChunkManager.getManager().setAutoClaiming((Player)sender, ClaimType.valueOf(args[1].toUpperCase()));
 						else
 							sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /sa autoclaim <ClaimType>");
 						break;

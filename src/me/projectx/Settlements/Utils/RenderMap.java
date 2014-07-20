@@ -3,10 +3,10 @@ package me.projectx.Settlements.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.projectx.Settlements.Managers.ChunkManagerTEST;
+import me.projectx.Settlements.Managers.ChunkManager;
 import me.projectx.Settlements.Managers.PlayerManager;
 import me.projectx.Settlements.Managers.SettlementManager;
-import me.projectx.Settlements.Models.ClaimedChunkTEST;
+import me.projectx.Settlements.Models.ClaimedChunk;
 import me.projectx.Settlements.Models.Players;
 import me.projectx.Settlements.Models.Settlement;
 import me.projectx.Settlements.enums.ClaimType;
@@ -33,7 +33,7 @@ public class RenderMap extends MapRenderer {
 				canvas.setPixel(i, j, MapPalette.WHITE);
 			} 
 		}
-		ChunkManagerTEST cm = ChunkManagerTEST.getManager();
+		ChunkManager cm = ChunkManager.getManager();
 		Settlement set = SettlementManager.getManager().getPlayerSettlement(p.getName());
 		int pchunkx = p.getLocation().getChunk().getX();
 		int pchunkz = p.getLocation().getChunk().getZ();
@@ -100,12 +100,12 @@ public class RenderMap extends MapRenderer {
 		return pl.getInt("map");
 	}
 
-	public void zoom1(MapView view, MapCanvas canvas, ChunkManagerTEST cm, Settlement set, int pchunkx, int pchunkz, World w){
+	public void zoom1(MapView view, MapCanvas canvas, ChunkManager cm, Settlement set, int pchunkx, int pchunkz, World w){
 		int column = 2;
 		int chunkx = pchunkx;
 		int row = 2;
 		int chunkz = pchunkz;
-		ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz, w);
+		ClaimedChunk c = cm.getChunk(chunkx, chunkz, w);
 		if(cm.isClaimed(chunkx, chunkz, w)){
 			if(c.getType() == ClaimType.SAFEZONE){
 				for(int a = 0; a<124; a++){
@@ -142,14 +142,14 @@ public class RenderMap extends MapRenderer {
 		}
 	}
 
-	public void zoom3(MapView view, MapCanvas canvas, ChunkManagerTEST cm, Settlement set, int pchunkx, int pchunkz, World w){
+	public void zoom3(MapView view, MapCanvas canvas, ChunkManager cm, Settlement set, int pchunkx, int pchunkz, World w){
 		for(int x = 1; x<=3; x++){
 			int column = (40*x)-37+(x-1);
 			int chunkx = pchunkx+(x-2);
 			for(int z = 1; z<=3; z++){
 				int row = (40*z)-37+(z-1);
 				int chunkz = pchunkz+(z-2);
-				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz, w);
+				ClaimedChunk c = cm.getChunk(chunkx, chunkz, w);
 				if(cm.isClaimed(chunkx, chunkz, w)){
 					if(c.getType() == ClaimType.SAFEZONE){
 						for(int a = 0; a<40; a++){
@@ -190,14 +190,14 @@ public class RenderMap extends MapRenderer {
 		}
 	}
 
-	public void zoom5(MapView view, MapCanvas canvas, ChunkManagerTEST cm, Settlement set, int pchunkx, int pchunkz, World w){
+	public void zoom5(MapView view, MapCanvas canvas, ChunkManager cm, Settlement set, int pchunkx, int pchunkz, World w){
 		for(int x = 1; x<=5; x++){
 			int column = (24*x)-22+(x-1);
 			int chunkx = pchunkx+(x-3);
 			for(int z = 1; z<=5; z++){
 				int row = (24*z)-22+(z-1);
 				int chunkz = pchunkz+(z-3);
-				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz, w);
+				ClaimedChunk c = cm.getChunk(chunkx, chunkz, w);
 				if(cm.isClaimed(chunkx, chunkz, w)){
 					if(c.getType() == ClaimType.SAFEZONE){
 						for(int a = 0; a<24; a++){
@@ -240,14 +240,14 @@ public class RenderMap extends MapRenderer {
 		}
 	}
 
-	public void zoom7(MapView view, MapCanvas canvas, ChunkManagerTEST cm, Settlement set, int pchunkx, int pchunkz, World w){
+	public void zoom7(MapView view, MapCanvas canvas, ChunkManager cm, Settlement set, int pchunkx, int pchunkz, World w){
 		for(int x = 1; x<=7; x++){
 			int column = (16*x)-11+(x-1);
 			int chunkx = pchunkx+(x-4);
 			for(int z = 1; z<=7; z++){
 				int row = (16*z)-11+(z-1);
 				int chunkz = pchunkz+(z-4);
-				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz, w);
+				ClaimedChunk c = cm.getChunk(chunkx, chunkz, w);
 				if(cm.isClaimed(chunkx, chunkz, w)){
 					if(c.getType() == ClaimType.SAFEZONE){
 						for(int a = 0; a<16; a++){
@@ -288,14 +288,14 @@ public class RenderMap extends MapRenderer {
 		}
 	}
 
-	public void zoom9(MapView view, MapCanvas canvas, ChunkManagerTEST cm, Settlement set, int pchunkx, int pchunkz, World w){
+	public void zoom9(MapView view, MapCanvas canvas, ChunkManager cm, Settlement set, int pchunkx, int pchunkz, World w){
 		for(int x = 1; x<=9; x++){
 			int column = (12*x)-6+(x-1);
 			int chunkx = pchunkx+(x-5);
 			for(int z = 1; z<=9; z++){
 				int row = (12*z)-6+(z-1);
 				int chunkz = pchunkz+(z-5);
-				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz, w);
+				ClaimedChunk c = cm.getChunk(chunkx, chunkz, w);
 				if(cm.isClaimed(chunkx, chunkz, w)){
 					if(c.getType() == ClaimType.SAFEZONE){
 						for(int a = 0; a<12; a++){
@@ -336,14 +336,14 @@ public class RenderMap extends MapRenderer {
 		}
 	}
 
-	public void zoom11(MapView view, MapCanvas canvas, ChunkManagerTEST cm, Settlement set, int pchunkx, int pchunkz, World w){
+	public void zoom11(MapView view, MapCanvas canvas, ChunkManager cm, Settlement set, int pchunkx, int pchunkz, World w){
 		for(int x = 1; x<=11; x++){
 			int column = (10*x)-6+(x-1);
 			int chunkx = pchunkx+(x-6);
 			for(int z = 1; z<=11; z++){
 				int row = (10*z)-6+(z-1);
 				int chunkz = pchunkz+(z-6);
-				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz, w);
+				ClaimedChunk c = cm.getChunk(chunkx, chunkz, w);
 				if(cm.isClaimed(chunkx, chunkz, w)){
 					if(c.getType() == ClaimType.SAFEZONE){
 						for(int a = 0; a<10; a++){
@@ -384,14 +384,14 @@ public class RenderMap extends MapRenderer {
 		}
 	}
 
-	public void zoom13(MapView view, MapCanvas canvas, ChunkManagerTEST cm, Settlement set, int pchunkx, int pchunkz, World w){
+	public void zoom13(MapView view, MapCanvas canvas, ChunkManager cm, Settlement set, int pchunkx, int pchunkz, World w){
 		for(int x = 1; x<=13; x++){
 			int column = (8*x)-2+(x-1);
 			int chunkx = pchunkx+(x-7);
 			for(int z = 1; z<=13; z++){
 				int row = (8*z)-2+(z-1);
 				int chunkz = pchunkz+(z-7);
-				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz, w);
+				ClaimedChunk c = cm.getChunk(chunkx, chunkz, w);
 				if(cm.isClaimed(chunkx, chunkz, w)){
 					if(c.getType() == ClaimType.SAFEZONE){
 						for(int a = 0; a<8; a++){
@@ -432,14 +432,14 @@ public class RenderMap extends MapRenderer {
 		}
 	}
 
-	public void zoom17(MapView view, MapCanvas canvas, ChunkManagerTEST cm, Settlement set, int pchunkx, int pchunkz, World w){
+	public void zoom17(MapView view, MapCanvas canvas, ChunkManager cm, Settlement set, int pchunkx, int pchunkz, World w){
 		for(int x = 1; x<=17; x++){
 			int column = (6*x)-1+(x-1);
 			int chunkx = pchunkx+(x-9);
 			for(int z = 1; z<=17; z++){
 				int row = (6*z)-1+(z-1);
 				int chunkz = pchunkz+(z-9);
-				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz, w);
+				ClaimedChunk c = cm.getChunk(chunkx, chunkz, w);
 				if(cm.isClaimed(chunkx, chunkz, w)){
 					if(c.getType() == ClaimType.SAFEZONE){
 						for(int a = 0; a<6; a++){
@@ -480,14 +480,14 @@ public class RenderMap extends MapRenderer {
 		}
 	}
 
-	public void zoom25(MapView view, MapCanvas canvas, ChunkManagerTEST cm, Settlement set, int pchunkx, int pchunkz, World w){
+	public void zoom25(MapView view, MapCanvas canvas, ChunkManager cm, Settlement set, int pchunkx, int pchunkz, World w){
 		for(int x = 1; x<=25; x++){
 			int column = (4*x)-2+(x-1);
 			int chunkx = pchunkx+(x-13);
 			for(int z = 1; z<=25; z++){
 				int row = (4*z)-2+(z-1);
 				int chunkz = pchunkz+(z-13);
-				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz, w);
+				ClaimedChunk c = cm.getChunk(chunkx, chunkz, w);
 				if(cm.isClaimed(chunkx, chunkz, w)){
 					if(c.getType() == ClaimType.SAFEZONE){
 						for(int a = 0; a<4; a++){
@@ -528,14 +528,14 @@ public class RenderMap extends MapRenderer {
 		}
 	}
 
-	public void zoom41(MapView view, MapCanvas canvas, ChunkManagerTEST cm, Settlement set, int pchunkx, int pchunkz, World w){
+	public void zoom41(MapView view, MapCanvas canvas, ChunkManager cm, Settlement set, int pchunkx, int pchunkz, World w){
 		for(int x = 1; x<=41; x++){
 			int column = 1+(2*x)+(x-1);
 			int chunkx = pchunkx+(x-21);
 			for(int z = 1; z<=41; z++){
 				int row = 1+(2*z)+(z-1);
 				int chunkz = pchunkz+(z-21);
-				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz, w);
+				ClaimedChunk c = cm.getChunk(chunkx, chunkz, w);
 				if(cm.isClaimed(chunkx, chunkz, w)){
 					if(c.getType() == ClaimType.SAFEZONE){
 						for(int a = 0; a<2; a++){
@@ -576,14 +576,14 @@ public class RenderMap extends MapRenderer {
 		}
 	}
 
-	public void zoom125(MapView view, MapCanvas canvas, ChunkManagerTEST cm, Settlement set, int pchunkx, int pchunkz, World w){
+	public void zoom125(MapView view, MapCanvas canvas, ChunkManager cm, Settlement set, int pchunkx, int pchunkz, World w){
 		for(int x = 1; x<=63; x++){
 			int column = x+(x-1);
 			int chunkx = pchunkx+(x-32);
 			for(int z = 1; z<=63; z++){
 				int row = z+(z-1);;
 				int chunkz = pchunkz+(z-32);
-				ClaimedChunkTEST c = cm.getChunk(chunkx, chunkz, w);
+				ClaimedChunk c = cm.getChunk(chunkx, chunkz, w);
 				if(cm.isClaimed(chunkx, chunkz, w)){
 					if(c.getType() == ClaimType.SAFEZONE){
 						canvas.setPixel(column, row, MapPalette.BLUE);
