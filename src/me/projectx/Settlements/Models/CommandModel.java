@@ -2,7 +2,7 @@ package me.projectx.Settlements.Models;
 
 import java.sql.SQLException;
 
-import me.projectx.Settlements.Utils.MessageType;
+import me.projectx.Settlements.enums.MessageType;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

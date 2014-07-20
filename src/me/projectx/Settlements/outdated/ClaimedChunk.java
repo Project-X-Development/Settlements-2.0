@@ -1,9 +1,10 @@
-package me.projectx.Settlements.Models;
+package me.projectx.Settlements.outdated;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import me.projectx.Settlements.Utils.ClaimType;
+import me.projectx.Settlements.Models.Settlement;
+import me.projectx.Settlements.enums.ClaimType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;

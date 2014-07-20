@@ -6,5 +6,5 @@ public enum ClaimType {
 	SAFEZONE,
 	BATTLEGROUND,
 	CAPITAL,
-	TRAP,	
+	TRAP;
 }
