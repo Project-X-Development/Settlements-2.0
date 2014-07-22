@@ -1,4 +1,4 @@
-package me.projectx.Settlements.Utils;
+package me.projectx.Settlements.runtime;
 
 import java.util.Collections;
 import java.util.UUID;

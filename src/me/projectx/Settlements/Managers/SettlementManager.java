@@ -12,9 +12,9 @@ import me.projectx.Settlements.Main;
 import me.projectx.Settlements.Models.ClaimedChunk;
 import me.projectx.Settlements.Models.Settlement;
 import me.projectx.Settlements.Utils.DatabaseUtils;
-import me.projectx.Settlements.Utils.MessageType;
 import me.projectx.Settlements.Utils.PlayerUtils;
-import me.projectx.Settlements.Utils.SettlementRuntime;
+import me.projectx.Settlements.enums.MessageType;
+import me.projectx.Settlements.runtime.SettlementRuntime;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -225,10 +225,10 @@ public class SettlementManager extends Thread {
 							DatabaseUtils.queryOut("DELETE FROM settlements WHERE id=" + s.getId() + ";");
 							DatabaseUtils.queryOut("DELETE FROM chunks WHERE settlement=" + s.getId() + ";");
 
-							List<ClaimedChunk> cc = ChunkManager.getInstance().map.get(s);
+							List<ClaimedChunk> cc = ChunkManager.getManager().getClaims(s);
 							if (cc != null) {
-								ChunkManager.getInstance().map.remove(s);
-								ClaimedChunk.instances.remove(cc);
+								cc.clear();
+								ChunkManager.getManager().setClaims.remove(s.getName());
 							}
 
 							if (invitedPlayers.containsValue(s))
@@ -272,11 +272,10 @@ public class SettlementManager extends Thread {
 						DatabaseUtils.queryOut("DELETE FROM chunks WHERE settlement='"
 										+ s.getId() + "';");
 
-						List<ClaimedChunk> cc = ChunkManager.getInstance().map
-								.get(s);
+						List<ClaimedChunk> cc = ChunkManager.getManager().getClaims(s);
 						if (cc != null) {
-							ClaimedChunk.instances.removeAll(cc);
-							ChunkManager.getInstance().map.remove(s);
+							cc.clear();
+							ChunkManager.getManager().setClaims.remove(s.getName());
 						}
 
 						if (invitedPlayers.containsValue(s))
@@ -491,22 +490,6 @@ public class SettlementManager extends Thread {
 			}
 		} else {
 			sender.sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
-		}
-	}
-
-	/**
-	 * Calculate the power for a Settlement
-	 * 
-	 * @param s: The settlement to calculate the power for
-	 * @deprecated Shitty method that needs replacing again
-	 */
-	public void calculatePower(Settlement s) {
-		// int citizens = s.getCitizens().size();
-		// int officers = s.getOfficers().size();
-		for (ClaimedChunk cc : ClaimedChunk.instances) {
-			if (cc.getSettlement().equals(s)) {
-				s.setPower( /* ((citizens + officers + 1)/ */ChunkManager.getInstance().map.get(s).size());
-			}
 		}
 	}
 

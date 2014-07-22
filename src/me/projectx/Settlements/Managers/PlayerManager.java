@@ -6,7 +6,7 @@ import java.util.List;
 import org.bukkit.entity.Player;
 
 import me.projectx.Settlements.Models.Players;
-import me.projectx.Settlements.Utils.MessageType;
+import me.projectx.Settlements.enums.MessageType;
 
 public class PlayerManager {
 	

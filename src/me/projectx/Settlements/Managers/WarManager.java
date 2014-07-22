@@ -5,7 +5,7 @@ import java.util.Map;
 
 import me.projectx.Settlements.Models.Settlement;
 import me.projectx.Settlements.Models.War;
-import me.projectx.Settlements.Utils.MessageType;
+import me.projectx.Settlements.enums.MessageType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

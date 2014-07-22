@@ -1,4 +1,4 @@
-package me.projectx.Settlements.Utils;
+package me.projectx.Settlements.enums;
 
 import java.util.ArrayList;
 import java.util.Arrays;

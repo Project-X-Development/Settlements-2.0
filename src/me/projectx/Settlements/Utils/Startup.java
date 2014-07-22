@@ -13,15 +13,16 @@ import me.projectx.Settlements.Events.PlayerDamage;
 import me.projectx.Settlements.Events.PlayerDeath;
 import me.projectx.Settlements.Events.PlayerInteract;
 import me.projectx.Settlements.Events.PlayerJoin;
-//import me.projectx.Settlements.Events.PlayerJoin;
 import me.projectx.Settlements.Events.PlayerMove;
 import me.projectx.Settlements.Events.PlayerQuit;
 import me.projectx.Settlements.Managers.ChunkManager;
-import me.projectx.Settlements.Managers.EconomyManager;
+//import me.projectx.Settlements.Managers.EconomyManager;
 import me.projectx.Settlements.Managers.MapManager;
 import me.projectx.Settlements.Managers.PlayerManager;
 import me.projectx.Settlements.Managers.SettlementManager;
 import me.projectx.Settlements.Models.Players;
+import me.projectx.Settlements.enums.CommandType;
+import me.projectx.Settlements.runtime.SettlementRuntime;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -55,7 +56,8 @@ public class Startup extends Thread {
 
 		loadSettlements();
 
-		ChunkManager.getInstance().loadChunks();
+		//ChunkManager.getInstance().loadChunks();
+		ChunkManager.getManager().loadChunks();
 		
 		for(Player p : Bukkit.getOnlinePlayers()){
 			Players pl = PlayerManager.getInstance().addPlayer(p);

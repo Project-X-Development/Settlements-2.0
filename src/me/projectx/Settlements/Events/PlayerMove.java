@@ -1,17 +1,15 @@
 package me.projectx.Settlements.Events;
 
-import java.sql.SQLException;
-
 import me.projectx.Economy.Main;
 import me.projectx.Settlements.Managers.ChunkManager;
-import me.projectx.Settlements.Managers.ChunkManagerTEST;
 import me.projectx.Settlements.Managers.MapManager;
-import me.projectx.Settlements.Models.ClaimedChunkTEST;
+import me.projectx.Settlements.Models.ClaimedChunk;
 import me.projectx.Settlements.Models.Settlement;
-import me.projectx.Settlements.Utils.ClaimType;
+import me.projectx.Settlements.enums.ClaimType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -21,17 +19,24 @@ public class PlayerMove implements Listener{
 	@EventHandler
 	public void onMove(final PlayerMoveEvent e){
 		if (e.getFrom().getChunk() != e.getTo().getChunk()){
-			ClaimedChunkTEST c = ChunkManagerTEST.getManager().getChunk(e.getFrom().getChunk().getX(), e.getFrom().getChunk().getZ());
-			ClaimedChunkTEST d = ChunkManagerTEST.getManager().getChunk(e.getTo().getChunk().getX(), e.getTo().getChunk().getZ());
+			ClaimedChunk c = ChunkManager.getManager().getChunk(e.getFrom().getChunk().getX(), e.getFrom().getChunk().getZ(), e.getFrom().getChunk().getWorld());
+			ClaimedChunk d = ChunkManager.getManager().getChunk(e.getTo().getChunk().getX(), e.getTo().getChunk().getZ(), e.getTo().getChunk().getWorld());
 			if(c==null&&d==null){
-			}else if(c!=null&&d==null){ //Leaving b to non claimed
+			}
+			else if(c!=null&&d==null){ //Leaving b to non claimed
 				e.getPlayer().sendMessage(ChatColor.GREEN + "~Wilderness");
-			}else if(d!=null&&c==null){ //Entering a from unclaimed
-				Settlement a = d.getSettlement();
-				if (d.getType() == ClaimType.NORMAL) {
-					e.getPlayer().sendMessage(ChatColor.AQUA + a.getName() + ChatColor.RED + " ~ " + ChatColor.GRAY + a.getDescription());
-				} else if (d.getType() == ClaimType.SAFEZONE) {
-					e.getPlayer().sendMessage(ChatColor.GOLD + "SafeZone ~ Safe from PvP and Monsters");
+			}
+			else if(d!=null&&c==null){ //Entering claimed land from unclaimed
+				Settlement a = d.getSettlement();		
+				switch(d.getType()){
+					case NORMAL:
+						e.getPlayer().sendMessage(ChatColor.AQUA + a.getName() + ChatColor.RED + " ~ " + ChatColor.GRAY + a.getDescription());
+						break;
+					case SAFEZONE:
+						e.getPlayer().sendMessage(ChatColor.GOLD + "SafeZone ~ Safe from PvP and Monsters");
+						break;
+					default:
+						break;
 				}
 			}else if(c!=null&&d!=null){ //Entering one claim to another claim
 				Settlement a = c.getSettlement();
@@ -42,7 +47,7 @@ public class PlayerMove implements Listener{
 				}
 
 				if (a != null && b!= null){
-					if(!a.equals(b)){ //NPE
+					if(!a.equals(b)){
 						if (d.getType() == ClaimType.NORMAL) {
 							e.getPlayer().sendMessage(ChatColor.GREEN + "Leaving " + a.getName() + " entering " + b.getName());
 						} 
@@ -62,15 +67,10 @@ public class PlayerMove implements Listener{
 			},1);
 		}
 
-
-		if (ChunkManager.getInstance().isAutoClaiming(e.getPlayer())){
-			try {
-				if (!ChunkManager.getInstance().isClaimed(e.getPlayer().getLocation().getChunk().getX(), e.getPlayer().getLocation().getChunk().getZ()))
-				{
-					ChunkManager.getInstance().claimChunk(e.getPlayer(), ClaimType.NORMAL); //temp type
-				}
-			} catch(SQLException ex) {
-				ex.printStackTrace();
+		if (ChunkManager.getManager().isAutoClaiming(e.getPlayer())){
+			Chunk c = e.getPlayer().getLocation().getChunk();
+			if (!ChunkManager.getManager().isClaimed(c.getX(), c.getZ(), c.getWorld())){
+				ChunkManager.getManager().claim(e.getPlayer(), ChunkManager.getManager().getAutoclaimType(e.getPlayer()));
 			}
 		}
 	}

@@ -6,7 +6,7 @@ import me.projectx.Economy.Managers.AccountManager;
 import me.projectx.Settlements.Main;
 import me.projectx.Settlements.Models.Settlement;
 import me.projectx.Settlements.Utils.DatabaseUtils;
-import me.projectx.Settlements.Utils.MessageType;
+import me.projectx.Settlements.enums.MessageType;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -75,7 +75,7 @@ public class EconomyManager {
 	 */
 	public void taxSettlements(){
 		for (Settlement s : SettlementManager.getManager().settlements){
-			int claimCount = ChunkManager.getInstance().getClaims(s).size();
+			int claimCount = ChunkManager.getManager().getClaims(s).size();
 			double cost = claimCount * 20; //number of claimed chunks * 20 just cuz. Might need to change the amount
 			withdrawFromSettlement(s, cost);
 			s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + 
