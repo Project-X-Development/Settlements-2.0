@@ -16,86 +16,99 @@ import org.bukkit.entity.Player;
 public class WarManager {
 
 	/*
-	 * TODO
-	 * Add database saving & loading
-	 * 
+	 * TODO Add database saving & loading
 	 */
 	private static WarManager instance;
 
 	private final Map<Settlement, Settlement> requests = new HashMap<Settlement, Settlement>();
 
-	public static WarManager getInstance(){
+	public static WarManager getInstance() {
 		return instance;
 	}
 
-	public War getWar(long id){
-		for (War w : War.instances){
-			if (w.getId() == id){
+	public War getWar(long id) {
+		for (War w : War.instances) {
+			if (w.getId() == id) {
 				return w;
 			}
 		}
 		return null;
 	}
 
-	public War getWar(Settlement set){
-		for (War w : War.instances){
-			if (w.getStarter() == set || w.getAccepter() == set){
+	public War getWar(Settlement set) {
+		for (War w : War.instances) {
+			if (w.getStarter() == set || w.getAccepter() == set) {
 				return w;
 			}
 		}
 		return null;
 	}
 
-	public boolean createWar(Settlement setA, Settlement setB, CommandSender sender){
-		if (setA.isLeader(((Player) sender).getUniqueId())){
-			if (!setA.isInWar()){
-				if (!setB.isInWar()){
+	public boolean createWar(Settlement setA, Settlement setB,
+			CommandSender sender) {
+		if (setA.isLeader(((Player) sender).getUniqueId())) {
+			if (!setA.isInWar()) {
+				if (!setB.isInWar()) {
 					int powerA = setA.getPower();
 					int powerB = setB.getPower();
-					if (Math.abs(powerA - powerB) > (powerA/10)){
-						sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + setB.getName() + " has been sent a request of war!");
+					if (Math.abs(powerA - powerB) > (powerA / 10)) {
+						sender.sendMessage(MessageType.PREFIX.getMsg()
+								+ ChatColor.RED + setB.getName()
+								+ " has been sent a request of war!");
 						return true;
-					}
-					else{
-						sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "Your power is not close enough to start a war!");
+					} else {
+						sender.sendMessage(MessageType.PREFIX.getMsg()
+								+ ChatColor.RED
+								+ "Your power is not close enough to start a war!");
 						return false;
 					}
-				}
-				else{
-					sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + setB.getName() + " is already in war!");
+				} else {
+					sender.sendMessage(MessageType.PREFIX.getMsg()
+							+ ChatColor.RED + setB.getName()
+							+ " is already in war!");
 					return false;
 				}
 
-			}
-			else{
-				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You are already in war!");
+			} else {
+				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED
+						+ "You are already in war!");
 				return false;
 			}
-		}
-		else{
-			sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You must be an owner to declare war!");
+		} else {
+			sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED
+					+ "You must be an owner to declare war!");
 			return false;
 		}
 	}
 
-	@SuppressWarnings("deprecation")
-	public void sendRequest(Settlement sender, Settlement set){
+	public void endWar(War w) {
+
+	}
+
+	public void sendRequest(Settlement sender, Settlement set) {
 		OfflinePlayer p = Bukkit.getOfflinePlayer(set.getLeader());
-		if (p.isOnline()){
-			((Player) p).sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GOLD + sender.getName() + " has requsted a war! Do '/s war accept' to accept or '/s war deny' to deny.");
+		if (p.isOnline()) {
+			((Player) p)
+					.sendMessage(MessageType.PREFIX.getMsg()
+							+ ChatColor.GOLD
+							+ sender.getName()
+							+ " has requsted a war! Do '/s war accept' to accept or '/s war deny' to deny.");
 			requests.put(sender, set);
-		}
-		else{
+		} else {
 			requests.put(sender, set);
 		}
 	}
 
-	public void acceptRequest(Settlement set){
-		if (requests.containsValue(set)){
-			for (Settlement temp : requests.keySet()){
-				if (requests.get(temp) == set){
-					set.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.GOLD + "You are now at war with " + temp.getName() + "!");
-					temp.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.GOLD + set.getName() + " is now at war with your settlement!");
+	public void acceptRequest(Settlement set) {
+		if (requests.containsValue(set)) {
+			for (Settlement temp : requests.keySet()) {
+				if (requests.get(temp) == set) {
+					set.sendSettlementMessage(MessageType.PREFIX.getMsg()
+							+ ChatColor.GOLD + "You are now at war with "
+							+ temp.getName() + "!");
+					temp.sendSettlementMessage(MessageType.PREFIX.getMsg()
+							+ ChatColor.GOLD + set.getName()
+							+ " is now at war with your settlement!");
 					new War(temp, set);
 					requests.remove(temp);
 					break;
@@ -104,11 +117,13 @@ public class WarManager {
 		}
 	}
 
-	public void denyRequest(Settlement set){
-		if (requests.containsValue(set)){
-			for (Settlement temp : requests.keySet()){
-				if (requests.get(temp) == set){
-					temp.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.GOLD + set.getName() + " has denied your request of war!");
+	public void denyRequest(Settlement set) {
+		if (requests.containsValue(set)) {
+			for (Settlement temp : requests.keySet()) {
+				if (requests.get(temp) == set) {
+					temp.sendSettlementMessage(MessageType.PREFIX.getMsg()
+							+ ChatColor.GOLD + set.getName()
+							+ " has denied your request of war!");
 					requests.remove(temp);
 					break;
 				}
@@ -116,11 +131,11 @@ public class WarManager {
 		}
 	}
 
-	public Map<Settlement, Settlement> getRequests(){
+	public Map<Settlement, Settlement> getRequests() {
 		return requests;
 	}
 
-	public boolean hasRequest(Settlement s){
+	public boolean hasRequest(Settlement s) {
 		return requests.containsValue(s);
 	}
 }
