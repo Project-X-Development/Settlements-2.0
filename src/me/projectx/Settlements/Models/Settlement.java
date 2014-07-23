@@ -457,7 +457,7 @@ public class Settlement {
 		@Override
 		public int compare(Settlement s1, Settlement s2) {
 			String n1 = s1.getName().toUpperCase();
-			String n2 = s1.getName().toUpperCase();
+			String n2 = s2.getName().toUpperCase();
 
 			return n1.compareTo(n2);
 		}
