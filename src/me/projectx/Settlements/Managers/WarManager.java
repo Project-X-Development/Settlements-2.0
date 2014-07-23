@@ -81,18 +81,21 @@ public class WarManager {
 		}
 	}
 
+	//Hippie: I just want peace man ☮
 	public void endWar(War w) {
-
+		w.getStarter().sendSettlementMessage("The war with " + w.getAccepter().getName() + " has ended!");
+		w.getAccepter().sendSettlementMessage("The war with " + w.getStarter().getName() + " has ended!");
+		War.instances.remove(w);
 	}
 
 	public void sendRequest(Settlement sender, Settlement set) {
 		OfflinePlayer p = Bukkit.getOfflinePlayer(set.getLeader());
 		if (p.isOnline()) {
 			((Player) p)
-					.sendMessage(MessageType.PREFIX.getMsg()
-							+ ChatColor.GOLD
-							+ sender.getName()
-							+ " has requsted a war! Do '/s war accept' to accept or '/s war deny' to deny.");
+			.sendMessage(MessageType.PREFIX.getMsg()
+					+ ChatColor.GOLD
+					+ sender.getName()
+					+ " has requsted a war! Do '/s war accept' to accept or '/s war deny' to deny.");
 			requests.put(sender, set);
 		} else {
 			requests.put(sender, set);
