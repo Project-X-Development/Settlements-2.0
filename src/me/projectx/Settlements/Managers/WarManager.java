@@ -83,8 +83,8 @@ public class WarManager {
 
 	//Hippie: I just want peace man ☮
 	public void endWar(War w) {
-		w.getStarter().sendSettlementMessage("The war with " + w.getAccepter().getName() + " has ended!");
-		w.getAccepter().sendSettlementMessage("The war with " + w.getStarter().getName() + " has ended!");
+		w.getStarter().sendSettlementMessage(ChatColor.GREEN + "The war with " + w.getAccepter().getName() + " has ended! ☮");
+		w.getAccepter().sendSettlementMessage(ChatColor.GREEN + "The war with " + w.getStarter().getName() + " has ended! ☮");
 		War.instances.remove(w);
 	}
 

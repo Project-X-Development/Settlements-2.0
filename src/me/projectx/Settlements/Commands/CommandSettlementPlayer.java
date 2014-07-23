@@ -25,6 +25,7 @@ public class CommandSettlementPlayer extends CommandModel {
 	@Override
 	public boolean onCmd(CommandSender sender, String cml, String[] args) throws SQLException {
 		if (cml.equalsIgnoreCase("s")){
+			Player p = (Player)sender;
 			if (args.length > 0){
 				switch(args[0]){
 				case "create":
@@ -110,7 +111,6 @@ public class CommandSettlementPlayer extends CommandModel {
 					break;
 				case "unclaim":
 					if (args.length == 1){
-						Player p = (Player) sender;
 						Location l = p.getLocation();
 						ChunkManager.getManager().unclaim(p, l.getChunk().getX(), l.getChunk().getZ(), l.getWorld(), false);
 					}else
@@ -118,13 +118,12 @@ public class CommandSettlementPlayer extends CommandModel {
 					break;
 				case "autoclaim":
 					if (args.length == 1)
-						ChunkManager.getManager().setAutoClaiming((Player)sender, ClaimType.NORMAL);
+						ChunkManager.getManager().setAutoClaiming(p, ClaimType.NORMAL);
 					else
 						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s autoclaim");
 					break;
 				case "chat": //needs some work
 					if (args.length == 1){
-						Player p = (Player) sender;
 						if (args.length == 1)
 							PlayerManager.getInstance().setSettlementChatting(p);
 						else if (args.length == 2)
@@ -152,7 +151,6 @@ public class CommandSettlementPlayer extends CommandModel {
 						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s home");
 					break;
 				case "id":
-					Player p = (Player)sender;
 					p.sendMessage(PlayerUtils.getNameFromUUID(p.getUniqueId()));
 					break;
 				case "testclaim":

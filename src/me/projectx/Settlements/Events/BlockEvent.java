@@ -19,11 +19,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class BlockEvent implements Listener{
 
-	/*
-	 * TODO
-	 * Add exceptions to these if 2 settlements are at war
-	 */
-
 	@EventHandler
 	public void onBreak(final BlockBreakEvent e){
 		Chunk c = e.getBlock().getLocation().getChunk();
@@ -38,7 +33,7 @@ public class BlockEvent implements Listener{
 				e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GOLD + "You cannot break blocks in a SafeZone");
 				return;
 			}
-			
+
 			if (!SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()).isInWar()){
 				if (p != e.getPlayer()){
 					e.setCancelled(true);
@@ -62,7 +57,7 @@ public class BlockEvent implements Listener{
 				e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GOLD + "You cannot place blocks in a SafeZone");
 				return;
 			}
-			
+
 			if (!SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()).isInWar()){
 				if (p != e.getPlayer()){
 					e.setCancelled(true);
@@ -79,11 +74,11 @@ public class BlockEvent implements Listener{
 				Chunk c = e.getClickedBlock().getLocation().getChunk();
 				int x = c.getX();
 				int z = c.getZ();
-	
+
 				if (ChunkManager.getManager().isClaimed(x, z, c.getWorld())){
 					ClaimedChunk chunk = ChunkManager.getManager().getChunk(x, z, c.getWorld());
 					Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
-	
+
 					if (SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()) != null){
 						if (!SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()).isInWar()){
 							if (!(p == e.getPlayer())){

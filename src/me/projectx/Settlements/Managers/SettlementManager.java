@@ -67,8 +67,8 @@ public class SettlementManager extends Thread {
 						ResultSet citizens = DatabaseUtils.queryIn("SELECT * FROM citizens WHERE settlement='" + set.getName() + "';");
 						while (citizens.next()) {
 							UUID uuid = UUID.fromString(citizens.getString("uuid"));
-							String rank = citizens.getString("rank");	
-							
+							String rank = citizens.getString("rank");
+
 							/* Rank 1 = Citizen || Rank 2 = Officer || Rank 3 = Leader */
 							if (rank.equalsIgnoreCase("1")){
 								set.getCitizens().add(uuid);
@@ -76,10 +76,10 @@ public class SettlementManager extends Thread {
 								set.getOfficers().add(uuid);
 							}
 							SettlementRuntime.getRuntime().sortMembers(set);
-							
+
 							ResultSet homes = DatabaseUtils.queryIn("SELECT * FROM sethomes WHERE name='" + set.getName() + "';");
 							while (homes.next()){
-								set.setHome(new Location(Bukkit.getWorld(homes.getString("world")), homes.getDouble("x"), homes.getDouble("y"), 
+								set.setHome(new Location(Bukkit.getWorld(homes.getString("world")), homes.getDouble("x"), homes.getDouble("y"),
 										homes.getDouble("z"), homes.getFloat("yaw"), homes.getFloat("pitch")));
 							}
 						}
@@ -192,7 +192,7 @@ public class SettlementManager extends Thread {
 				s.setLeader(p.getUniqueId());
 				settlements.add(s);
 				DatabaseUtils.queryOut("INSERT INTO settlements (id, name, leader)" + "VALUES ('" + s.getId() + "','" + s.getName()
-							+ "','" + s.getLeader().toString() + "');");
+						+ "','" + s.getLeader().toString() + "');");
 				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully created " + ChatColor.AQUA + s.getName());
 				sender.sendMessage(ChatColor.GRAY + "You can now set a description by doing " + ChatColor.AQUA + "/s desc <description>");
 				sender.sendMessage(ChatColor.GRAY + "For more things you can do, type " + ChatColor.AQUA + "/s");
@@ -241,7 +241,7 @@ public class SettlementManager extends Thread {
 							sender.sendMessage(MessageType.PREFIX.getMsg()
 									+ ChatColor.GRAY + "Successfully deleted "
 									+ ChatColor.AQUA + s.getName());
-							
+
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}
@@ -269,9 +269,9 @@ public class SettlementManager extends Thread {
 				public void run() {
 					try {
 						DatabaseUtils.queryOut("DELETE FROM settlements WHERE id="
-										+ s.getId() + ";");
+								+ s.getId() + ";");
 						DatabaseUtils.queryOut("DELETE FROM chunks WHERE settlement='"
-										+ s.getId() + "';");
+								+ s.getId() + "';");
 
 						List<ClaimedChunk> cc = ChunkManager.getManager().getClaims(s);
 						if (cc != null) {
@@ -290,7 +290,7 @@ public class SettlementManager extends Thread {
 
 					} catch (SQLException e) {
 						e.printStackTrace();
-					} 
+					}
 				}
 			}.start();
 		} else {
@@ -353,10 +353,10 @@ public class SettlementManager extends Thread {
 				invitedPlayers.remove(player);
 				DatabaseUtils.queryOut("DELETE FROM citizens WHERE uuid='" + id.toString() + "';");
 				DatabaseUtils.queryOut("INSERT INTO citizens(uuid, settlement, rank) VALUES ('"
-								+ id.toString()
-								+ "','"
-								+ s.getName()
-								+ "','1');");
+						+ id.toString()
+						+ "','"
+						+ s.getName()
+						+ "','1');");
 				p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY
 						+ "Successfully joined " + ChatColor.AQUA
 						+ getPlayerSettlement(id).getName());
@@ -536,15 +536,17 @@ public class SettlementManager extends Thread {
 	 * @param settlement: The Settlement who's members will be listed
 	 * @deprecated Broken atm
 	 */
+	@Deprecated
 	public void displayMembers(final Player player, String settlement) {
 		final Settlement s = getSettlement(settlement);
 		if (s != null) {
 			new BukkitRunnable(){
+				@Override
 				public void run(){
 					Inventory inv = Bukkit.createInventory(null, getInventorySize(s.memberSize()), ChatColor.BLUE + "Members of " + s.getName());
 					ItemStack is = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 					SkullMeta sm = (SkullMeta) is.getItemMeta();
-		
+
 					for (int i = 0; i < s.memberSize(); i++) {
 						Player p = Bukkit.getPlayer(s.getPlayer(i));
 						if (p != null){
@@ -578,7 +580,7 @@ public class SettlementManager extends Thread {
 	 * @return The size of the inventory, based on a multiple of 9
 	 */
 	public static int getInventorySize(int max) {
-		if (max <= 0) 
+		if (max <= 0)
 			return 9;
 		int quotient = (int) Math.ceil(max / 9.0);
 		return quotient > 5 ? 54 : quotient * 9;
@@ -597,8 +599,9 @@ public class SettlementManager extends Thread {
 		for (int i = 0; i < settlements.size(); i++) {
 			Settlement s = settlements.get(i);
 			im.setDisplayName(ChatColor.AQUA + s.getName());
-			im.setLore(Arrays.asList(ChatColor.GOLD + "Owner: " + ChatColor.GREEN + Bukkit.getPlayer(s.getLeader()).getName(),
-					ChatColor.DARK_GREEN + "Members: " + ChatColor.RED+ s.memberSize())); // TODO add settlement desc, power, & bal
+			im.setLore(Arrays.asList(ChatColor.AQUA + s.getDescription(), ChatColor.GOLD + "Owner: " + ChatColor.GREEN + Bukkit.getPlayer(s.getLeader()).getName(),
+					ChatColor.DARK_GREEN + "Members: " + ChatColor.RED + s.memberSize(), ChatColor.LIGHT_PURPLE + "Power: " + ChatColor.BLUE + s.getPower(),
+					ChatColor.GREEN + "Money: " + ChatColor.GOLD + "$" + s.getBalance()));
 			is.setItemMeta(im);
 			inv.setItem(i, is);
 		}
@@ -611,7 +614,7 @@ public class SettlementManager extends Thread {
 		if (s != null) {
 			if (!s.isOfficer(id)){
 				s.setOfficer(id);
-				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + player.getDisplayName() + 
+				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + player.getDisplayName() +
 						ChatColor.GRAY + " has been promoted to " + ChatColor.BLUE + "Officer");
 				try {
 					DatabaseUtils.queryOut("UPDATE citizens WHERE uuid='"
@@ -626,7 +629,7 @@ public class SettlementManager extends Thread {
 			sender.sendMessage(MessageType.SETTLEMENT_NO_MEMBER.getMsg());
 		}
 	}
-	
+
 	public void setHome(Player player){
 		UUID id = player.getUniqueId();
 		Settlement s = getPlayerSettlement(id);
@@ -636,8 +639,8 @@ public class SettlementManager extends Thread {
 				s.setHome(loc);
 				s.sendSettlementMessage("New home location set!"); //temp msg
 				try{
-					DatabaseUtils.queryOut("UPDATE sethomes SET world='" + loc.getWorld().getName() 
-							+ "', x=" + loc.getX() + ", y=" + loc.getY() + ", z=" + loc.getZ() 
+					DatabaseUtils.queryOut("UPDATE sethomes SET world='" + loc.getWorld().getName()
+							+ "', x=" + loc.getX() + ", y=" + loc.getY() + ", z=" + loc.getZ()
 							+ ", yaw=" + loc.getYaw() + ", pitch=" + loc.getPitch() + "WHERE name='" + s.getName() + "';");
 				}catch(SQLException e){
 					e.printStackTrace();
@@ -645,7 +648,7 @@ public class SettlementManager extends Thread {
 			}
 		}
 	}
-	
+
 	public void teleportToHome(Player player){
 		Settlement s = getPlayerSettlement(player.getUniqueId());
 		if (s != null){
