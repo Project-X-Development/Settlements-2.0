@@ -7,9 +7,12 @@ tmp/
 *.bak
 *.swp
 *~.nib
+*.eml
+*.iml
 local.properties
 .settings/
 .loadpath
+.idea/
 
 # External tool builders
 .externalToolBuilders/

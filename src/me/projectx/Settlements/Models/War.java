@@ -13,7 +13,6 @@ public class War {
 							// reload
 	private final String setA, setB; // Set A is the one who starts the war; Set
 										// B is the one who accepts
-	private double time = 0.0; // Time is stored as a double
 
 	/**
 	 * Create a new war...
@@ -40,18 +39,6 @@ public class War {
 
 	public Settlement getAccepter() {
 		return SettlementManager.getManager().getSettlement(this.setB);
-	}
-
-	public double getWarLength() {
-		return this.time;
-	}
-
-	public void setWarLength(double value) {
-		this.time = value;
-	}
-
-	public void addWarLength(double value) {
-		this.time = this.time + value;
 	}
 
 }
