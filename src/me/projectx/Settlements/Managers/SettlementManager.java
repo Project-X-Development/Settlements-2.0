@@ -1,11 +1,14 @@
 package me.projectx.Settlements.Managers;
 
+import java.lang.reflect.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import me.projectx.Settlements.Main;
@@ -31,8 +34,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class SettlementManager extends Thread {
 
-	public ArrayList<Settlement> settlements = new ArrayList<Settlement>();
-	private HashMap<String, String> invitedPlayers = new HashMap<String, String>();
+	public List<Settlement> settlements = new ArrayList<Settlement>();
+	private Map<String, String> invitedPlayers = new HashMap<String, String>();
 	private static SettlementManager sm = new SettlementManager();
 
 	/**
@@ -83,8 +86,8 @@ public class SettlementManager extends Thread {
 							}
 						}
 						settlements.add(set);
-						SettlementRuntime.getRuntime().sortSettlements();
 					}
+					SettlementRuntime.getRuntime().sortSettlements();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
