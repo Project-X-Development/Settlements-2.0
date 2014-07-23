@@ -1,5 +1,6 @@
 package me.projectx.Settlements.Events;
 
+import me.projectx.Settlements.Managers.ChunkManager;
 import me.projectx.Settlements.Managers.MapManager;
 import me.projectx.Settlements.Managers.PlayerManager;
 
@@ -14,11 +15,13 @@ public class PlayerQuit implements Listener{
 	public void onQuit(PlayerQuitEvent e){
 		MapManager.getInstance().remove(e.getPlayer());
 		PlayerManager.getInstance().removePlayer(e.getPlayer());
+		ChunkManager.getManager().autoClaim.remove(e.getPlayer().getName());
 	}
 	
 	@EventHandler
 	public void onQuit(PlayerKickEvent e){
 		MapManager.getInstance().remove(e.getPlayer());
 		PlayerManager.getInstance().removePlayer(e.getPlayer());
+		ChunkManager.getManager().autoClaim.remove(e.getPlayer().getName());
 	}
 }
