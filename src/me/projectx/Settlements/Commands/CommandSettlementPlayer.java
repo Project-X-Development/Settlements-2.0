@@ -5,14 +5,19 @@ import java.sql.SQLException;
 import me.projectx.Settlements.Managers.ChunkManager;
 import me.projectx.Settlements.Managers.PlayerManager;
 import me.projectx.Settlements.Managers.SettlementManager;
+import me.projectx.Settlements.Managers.WarManager;
+import me.projectx.Settlements.Models.ClaimedChunk;
 import me.projectx.Settlements.Models.CommandModel;
 import me.projectx.Settlements.Models.Settlement;
+import me.projectx.Settlements.Models.War;
 import me.projectx.Settlements.Utils.PlayerUtils;
 import me.projectx.Settlements.enums.ClaimType;
 import me.projectx.Settlements.enums.CommandType;
 import me.projectx.Settlements.enums.MessageType;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -159,15 +164,53 @@ public class CommandSettlementPlayer extends CommandModel {
 					else if (args.length == 2)
 						ChunkManager.getManager().claim((Player)sender, ClaimType.SAFEZONE);
 					break;
-					/* TODO Need some answers before adding capturing.
-					 * 
-					 * case "capture":
-					if (args.length == 1)
+				case "capture":
+					if (args.length == 1) {
+						ChunkManager cm = ChunkManager.getManager();
+						WarManager wm = WarManager.getInstance();
+						SettlementManager sm = SettlementManager.getManager();
 
-					else
+						int x = p.getLocation().getChunk().getX();
+						int z = p.getLocation().getChunk().getZ();
+						World world = p.getWorld();
+						Settlement setA = sm.getPlayerSettlement(p.getUniqueId());
+						if (setA.isInWar()){
+							War w = wm.getWar(setA);
+							Settlement setB = wm.getOtherSettlement(w, setA);
+							if (cm.isClaimed(x, z, world)){
+								ClaimedChunk chunk = cm.getChunk(x, z, world);
+								if (chunk.getSettlement() == setB){
+									if (chunk.getType() == ClaimType.CAPITAL){
+										setA.sendSettlementMessage(ChatColor.GREEN + p.getName() + " has captured the enemies' capitol! You have won the war!");
+										setB.sendSettlementMessage(ChatColor.RED + p.getName() + " has captured your capitol! You have lost the war!");
+										wm.endWar(w);
+									}
+									else {
+
+									}
+								}
+								else {
+									p.sendMessage(ChatColor.RED + "You are not at war with this settlement.");
+								}
+							}
+
+							else {
+								p.sendMessage(ChatColor.RED + "You must be in a claimed chunk to capture it!");
+								break;
+							}
+						}
+						else {
+							p.sendMessage(ChatColor.RED + "You are not in War!");
+							break;
+						}
+
+					}
+
+					else {
 						p.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s capture");
+					}
 					break;
-					 */
+
 				default:
 					sender.sendMessage(MessageType.COMMAND_INVALID_ARGUMENT.getMsg() + " Type /s for help");
 					break;

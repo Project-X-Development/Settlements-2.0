@@ -157,4 +157,19 @@ public class WarManager {
 	public boolean hasRequest(Settlement s) {
 		return requests.containsValue(s);
 	}
+
+	public Settlement getOtherSettlement (War w, Settlement set){
+		Settlement starter = w.getStarter();
+		Settlement accepter = w.getAccepter();
+
+		if (starter == set){
+			return accepter;
+		}
+
+		else  if (accepter == set){
+			return starter;
+		}
+
+		return null;
+	}
 }

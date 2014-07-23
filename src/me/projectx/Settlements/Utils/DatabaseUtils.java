@@ -10,6 +10,15 @@ import me.projectx.Settlements.MySQL.MySQL;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
+/*
+ * TODO Add prepared statements to prevent SQL injection
+ * 
+ * I honestly have no idea how to do this....
+ * 
+ * Someone halp plz
+ * 
+ */
+
 public class DatabaseUtils extends Thread {
 	private static Connection con;
 	private static MySQL mysql;
