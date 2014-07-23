@@ -16,7 +16,7 @@ import me.projectx.Settlements.Events.PlayerJoin;
 import me.projectx.Settlements.Events.PlayerMove;
 import me.projectx.Settlements.Events.PlayerQuit;
 import me.projectx.Settlements.Managers.ChunkManager;
-//import me.projectx.Settlements.Managers.EconomyManager;
+import me.projectx.Settlements.Managers.EconomyManager;
 import me.projectx.Settlements.Managers.MapManager;
 import me.projectx.Settlements.Managers.PlayerManager;
 import me.projectx.Settlements.Managers.SettlementManager;
@@ -30,7 +30,7 @@ import org.bukkit.map.MapView;
 import org.bukkit.plugin.PluginManager;
 
 
-public class Startup extends Thread {
+public class Startup {
 
 	public static void runStartup() throws SQLException{
 		PluginManager pm = Bukkit.getPluginManager();
@@ -54,9 +54,8 @@ public class Startup extends Thread {
 		DatabaseUtils.setupConnection();
 		DatabaseUtils.setupMySQL();
 
-		loadSettlements();
+		SettlementManager.getManager().loadSettlmentsFromDB();
 
-		//ChunkManager.getInstance().loadChunks();
 		ChunkManager.getManager().loadChunks();
 		
 		for(Player p : Bukkit.getOnlinePlayers()){
@@ -72,19 +71,6 @@ public class Startup extends Thread {
 		
 		SettlementRuntime.getRuntime().scheduleSorting(1); //Every 1 minute for now
 		
-		//EconomyManager.getManager().scheduleTaxCollection(1); //Every 1 minute for debug purposes
-	}
-
-	private static void loadSettlements() {
-		new Thread() {
-			@Override
-			public void run() {
-				try {
-					SettlementManager.getManager().loadSettlmentsFromDB();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		}.start();
+		EconomyManager.getManager().scheduleTaxCollection(1); //Every 1 minute for debug purposes
 	}
 }
