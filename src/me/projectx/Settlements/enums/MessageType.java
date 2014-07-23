@@ -38,7 +38,8 @@ public enum MessageType {
 	CHUNK_AUTOCLAIM_SZONE_END(PREFIX.getMsg() + "&6No longer auto-claiming land for SafeZone"),
 	COMMAND_INVALID_ARGS(PREFIX.getMsg() + "&4Invalid arguments. "),
 	COMMAND_INVALID_ARGUMENT(PREFIX.getMsg() + "&4Invalid command argument specified"),
-	NO_PERM(PREFIX.getMsg() + "&4You don't have permission to use that command!");
+	NO_PERM(PREFIX.getMsg() + "&4You don't have permission to use that command!"),
+	ISSSUE_MAP(PREFIX.getMsg() + "&eYou have been issued a Settlement map!");
 
 	private String msg;
 

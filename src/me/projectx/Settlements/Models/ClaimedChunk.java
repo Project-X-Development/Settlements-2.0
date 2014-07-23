@@ -8,7 +8,6 @@ import org.bukkit.World;
 public class ClaimedChunk {
 
 	private final int x, z;
-	//private World w;
 	private String owner, world;
 	private Settlement set;
 	private ClaimType ct;

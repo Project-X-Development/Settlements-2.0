@@ -28,7 +28,7 @@ public class ChunkManager {
 	
 	public Map<String, List<ClaimedChunk>> setClaims = new HashMap<String, List<ClaimedChunk>>();
 	private List<ClaimedChunk> claimedChunks = new ArrayList<ClaimedChunk>();
-	private Map<String, ClaimType> autoClaim = new HashMap<String, ClaimType>();
+	public Map<String, ClaimType> autoClaim = new HashMap<String, ClaimType>();
 	private final int BASE_CHUNK_COST = 50;
 	private static ChunkManager cm = new ChunkManager();
 	
