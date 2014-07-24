@@ -184,6 +184,7 @@ public class CommandSettlementPlayer extends CommandModel {
 										setA.sendSettlementMessage(ChatColor.GREEN + p.getName() + " has captured the enemies' capitol! You have won the war!");
 										setB.sendSettlementMessage(ChatColor.RED + p.getName() + " has captured your capitol! You have lost the war!");
 										wm.endWar(w);
+										//TODO Power adding/ removing. Money calculations and messaging owner on losses.
 									}
 									else {
 
