@@ -15,7 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import me.projectx.Settlements.utils.fancifulutil.*;
+import me.projectx.settlements.utils.fancifulutil.*;
 
 import org.bukkit.Achievement;
 import org.bukkit.ChatColor;

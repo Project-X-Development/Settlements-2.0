@@ -1,4 +1,4 @@
-package me.projectx.Settlements.utils.fancifulutil;
+package me.projectx.settlements.utils.fancifulutil;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
