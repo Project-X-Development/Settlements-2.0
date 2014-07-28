@@ -540,31 +540,27 @@ public class SettlementManager extends Thread {
 	public void displayMembers(final Player player, String settlement) {
 		final Settlement s = getSettlement(settlement);
 		if (s != null) {
-			new BukkitRunnable(){
-				@Override
-				public void run(){
-					Inventory inv = Bukkit.createInventory(null, getInventorySize(s.memberSize()), ChatColor.BLUE + "Members of " + s.getName());
-					ItemStack is = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-					SkullMeta sm = (SkullMeta) is.getItemMeta();
-
-					for (int i = 0; i < s.memberSize(); i++) {
-						Player p = Bukkit.getPlayer(s.getPlayer(i));
-						if (p != null){
-							sm.setOwner(p.getName());
-							sm.setDisplayName(p.getDisplayName());
-						}else{
-							OfflinePlayer op = Bukkit.getOfflinePlayer(s.getPlayer(i));
-							sm.setOwner(op.getName());
-							sm.setDisplayName(op.getName());
-							sm.setLore(Arrays.asList(ChatColor.GREEN + "Rank: " + ChatColor.RED + s.getRank(p),
-									ChatColor.GRAY + "Status: " + ChatColor.AQUA + PlayerUtils.getStatus(p)));
-							is.setItemMeta(sm);
-							inv.setItem(i, is);
-						}
-					}
-					player.openInventory(inv);
+			Inventory inv = Bukkit.createInventory(null, getInventorySize(s.memberSize()), ChatColor.BLUE + "Members of " + s.getName());
+			ItemStack is = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+			SkullMeta sm = (SkullMeta) is.getItemMeta();
+			for (int i = 0; i < s.memberSize(); i++) {
+				Player p = Bukkit.getPlayer(s.getPlayer(i));
+				if (p != null){
+					sm.setOwner(p.getName());
+					sm.setDisplayName(p.getDisplayName());
+					sm.setLore(Arrays.asList(ChatColor.GREEN + "Rank: " + ChatColor.RED + s.getRank(p),
+							ChatColor.GRAY + "Status: " + ChatColor.AQUA + "Online"));
+				}else{
+					OfflinePlayer op = Bukkit.getOfflinePlayer(s.getPlayer(i));
+					sm.setOwner(op.getName());
+					sm.setDisplayName(op.getName());
+					sm.setLore(Arrays.asList(ChatColor.GREEN + "Rank: " + ChatColor.RED + s.getRank(op),
+							ChatColor.GRAY + "Status: " + ChatColor.AQUA + "Offline"));
+					is.setItemMeta(sm);
+					inv.setItem(i, is);
 				}
-			}.runTaskAsynchronously(Main.getInstance());
+			}
+			player.openInventory(inv);
 		} else {
 			player.sendMessage(MessageType.SETTLEMENT_NOT_EXIST.getMsg());
 		}
@@ -599,7 +595,7 @@ public class SettlementManager extends Thread {
 		for (int i = 0; i < settlements.size(); i++) {
 			Settlement s = settlements.get(i);
 			im.setDisplayName(ChatColor.AQUA + s.getName());
-			im.setLore(Arrays.asList(ChatColor.AQUA + s.getDescription(), ChatColor.GOLD + "Owner: " + ChatColor.GREEN + Bukkit.getPlayer(s.getLeader()).getName(),
+			im.setLore(Arrays.asList(ChatColor.DARK_AQUA + s.getDescription(), ChatColor.GOLD + "Owner: " + ChatColor.GREEN + Bukkit.getOfflinePlayer(s.getLeader()).getName(),
 					ChatColor.DARK_GREEN + "Members: " + ChatColor.RED + s.memberSize(), ChatColor.LIGHT_PURPLE + "Power: " + ChatColor.BLUE + s.getPower(),
 					ChatColor.GREEN + "Money: " + ChatColor.GOLD + "$" + s.getBalance()));
 			is.setItemMeta(im);
