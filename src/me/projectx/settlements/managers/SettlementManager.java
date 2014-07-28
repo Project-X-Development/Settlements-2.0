@@ -27,7 +27,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-public class SettlementManager extends Thread {
+public class SettlementManager {
 
 	public List<Settlement> settlements = new ArrayList<Settlement>();
 	private Map<String, String> invitedPlayers = new HashMap<String, String>();
