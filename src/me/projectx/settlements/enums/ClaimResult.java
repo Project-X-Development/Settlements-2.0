@@ -1,0 +1,14 @@
+package me.projectx.settlements.enums;
+
+public enum ClaimResult {
+	
+	CLAIM_SUCCESS,
+	UNCLAIM_SUCESS,
+	CLAIM_FAIL,
+	UNCLAIM_FAIL,
+	UNCLAIM_NOT_ADMIN,
+	UNCLAIM_NO_CLAIMS,
+	UNCLAIM_NOT_OWNER,
+	UNCLAIM_ERROR,
+	NOT_IN_SETTLEMENT;
+}
