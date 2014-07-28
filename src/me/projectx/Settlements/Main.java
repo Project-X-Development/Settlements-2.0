@@ -13,12 +13,12 @@ public class Main extends JavaPlugin {
 	@Override
 	public void onEnable(){
 		plugin = this;	
+		saveDefaultConfig();
 		try {
 			Startup.runStartup();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		saveDefaultConfig();
 	}
 
 	@Override
