@@ -27,7 +27,9 @@ public class ChatManager {
 				.color(getColor(p))
 			.then("] ")
 				.color(ChatColor.DARK_GRAY)
-			.then(p.getDisplayName() + ": ")
+			.then("\u25CF ")
+				.color(ChatColor.WHITE)
+			.then(p.getDisplayName() + " \u25CF ")
 			.then(ChatColor.translateAlternateColorCodes('&', message))
 			.send(sendTo);
 		}

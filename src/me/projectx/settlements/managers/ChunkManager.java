@@ -27,7 +27,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class ChunkManager {
 	
 	public Map<String, List<ClaimedChunk>> setClaims = new HashMap<String, List<ClaimedChunk>>();
-	private List<ClaimedChunk> claimedChunks = new ArrayList<ClaimedChunk>();
+	public List<ClaimedChunk> claimedChunks = new ArrayList<ClaimedChunk>();
 	public Map<String, ClaimType> autoClaim = new HashMap<String, ClaimType>();
 	private final int BASE_CHUNK_COST = 50;
 	private static ChunkManager cm = new ChunkManager();
@@ -44,14 +44,15 @@ public class ChunkManager {
 				if (!claimed){
 					new BukkitRunnable(){
 						public void run(){
-							ClaimedChunk cc = new ClaimedChunk(x, z, owner, s, world.getName(), type);
+							ClaimedChunk cc = new ClaimedChunk(x, z, owner, s.getId(), world.getName(), type);
 							claimedChunks.add(cc);
 							
 							/*
 							 * Charge the base chunk cost and tack on an additional amount for the amount of chunks they already own.
 							 * More chunks = higher cost
 							 */
-							EconomyManager.getManager().withdrawFromSettlement(s, BASE_CHUNK_COST + setClaims.get(s.getName()).size() + 1);
+							int bonus = setClaims.get(s.getName()).size() + 1;
+							EconomyManager.getManager().withdrawFromSettlement(s, BASE_CHUNK_COST + bonus);
 							
 							if (!setClaims.containsKey(s.getName())){
 								List<ClaimedChunk> claims = new ArrayList<ClaimedChunk>();
@@ -79,7 +80,7 @@ public class ChunkManager {
 			if (!claimed){
 				new BukkitRunnable(){
 					public void run(){
-						ClaimedChunk cc = new ClaimedChunk(x, z, owner, null, world.getName(), type);
+						ClaimedChunk cc = new ClaimedChunk(x, z, owner, -1, world.getName(), type);
 						claimedChunks.add(cc);
 						if (!setClaims.containsKey(null)){
 							List<ClaimedChunk> claims = new ArrayList<ClaimedChunk>();
@@ -117,6 +118,7 @@ public class ChunkManager {
 									List<ClaimedChunk> l = setClaims.get(s.getName());
 									l.remove(cc);
 									claimedChunks.remove(cc);
+									
 									try {
 										DatabaseUtils.queryOut("DELETE FROM chunks WHERE x=" + cc.getX() + " AND z=" + cc.getZ() + ";");
 									} catch(SQLException e) {
@@ -207,7 +209,7 @@ public class ChunkManager {
 						long setid = result.getLong("settlement");
 						String w = result.getString("world");
 						Settlement s = SettlementManager.getManager().getSettlement(setid);
-						ClaimedChunk cc = new ClaimedChunk(x, z, player, s, w, ClaimType.valueOf(result.getString("type")));
+						ClaimedChunk cc = new ClaimedChunk(x, z, player, setid, w, ClaimType.valueOf(result.getString("type")));
 						List<ClaimedChunk> list = new ArrayList<ClaimedChunk>();
 						list.add(cc);
 						claimedChunks.add(cc);
@@ -330,5 +332,24 @@ public class ChunkManager {
 			player.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "You have been issued a Settlement map");
 		}else
 			player.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.YELLOW + "Derp, you already have a map. Check your inventory again.");
+	}
+	
+	/**
+	 * Make sure that every Settlement is in the setClaims map so no NPEs are thrown
+	 */
+	public void verifyClaims(){
+		new BukkitRunnable(){
+			public void run(){
+				System.out.println("[Settlements] Verifying chunk claims...");
+				for (Settlement s : SettlementManager.getManager().settlements){
+					if (!setClaims.containsKey(s.getName())){
+						List<ClaimedChunk> cc = new ArrayList<ClaimedChunk>();
+						ChunkManager.getManager().setClaims.put(s.getName(), cc);
+						System.out.println("[Settlements] " + s.getName() + "'s claims were not registered. Doing it now...");
+					}
+				}
+				System.out.println("[Settlements] Done!");
+			}
+		}.runTaskAsynchronously(Main.getInstance());
 	}
 }

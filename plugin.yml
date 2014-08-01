@@ -1,6 +1,6 @@
 name: Settlements
 version: 0.1
-main: me.projectx.Settlements.Main
+main: me.projectx.settlements.Main
 commands:
   s:
     description: Base command for settlements

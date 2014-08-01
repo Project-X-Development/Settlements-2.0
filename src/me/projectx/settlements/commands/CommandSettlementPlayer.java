@@ -6,6 +6,7 @@ import me.projectx.settlements.enums.ClaimType;
 import me.projectx.settlements.enums.CommandType;
 import me.projectx.settlements.enums.MessageType;
 import me.projectx.settlements.managers.ChunkManager;
+import me.projectx.settlements.managers.EconomyManager;
 import me.projectx.settlements.managers.PlayerManager;
 import me.projectx.settlements.managers.SettlementManager;
 import me.projectx.settlements.managers.WarManager;
@@ -17,9 +18,12 @@ import me.projectx.settlements.utils.PlayerUtils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 
 public class CommandSettlementPlayer extends CommandModel {
 
@@ -71,7 +75,7 @@ public class CommandSettlementPlayer extends CommandModel {
 					break;
 				case "list":
 					if (args.length == 1)
-						SettlementManager.getManager().listSettlements((Player)sender);
+						SettlementManager.getManager().listSettlements(p);
 					else
 						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s list");
 					break;
@@ -86,13 +90,13 @@ public class CommandSettlementPlayer extends CommandModel {
 					break;
 				case "claim":
 					if (args.length == 1)
-						ChunkManager.getManager().claim((Player)sender, ClaimType.NORMAL);
+						ChunkManager.getManager().claim(p, ClaimType.NORMAL);
 					else
 						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s claim");
 					break;
 				case "map":
 					if (args.length == 1)
-						ChunkManager.getManager().issueMap((Player)sender);
+						ChunkManager.getManager().issueMap(p);
 					else
 						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s map");
 					break;
@@ -145,13 +149,13 @@ public class CommandSettlementPlayer extends CommandModel {
 					break;
 				case "sethome":
 					if (args.length == 1)
-						SettlementManager.getManager().setHome((Player)sender);
+						SettlementManager.getManager().setHome(p);
 					else
 						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s sethome");
 					break;
 				case "home":
 					if (args.length == 1)
-						SettlementManager.getManager().teleportToHome((Player)sender);
+						SettlementManager.getManager().teleportToHome(p);
 					else
 						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s home");
 					break;
@@ -160,9 +164,9 @@ public class CommandSettlementPlayer extends CommandModel {
 					break;
 				case "testclaim":
 					if (args.length == 1)
-						ChunkManager.getManager().claim((Player)sender, ClaimType.NORMAL);
+						ChunkManager.getManager().claim(p, ClaimType.NORMAL);
 					else if (args.length == 2)
-						ChunkManager.getManager().claim((Player)sender, ClaimType.SAFEZONE);
+						ChunkManager.getManager().claim(p, ClaimType.SAFEZONE);
 					break;
 				case "capture":
 					if (args.length == 1) {
@@ -211,7 +215,23 @@ public class CommandSettlementPlayer extends CommandModel {
 						p.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s capture");
 					}
 					break;
-
+				case "deposit":
+					if (args.length == 2)
+						EconomyManager.getManager().depositIntoSettlement(p, SettlementManager.getManager().getPlayerSettlement(p.getUniqueId()), Double.valueOf(args[1]));
+					else
+						p.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s deposit <amount>");
+					break;
+				case "bal":
+					Settlement s = SettlementManager.getManager().getPlayerSettlement(p.getUniqueId());
+					if (s != null){
+						if (args.length == 1)
+							p.sendMessage(MessageType.SETTLEMENT_BALANCE.getMsg().replace("<bal>", Double.valueOf(s.getBalance()).toString()));
+						else
+							p.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s bal");
+					}else{
+						p.sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
+					}
+					break;
 				default:
 					sender.sendMessage(MessageType.COMMAND_INVALID_ARGUMENT.getMsg() + " Type /s for help");
 					break;

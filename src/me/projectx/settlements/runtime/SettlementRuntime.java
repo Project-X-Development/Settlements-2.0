@@ -1,7 +1,6 @@
 package me.projectx.settlements.runtime;
 
 import java.util.Collections;
-import java.util.UUID;
 
 import me.projectx.settlements.Main;
 import me.projectx.settlements.managers.SettlementManager;
@@ -25,15 +24,13 @@ public class SettlementRuntime {
 	public void sortMembers(final Settlement s){
 		new BukkitRunnable(){
 			public void run(){
+				System.out.println("[Settlements] Sorting Settlements members...");
 				Collections.sort(s.getCitizens());
 				Collections.sort(s.getOfficers());
+				System.out.println("[Settlements] Done!");
 			}
 		}.runTaskAsynchronously(Main.getInstance());
-		//debug
-		for (UUID id : s.getCitizens())
-			System.out.println("Citizen: " + id);
-		for (UUID id : s.getOfficers())
-			System.out.println("Officer: " + id);
+
 	}
 	
 	/**
@@ -42,13 +39,11 @@ public class SettlementRuntime {
 	public void sortSettlements(){
 		new BukkitRunnable(){
 			public void run(){
+				System.out.println("[Settlements] Sorting Settlements...");
 				Collections.sort(SettlementManager.getManager().settlements, Settlement.comparator);
+				System.out.println("[Settlements] Done!");
 			}
 		}.runTaskAsynchronously(Main.getInstance());
-		
-		//Debug
-		for (Settlement s : SettlementManager.getManager().settlements)
-			System.out.println(s.getName());
 	}
 	
 	/**
@@ -61,10 +56,10 @@ public class SettlementRuntime {
 			@Override
 			public void run() {
 				sortSettlements();
-				for (Settlement s : SettlementManager.getManager().settlements)
+				for (Settlement s : SettlementManager.getManager().settlements){
 					sortMembers(s);
+				}
 			}
-			
-		}.runTaskTimerAsynchronously(Main.getInstance(), 0, 1200 * minutes);
+		}.runTaskTimerAsynchronously(Main.getInstance(), 1200, 1200 * minutes);
 	}
 }

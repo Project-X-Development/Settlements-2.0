@@ -2,6 +2,7 @@ package me.projectx.settlements.models;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Random;
 import java.util.UUID;
 
 import me.projectx.settlements.managers.SettlementManager;
@@ -16,8 +17,9 @@ public class Settlement {
 	private long id;
 	private int power;
 	private double balance;
+	private boolean delete;
 	private String name, desc;
-	private UUID owner;
+	private UUID owner, queuedLeader;
 	private Location home;
 	private ArrayList<String> allies = new ArrayList<String>();
 	private ArrayList<UUID> officers = new ArrayList<UUID>();
@@ -25,7 +27,7 @@ public class Settlement {
 
 	public Settlement(String name) {
 		this.name = name;
-		this.id = SettlementManager.getManager().settlements.size() + 1;
+		this.id = new Random().nextLong();
 	}
 
 	/**
@@ -489,5 +491,41 @@ public class Settlement {
 	 */
 	public boolean hasHome() {
 		return home != null;
+	}
+	
+	/**
+	 * Get the UUID of the player that is queued to be the next leader of the Settlement
+	 * 
+	 * @return The UUID of the queued leader
+	 */
+	public UUID getQueuedLeader(){
+		return queuedLeader;
+	}
+	
+	/**
+	 * Set the queued leader for the Settlement
+	 * 
+	 * @param uuid : The UUID of the queued leader
+	 */
+	public void setQueuedLeader(UUID uuid){
+		this.queuedLeader = uuid;
+	}
+	
+	/**
+	 * Determine if the Settlement should be deleted
+	 * 
+	 * @return True if should be deleted, false otherwise
+	 */
+	public boolean delete(){
+		return delete;
+	}
+	
+	/**
+	 * Set whether or not the Settlement should be deleted
+	 * 
+	 * @param delete True to delete, false to not delete
+	 */
+	public void setToDelete(boolean delete){
+		this.delete = delete;
 	}
 }

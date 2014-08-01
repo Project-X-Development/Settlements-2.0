@@ -1,6 +1,8 @@
 package me.projectx.settlements.utils;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import me.projectx.settlements.Main;
 import me.projectx.settlements.commands.CommandSettlementAdmin;
@@ -22,6 +24,7 @@ import me.projectx.settlements.managers.MapManager;
 import me.projectx.settlements.managers.PlayerManager;
 import me.projectx.settlements.managers.SettlementManager;
 import me.projectx.settlements.managers.WarManager;
+import me.projectx.settlements.models.ClaimedChunk;
 import me.projectx.settlements.models.Players;
 import me.projectx.settlements.runtime.SettlementRuntime;
 
@@ -58,8 +61,10 @@ public class Startup {
 		SettlementManager.getManager().loadSettlmentsFromDB();
 
 		ChunkManager.getManager().loadChunks();
+		
+		ChunkManager.getManager().verifyClaims();
 
-		WarManager.getInstance().loadWarsFromDB();
+		//WarManager.getInstance().loadWarsFromDB();
 
 		for(Player p : Bukkit.getOnlinePlayers()){
 			Players pl = PlayerManager.getInstance().addPlayer(p);
@@ -74,6 +79,6 @@ public class Startup {
 
 		SettlementRuntime.getRuntime().scheduleSorting(1); //Every 1 minute for now
 
-		EconomyManager.getManager().scheduleTaxCollection(1); //Every 1 minute for debug purposes
+		EconomyManager.getManager().scheduleTaxCollection(); 
 	}
 }
