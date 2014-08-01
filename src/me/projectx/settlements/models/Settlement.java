@@ -74,6 +74,7 @@ public class Settlement {
 	 *            : The value to set the balance to
 	 */
 	public void setBalance(double balance) {
+		//TODO Power calculations
 		this.balance = balance;
 	}
 
@@ -193,6 +194,7 @@ public class Settlement {
 		} else if (isOfficer(uuid)) {
 			officers.remove(uuid);
 		}
+		setPower(getPower() - 1);
 	}
 
 	/**

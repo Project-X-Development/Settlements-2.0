@@ -373,6 +373,7 @@ public class SettlementManager {
 						+ ChatColor.AQUA + player + ChatColor.GRAY
 						+ " joined the Settlement!");
 				SettlementRuntime.getRuntime().sortMembers(s);
+				s.setPower(s.getPower() + 1);
 			} else {
 				p.sendMessage(MessageType.CURRENTLY_IN_SETTLEMENT.getMsg());
 			}
