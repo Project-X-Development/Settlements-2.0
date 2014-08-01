@@ -565,7 +565,7 @@ public class SettlementManager {
 
 			for (int i = 1; i < s.memberSize(); i++) {
 				Player mem = Bukkit.getPlayer(s.getPlayer(i));
-				if (p != null){
+				if (mem != null){
 					sm.setOwner(mem.getName());
 					sm.setDisplayName(mem.getDisplayName());
 					sm.setLore(Arrays.asList(ChatColor.GREEN + "Rank: " + ChatColor.RED + s.getRank(mem),
