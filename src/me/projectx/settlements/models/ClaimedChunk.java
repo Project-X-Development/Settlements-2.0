@@ -1,7 +1,6 @@
 package me.projectx.settlements.models;
 
 import me.projectx.settlements.enums.ClaimType;
-import me.projectx.settlements.managers.SettlementManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -10,7 +9,7 @@ public class ClaimedChunk {
 
 	private final int x, z;
 	private String owner, world;
-	private String set;
+	private Settlement set;
 	private ClaimType ct;
 
 	public ClaimedChunk(int x, int z, String owner, Settlement set, String w, ClaimType ct){
@@ -18,7 +17,7 @@ public class ClaimedChunk {
 		this.z = z;
 		this.world = w;
 		this.owner = owner;
-		this.set = set.getName();
+		this.set = set;
 		this.ct = ct;
 	}
 
@@ -45,23 +44,23 @@ public class ClaimedChunk {
 	public String getOwner(){
 		return this.owner;
 	}
-
+	
 	public void setOwner(String owner){
 		this.owner = owner;
 	}
 
 	public Settlement getSettlement(){
-		return SettlementManager.getManager().getSettlement(set);
+		return set;
 	}
 
 	public void setSettlement(Settlement set){
-		this.set = set.getName();
+		this.set = set;
 	}
-
+	
 	public ClaimType getType(){
 		return this.ct;
 	}
-
+	
 	public void setType(ClaimType ct){
 		this.ct = ct;
 	}
