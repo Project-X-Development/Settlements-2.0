@@ -21,9 +21,9 @@ public class Settlement {
 	private String name, desc;
 	private UUID owner, queuedLeader;
 	private Location home;
-	private ArrayList<String> allies = new ArrayList<String>();
-	private ArrayList<UUID> officers = new ArrayList<UUID>();
-	private ArrayList<UUID> citizens = new ArrayList<UUID>();
+	private final ArrayList<String> allies = new ArrayList<String>();
+	private final ArrayList<UUID> officers = new ArrayList<UUID>();
+	private final ArrayList<UUID> citizens = new ArrayList<UUID>();
 
 	public Settlement(String name) {
 		this.name = name;
@@ -323,8 +323,9 @@ public class Settlement {
 			Settlement set = SettlementManager.getManager().getSettlement(s);
 			if (set != null) {
 				for (Player p : Bukkit.getOnlinePlayers()) {
-					if (set.hasMember(p.getUniqueId()))
+					if (set.hasMember(p.getUniqueId())) {
 						p.sendMessage(message);
+					}
 				}
 			}
 		}
@@ -429,7 +430,7 @@ public class Settlement {
 			uuid = citizens.get(i);
 		} else if (i - citizens.size() < officers.size()) {
 			uuid = officers.get(i - citizens.size());
-		} else if (i - citizens.size() - officers.size() == 0) {
+		} else {
 			uuid = owner;
 		}
 		return uuid;
@@ -446,12 +447,13 @@ public class Settlement {
 	 */
 	public String getRank(OfflinePlayer p) {
 		UUID id = p.getUniqueId();
-		if (isCitizen(id))
+		if (isCitizen(id)) {
 			return "Citizen";
-		else if (isOfficer(id))
+		} else if (isOfficer(id)) {
 			return "Officer";
-		else if (isLeader(id))
+		} else if (isLeader(id)) {
 			return "Leader";
+		}
 		return null;
 	}
 
@@ -492,7 +494,7 @@ public class Settlement {
 	public boolean hasHome() {
 		return home != null;
 	}
-	
+
 	/**
 	 * Get the UUID of the player that is queued to be the next leader of the Settlement
 	 * 
@@ -501,7 +503,7 @@ public class Settlement {
 	public UUID getQueuedLeader(){
 		return queuedLeader;
 	}
-	
+
 	/**
 	 * Set the queued leader for the Settlement
 	 * 
@@ -510,7 +512,7 @@ public class Settlement {
 	public void setQueuedLeader(UUID uuid){
 		this.queuedLeader = uuid;
 	}
-	
+
 	/**
 	 * Determine if the Settlement should be deleted
 	 * 
@@ -519,7 +521,7 @@ public class Settlement {
 	public boolean delete(){
 		return delete;
 	}
-	
+
 	/**
 	 * Set whether or not the Settlement should be deleted
 	 * 
