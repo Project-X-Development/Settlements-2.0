@@ -30,7 +30,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 public class SettlementManager {
 
 	public List<Settlement> settlements = new ArrayList<Settlement>();
-	private Map<String, String> invitedPlayers = new HashMap<String, String>();
+	private final Map<String, String> invitedPlayers = new HashMap<String, String>();
 	private static SettlementManager sm = new SettlementManager();
 
 	/**
@@ -223,7 +223,7 @@ public class SettlementManager {
 								DatabaseUtils.queryOut("DELETE FROM chunks WHERE settlement=" + s.getId() + ";");
 								//DatabaseUtils.queryOut("DELETE FROM citizens WHERE settlement=" + s.getName() + ";");
 								DatabaseUtils.queryOut("DELETE FROM sethomes WHERE id=" + s.getId() + ";");
-	
+
 								List<ClaimedChunk> cc = ChunkManager.getManager().getClaims(s);
 								if (cc != null){
 									for (ClaimedChunk c : cc){
@@ -233,17 +233,18 @@ public class SettlementManager {
 									}
 									cc = null;
 								}
-	
-								if (invitedPlayers.containsValue(s))
+
+								if (invitedPlayers.containsValue(s)) {
 									invitedPlayers.remove(s);
-	
+								}
+
 								settlements.remove(s);
 								SettlementRuntime.getRuntime().sortSettlements();
-	
+
 								sender.sendMessage(MessageType.PREFIX.getMsg()
 										+ ChatColor.GRAY + "Successfully deleted "
 										+ ChatColor.AQUA + s.getName());
-	
+
 							} catch (SQLException e) {
 								e.printStackTrace();
 							}
@@ -253,10 +254,12 @@ public class SettlementManager {
 					sender.sendMessage(MessageType.SETTLEMENT_DELETE_CONFIRM.getMsg());
 					s.setToDelete(true);
 				}
-			} else
+			} else {
 				sender.sendMessage(MessageType.DELETE_NOT_LEADER.getMsg());
-		} else
+			}
+		} else {
 			sender.sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
+		}
 	}
 
 	/**
@@ -287,8 +290,9 @@ public class SettlementManager {
 							}
 						}
 
-						if (invitedPlayers.containsValue(s))
+						if (invitedPlayers.containsValue(s)) {
 							invitedPlayers.remove(s);
+						}
 
 						settlements.remove(s);
 						SettlementRuntime.getRuntime().sortSettlements();
@@ -542,24 +546,41 @@ public class SettlementManager {
 			Inventory inv = Bukkit.createInventory(null, getInventorySize(s.memberSize()), ChatColor.BLUE + "Members of " + s.getName());
 			ItemStack is = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 			SkullMeta sm = (SkullMeta) is.getItemMeta();
-			
-			for (int i = 0; i < s.memberSize(); i++) {
-				Player p = Bukkit.getPlayer(s.getPlayer(i));
+
+			Player p = Bukkit.getPlayer(s.getLeader());
+			if (p != null){
+				sm.setOwner(p.getName());
+				sm.setDisplayName(p.getDisplayName());
+				sm.setLore(Arrays.asList(ChatColor.GREEN + "Rank: " + ChatColor.RED + s.getRank(p),
+						ChatColor.GRAY + "Status: " + ChatColor.AQUA + "Online"));
+			}else{
+				OfflinePlayer op = Bukkit.getOfflinePlayer(s.getLeader());
+				sm.setOwner(op.getName());
+				sm.setDisplayName(op.getName());
+				sm.setLore(Arrays.asList(ChatColor.GREEN + "Rank: " + ChatColor.RED + s.getRank(op),
+						ChatColor.GRAY + "Status: " + ChatColor.AQUA + "Offline"));
+				is.setItemMeta(sm);
+				inv.setItem(0, is);
+			}
+
+			for (int i = 1; i < s.memberSize(); i++) {
+				Player mem = Bukkit.getPlayer(s.getPlayer(i));
 				if (p != null){
-					sm.setOwner(p.getName());
-					sm.setDisplayName(p.getDisplayName());
-					sm.setLore(Arrays.asList(ChatColor.GREEN + "Rank: " + ChatColor.RED + s.getRank(p),
+					sm.setOwner(mem.getName());
+					sm.setDisplayName(mem.getDisplayName());
+					sm.setLore(Arrays.asList(ChatColor.GREEN + "Rank: " + ChatColor.RED + s.getRank(mem),
 							ChatColor.GRAY + "Status: " + ChatColor.AQUA + "Online"));
 				}else{
-					OfflinePlayer op = Bukkit.getOfflinePlayer(s.getPlayer(i));
-					sm.setOwner(op.getName());
-					sm.setDisplayName(op.getName());
-					sm.setLore(Arrays.asList(ChatColor.GREEN + "Rank: " + ChatColor.RED + s.getRank(op),
+					OfflinePlayer omem = Bukkit.getOfflinePlayer(s.getPlayer(i));
+					sm.setOwner(omem.getName());
+					sm.setDisplayName(omem.getName());
+					sm.setLore(Arrays.asList(ChatColor.GREEN + "Rank: " + ChatColor.RED + s.getRank(omem),
 							ChatColor.GRAY + "Status: " + ChatColor.AQUA + "Offline"));
 					is.setItemMeta(sm);
 					inv.setItem(i, is);
 				}
 			}
+
 			player.openInventory(inv);
 		} else {
 			player.sendMessage(MessageType.SETTLEMENT_NOT_EXIST.getMsg());
@@ -576,8 +597,9 @@ public class SettlementManager {
 	 * @return The size of the inventory, based on a multiple of 9
 	 */
 	public static int getInventorySize(int max) {
-		if (max <= 0)
+		if (max <= 0) {
 			return 9;
+		}
 		int quotient = (int) Math.ceil(max / 9.0);
 		return quotient > 5 ? 54 : quotient * 9;
 	}
