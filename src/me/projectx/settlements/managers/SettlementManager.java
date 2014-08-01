@@ -363,9 +363,8 @@ public class SettlementManager {
 				final Settlement s = getSettlement(invitedPlayers.get(player));
 				s.giveCitizenship(id);
 				invitedPlayers.remove(player);
-				DatabaseUtils.queryOut("DELETE FROM citizens WHERE uuid='" + id.toString() + "';");
-				DatabaseUtils.queryOut("INSERT INTO citizens(uuid, settlement, rank) VALUES ('"
-						+ id.toString() + "','" + s.getName() + "','1');");
+				DatabaseUtils.queryOut("UPDATE citizens SET'"
+						+ "uuid='" + id.toString() + "', settlement='" + s.getName() + "',rank='1' WHERE uuid='" + id.toString() + "';");
 				p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY
 						+ "Successfully joined " + ChatColor.AQUA
 						+ getPlayerSettlement(id).getName());
@@ -423,7 +422,7 @@ public class SettlementManager {
 				p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully left " + ChatColor.AQUA + s.getName());
 				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + name + ChatColor.GRAY + " left the Settlement :(");
 				s.revokeCitizenship(p.getUniqueId());
-				DatabaseUtils.queryOut("DELETE FROM citizens WHERE uuid='" + id.toString() + "';");
+				DatabaseUtils.queryOut("UPDATE citizens SET settlement='" + null + "' WHERE uuid='" + id.toString() + "';");
 				if (s.getQueuedLeader() != null){
 					s.setLeader(s.getQueuedLeader());
 					DatabaseUtils.queryOut("UPDATE settlements SET leader='" + s.getQueuedLeader().toString() + "' WHERE name='" + s.getName() + "';");
@@ -462,7 +461,7 @@ public class SettlementManager {
 					}
 					s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + sender.getName() + ChatColor.GRAY 
 							+ " kicked " + ChatColor.AQUA + name + ChatColor.GRAY + " from the Settlement!");
-					DatabaseUtils.queryOut("DELETE FROM citizens WHERE uuid='" + id.toString() + "';");
+					DatabaseUtils.queryOut("UPDATE citizens SET settlement='" + null + "' WHERE uuid='" + id.toString() + "';");
 					SettlementRuntime.getRuntime().sortMembers(s);
 				} else {
 					sender.sendMessage(MessageType.KICK_NOT_LEADER.getMsg());
