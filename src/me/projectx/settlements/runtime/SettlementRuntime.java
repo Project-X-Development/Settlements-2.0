@@ -26,6 +26,7 @@ public class SettlementRuntime {
 			public void run(){
 				Collections.sort(s.getCitizens());
 				Collections.sort(s.getOfficers());
+				this.cancel();
 			}
 		}.runTaskAsynchronously(Main.getInstance());
 
@@ -38,6 +39,7 @@ public class SettlementRuntime {
 		new BukkitRunnable(){
 			public void run(){
 				Collections.sort(SettlementManager.getManager().settlements, Settlement.comparator);
+				this.cancel();
 			}
 		}.runTaskAsynchronously(Main.getInstance());
 	}

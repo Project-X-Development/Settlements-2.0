@@ -84,6 +84,7 @@ public class SettlementManager {
 						settlements.add(set);
 					}
 					SettlementRuntime.getRuntime().sortSettlements();
+					this.interrupt();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -247,7 +248,7 @@ public class SettlementManager {
 								sender.sendMessage(MessageType.PREFIX.getMsg()
 										+ ChatColor.GRAY + "Successfully deleted "
 										+ ChatColor.AQUA + s.getName());
-
+								this.interrupt();
 							} catch (SQLException e) {
 								e.printStackTrace();
 							}
@@ -303,7 +304,7 @@ public class SettlementManager {
 
 						sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully deleted "
 								+ ChatColor.AQUA + s.getName());
-
+						this.interrupt();
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
@@ -331,7 +332,7 @@ public class SettlementManager {
 					if (s.isOfficer(pl.getUniqueId()) || s.isLeader(pl.getUniqueId())) {
 						invitedPlayers.put(invite, s.getName());
 						s.sendSettlementMessage(MessageType.PREFIX.getMsg()
-								+ pl.getDisplayName() + ChatColor.GRAY
+								+ pl.getName() + ChatColor.GRAY
 								+ " invited " + ChatColor.AQUA + invite
 								+ ChatColor.GRAY + " to your Settlement");
 						p.sendMessage(MessageType.PREFIX.getMsg()
@@ -509,16 +510,22 @@ public class SettlementManager {
 	 * @param s2: The name of the Settlement that will be added to s1's allies
 	 * @return True if successful
 	 */
-	public boolean allySettlement(Settlement s1, String s2) {
+	public void allySettlement(Settlement s1, String s2) {
 		Settlement s = getSettlement(s2);
 		if (s != null) {
 			s1.addAlly(s);
 			s1.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + s2 + ChatColor.GRAY
 					+ " has been added to your Settlement's alliance!");
-			s.sendSettlementMessage(""); // should an alliance message be sent instead?
-			return true;
+			s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + s.getName() + ChatColor.GRAY
+					+ " has been added to your Settlement's alliance!");
+			try {
+				DatabaseUtils.queryOut("INSERT INTO alliances(main, ally) VALUES("+ s1.getId() + ", " + s.getId() + ";");
+				DatabaseUtils.queryOut("INSERT INTO alliances(main, ally) VALUES("+ s.getId() + ", " + s1.getId() + ";");
+			} catch(SQLException e) {
+				e.printStackTrace();
+			} 
+			//s.sendSettlementMessage(""); // should an alliance message be sent instead?
 		}
-		return false;
 	}
 
 	/**
@@ -528,13 +535,21 @@ public class SettlementManager {
 	 * @param s2: The name of the Settlement that will be removed
 	 * @return True if successful
 	 */
-	public boolean removeAlly(Settlement s1, String s2) {
+	public void removeAlly(Settlement s1, String s2) {
 		Settlement s = getSettlement(s2);
 		if (s1.hasAlly(s)) {
 			s1.removeAlly(s);
-			return true;
+			try {
+				DatabaseUtils.queryOut("DELTE FROM alliances WHERE main=" + s1.getId() + ", ally=" + s.getId() + ";");
+				DatabaseUtils.queryOut("DELTE FROM alliances WHERE main=" + s.getId() + ", ally=" + s1.getId() + ";");
+			} catch(SQLException e) {
+				e.printStackTrace();
+			}
+			s1.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + s2 + ChatColor.GRAY
+					+ " has been removed from your Settlement's alliance!");
+			s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + s.getName() + ChatColor.GRAY
+					+ " has been removed from your Settlement's alliance!");
 		}
-		return false;
 	}
 
 	/**

@@ -16,6 +16,7 @@ import me.projectx.settlements.models.Settlement;
 import me.projectx.settlements.models.War;
 import me.projectx.settlements.utils.PlayerUtils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -291,7 +292,13 @@ public class CommandSettlementPlayer extends CommandModel {
 						p.sendMessage(MessageType.NO_PERM.getMsg());
 					}
 					break;
-
+				case "promote":
+					if (args.length == 2){
+						SettlementManager.getManager().promotePlayer(p, Bukkit.getPlayer(args[1]));
+					}else{
+						p.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s promote <player>");
+					}
+					break;
 				default:
 					sender.sendMessage(MessageType.COMMAND_INVALID_ARGUMENT.getMsg() + " Type /s for help");
 					break;

@@ -180,8 +180,7 @@ public class ChunkManager {
 		}
 		return ClaimResult.UNCLAIM_FAIL;
 	}
-	
-	//private boolean claimed = false;
+
 	public boolean isClaimed(final int x, final int z, final World world){
 		for (ClaimedChunk cc : claimedChunks){
 			if (cc.getX() == x && cc.getZ() == z && cc.world.equals(world.getName())){
@@ -189,16 +188,6 @@ public class ChunkManager {
 			}
 		}
 		return false;
-		/*new BukkitRunnable(){
-			public void run(){
-				for (ClaimedChunk cc : claimedChunks){
-					if (cc.getX() == x && cc.getZ() == z && cc.world.equals(world.getName())){
-						claimed = true;
-					}
-				}
-			}
-		}.runTaskAsynchronously(Main.getInstance());
-		return claimed;*/
 	}
 	
 	public ClaimedChunk getChunk(int x, int z, World world){
@@ -237,7 +226,8 @@ public class ChunkManager {
 							setClaims.put(s.getName(), list);
 						else
 							setClaims.put(null, list);
-					}	
+					}
+					this.cancel();
 				} catch(SQLException e) {
 					e.printStackTrace();
 				}
@@ -372,6 +362,7 @@ public class ChunkManager {
 					}
 				}
 				System.out.println("[Settlements] Done!");
+				this.cancel();
 			}
 		}.runTaskAsynchronously(Main.getInstance());
 	}

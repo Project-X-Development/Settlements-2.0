@@ -21,7 +21,7 @@ public class Settlement {
 	private String name, desc;
 	private UUID owner, queuedLeader;
 	private Location home;
-	private final ArrayList<String> allies = new ArrayList<String>();
+	private final ArrayList<Long> allies = new ArrayList<Long>();
 	private final ArrayList<UUID> officers = new ArrayList<UUID>();
 	private final ArrayList<UUID> citizens = new ArrayList<UUID>();
 
@@ -321,7 +321,7 @@ public class Settlement {
 	 */
 	public void sendAllianceMessage(String message) {
 		// Mental note: This could probably be more efficient
-		for (String s : allies) {
+		for (Long s : allies) {
 			Settlement set = SettlementManager.getManager().getSettlement(s);
 			if (set != null) {
 				for (Player p : Bukkit.getOnlinePlayers()) {
@@ -374,7 +374,7 @@ public class Settlement {
 	 * 
 	 * @return The names of all the allied Settlements
 	 */
-	public ArrayList<String> getAllies() {
+	public ArrayList<Long> getAllies() {
 		return allies;
 	}
 
@@ -383,7 +383,7 @@ public class Settlement {
 	 * 
 	 * @return All Settlements in this Settlement's alliance
 	 */
-	public ArrayList<String> getAlliedSettlements() {
+	public ArrayList<Long> getAlliedSettlements() {
 		return allies;
 	}
 
@@ -396,7 +396,7 @@ public class Settlement {
 	 */
 	public boolean addAlly(Settlement s) {
 		if (!hasAlly(s)) {
-			allies.add(s.getName());
+			allies.add(s.getId());
 			s.addAlly(this);
 			return true;
 		}

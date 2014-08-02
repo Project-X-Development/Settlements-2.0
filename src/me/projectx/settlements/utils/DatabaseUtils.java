@@ -19,7 +19,7 @@ import org.bukkit.configuration.file.FileConfiguration;
  * 
  */
 
-public class DatabaseUtils extends Thread {
+public class DatabaseUtils {
 	private static Connection con;
 	private static MySQL mysql;
 
@@ -47,6 +47,7 @@ public class DatabaseUtils extends Thread {
 		queryOut("CREATE TABLE IF NOT EXISTS citizens(uuid varchar(255), settlement varchar(255), rank varchar(255));");
 		queryOut("CREATE TABLE IF NOT EXISTS sethomes(id BIGINT, world VARCHAR(255), x BIGINT, y BIGINT, z BIGINT, yaw BIGINT, pitch BIGINT);");
 		queryOut("CREATE TABLE IF NOT EXISTS chunks(x BIGINT, z BIGINT, player VARCHAR(255), settlement BIGINT, world VARCHAR(255), type VARCHAR(255));");
+		queryOut("CREATE TABLE IF NOT EXISTS alliances(main BIGINT, ally BIGINT);");
 		queryOut("CREATE TABLE IF NOT EXISTS wars(setA VARCHAR(255), setB VARCHAR(255));");
 	}
 
@@ -75,13 +76,14 @@ public class DatabaseUtils extends Thread {
 	}
 
 	public static void queryOut(final String query) throws SQLException {
-		new Thread() {
+		 new Thread() {
 			@Override
 			public void run() {
 				Statement statement;
 				try {
 					statement = con.createStatement();
 					statement.executeUpdate(query);
+					this.interrupt();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}

@@ -99,7 +99,7 @@ public class MySQL extends Database {
         else 
             c = openConnection();
         
-        Statement s = null;
+       Statement s = null;
 
         try {
             s = c.createStatement();
