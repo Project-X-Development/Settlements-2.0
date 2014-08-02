@@ -224,7 +224,7 @@ public class SettlementManager {
 							try {
 								DatabaseUtils.queryOut("DELETE FROM settlements WHERE id=" + s.getId() + ";");
 								DatabaseUtils.queryOut("DELETE FROM chunks WHERE settlement=" + s.getId() + ";");
-								//DatabaseUtils.queryOut("DELETE FROM citizens WHERE settlement=" + s.getName() + ";");
+								DatabaseUtils.queryOut("DELETE FROM citizens WHERE settlement=" + s.getName() + ";");
 								DatabaseUtils.queryOut("DELETE FROM sethomes WHERE id=" + s.getId() + ";");
 
 								List<ClaimedChunk> cc = ChunkManager.getManager().getClaims(s);
@@ -283,6 +283,7 @@ public class SettlementManager {
 						DatabaseUtils.queryOut("DELETE FROM settlements WHERE id=" + s.getId() + ";");
 						DatabaseUtils.queryOut("DELETE FROM chunks WHERE settlement='" + s.getId() + "';");
 						DatabaseUtils.queryOut("DELETE FROM citizens WHERE settlement=" + s.getName() + ";");
+						DatabaseUtils.queryOut("DELETE FROM sethomes WHERE id=" + s.getId() + ";");
 
 						List<ClaimedChunk> cc = ChunkManager.getManager().getClaims(s);
 						if (cc != null){
