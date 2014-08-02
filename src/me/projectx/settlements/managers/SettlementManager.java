@@ -363,8 +363,9 @@ public class SettlementManager {
 				final Settlement s = getSettlement(invitedPlayers.get(player));
 				s.giveCitizenship(id);
 				invitedPlayers.remove(player);
-				DatabaseUtils.queryOut("UPDATE citizens SET'"
-						+ "uuid='" + id.toString() + "', settlement='" + s.getName() + "',rank='1' WHERE uuid='" + id.toString() + "';");
+				DatabaseUtils.queryOut("DELETE FROM citizens WHERE uuid='" + id.toString() + "';");
+				DatabaseUtils.queryOut("INSERT INTO citizens(uuid, settlement, rank) VALUES ('"
+						+ id.toString() + "','" + s.getName() + "','1');");	
 				p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY
 						+ "Successfully joined " + ChatColor.AQUA
 						+ getPlayerSettlement(id).getName());
@@ -422,7 +423,7 @@ public class SettlementManager {
 				p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully left " + ChatColor.AQUA + s.getName());
 				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + name + ChatColor.GRAY + " left the Settlement :(");
 				s.revokeCitizenship(p.getUniqueId());
-				DatabaseUtils.queryOut("UPDATE citizens SET settlement='" + null + "' WHERE uuid='" + id.toString() + "';");
+				DatabaseUtils.queryOut("DELETE FROM citizens WHERE uuid='" + id.toString() + "';");
 				if (s.getQueuedLeader() != null){
 					s.setLeader(s.getQueuedLeader());
 					DatabaseUtils.queryOut("UPDATE settlements SET leader='" + s.getQueuedLeader().toString() + "' WHERE name='" + s.getName() + "';");
@@ -461,7 +462,7 @@ public class SettlementManager {
 					}
 					s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + sender.getName() + ChatColor.GRAY 
 							+ " kicked " + ChatColor.AQUA + name + ChatColor.GRAY + " from the Settlement!");
-					DatabaseUtils.queryOut("UPDATE citizens SET settlement='" + null + "' WHERE uuid='" + id.toString() + "';");
+					DatabaseUtils.queryOut("DELETE FROM citizens WHERE uuid='" + id.toString() + "';");
 					SettlementRuntime.getRuntime().sortMembers(s);
 				} else {
 					sender.sendMessage(MessageType.KICK_NOT_LEADER.getMsg());
@@ -537,9 +538,7 @@ public class SettlementManager {
 	 * 
 	 * @param player: The player who issued the command & will view the GUI
 	 * @param settlement: The Settlement who's members will be listed
-	 * @deprecated Broken atm
 	 */
-	@Deprecated
 	public void displayMembers(final Player player, String settlement) {
 		final Settlement s = getSettlement(settlement);
 		if (s != null) {
@@ -547,29 +546,15 @@ public class SettlementManager {
 			ItemStack is = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 			SkullMeta sm = (SkullMeta) is.getItemMeta();
 
-			Player p = Bukkit.getPlayer(s.getLeader());
-			if (p != null){
-				sm.setOwner(p.getName());
-				sm.setDisplayName(p.getDisplayName());
-				sm.setLore(Arrays.asList(ChatColor.GREEN + "Rank: " + ChatColor.RED + s.getRank(p),
-						ChatColor.GRAY + "Status: " + ChatColor.AQUA + "Online"));
-			}else{
-				OfflinePlayer op = Bukkit.getOfflinePlayer(s.getLeader());
-				sm.setOwner(op.getName());
-				sm.setDisplayName(op.getName());
-				sm.setLore(Arrays.asList(ChatColor.GREEN + "Rank: " + ChatColor.RED + s.getRank(op),
-						ChatColor.GRAY + "Status: " + ChatColor.AQUA + "Offline"));
-				is.setItemMeta(sm);
-				inv.setItem(0, is);
-			}
-
-			for (int i = 1; i < s.memberSize(); i++) {
+			for (int i = 0; i < s.memberSize(); i++) {
 				Player mem = Bukkit.getPlayer(s.getPlayer(i));
 				if (mem != null){
 					sm.setOwner(mem.getName());
 					sm.setDisplayName(mem.getDisplayName());
 					sm.setLore(Arrays.asList(ChatColor.GREEN + "Rank: " + ChatColor.RED + s.getRank(mem),
 							ChatColor.GRAY + "Status: " + ChatColor.AQUA + "Online"));
+					is.setItemMeta(sm);
+					inv.setItem(i, is);
 				}else{
 					OfflinePlayer omem = Bukkit.getOfflinePlayer(s.getPlayer(i));
 					sm.setOwner(omem.getName());
@@ -580,7 +565,6 @@ public class SettlementManager {
 					inv.setItem(i, is);
 				}
 			}
-
 			player.openInventory(inv);
 		} else {
 			player.sendMessage(MessageType.SETTLEMENT_NOT_EXIST.getMsg());
