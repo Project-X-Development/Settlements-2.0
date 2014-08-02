@@ -25,7 +25,7 @@ import org.bukkit.entity.Player;
 public class CommandSettlementPlayer extends CommandModel {
 
 	public CommandSettlementPlayer() {
-		super("settlement.player", "/s");
+		super("settlements.player", "/s");
 	}
 
 	@Override
@@ -46,6 +46,14 @@ public class CommandSettlementPlayer extends CommandModel {
 						SettlementManager.getManager().deleteSettlement(sender);
 					} else {
 						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s delete");
+					}
+					break;
+				case "cancel":
+					if (args.length == 1){
+						SettlementManager.getManager().getPlayerSettlement(p.getUniqueId()).setToDelete(false);
+						p.sendMessage(MessageType.SETTLEMENT_DELETE_CANCEL.getMsg());
+					}else{
+						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s cancel");
 					}
 					break;
 				case "invite":
@@ -238,7 +246,12 @@ public class CommandSettlementPlayer extends CommandModel {
 					break;
 				case "deposit":
 					if (args.length == 2) {
-						EconomyManager.getManager().depositIntoSettlement(p, SettlementManager.getManager().getPlayerSettlement(p.getUniqueId()), Double.valueOf(args[1]));
+						Settlement s = SettlementManager.getManager().getPlayerSettlement(p.getUniqueId());
+						EconomyManager.getManager().depositIntoSettlement(p, s, Double.valueOf(args[1]));
+						s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + p.getName()
+								+ ChatColor.GRAY + " deposited " + ChatColor.AQUA + "$" 
+								+ args[1] + ChatColor.GRAY + " into your Settlement's account!");
+						
 					} else {
 						p.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s deposit <amount>");
 					}
