@@ -15,7 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class EconomyManager {
 	
 	private static EconomyManager em = new EconomyManager();
-	public int taxMinutes = 1;
+	public int taxMinutes = 10;
 	
 	public static EconomyManager getManager(){
 		return em;
@@ -77,17 +77,16 @@ public class EconomyManager {
 	public void taxSettlements(){
 		for (Settlement s : SettlementManager.getManager().settlements){
 			int claimCount = ChunkManager.getManager().getClaims(s).size();
-			System.out.println(claimCount);
 			double cost = 0;
 			if (claimCount > 0)
-				cost = (claimCount + 1) * 20;
+				cost = (claimCount + 1) * 15;
 			withdrawFromSettlement(s, cost);
 			s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + 
 					"Your Settlement has been charged " + ChatColor.AQUA + "$" + cost + ChatColor.GRAY + " in land taxes");
 		}
 	}
 
-	public void scheduleTaxCollection(){
+	public synchronized void scheduleTaxCollection(){
 		new BukkitRunnable(){
 			public void run(){
 				taxSettlements();

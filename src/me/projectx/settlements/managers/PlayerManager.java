@@ -11,14 +11,13 @@ import me.projectx.settlements.models.Players;
 public class PlayerManager {
 	
 	private static PlayerManager pm = new PlayerManager();
-	private ArrayList<String> allianceChat = new ArrayList<String>();
-	private ArrayList<String> settlementChat = new ArrayList<String>();
+	private List<String> allianceChat = new ArrayList<String>();
+	private List<String> settlementChat = new ArrayList<String>();
+	private List<Players> playerobjects = new ArrayList<Players>();
 	
 	public static PlayerManager getInstance(){
 		return pm;
 	}
-
-	private List<Players> playerobjects = new ArrayList<Players>();
 	
 	public Players addPlayer(Player player){
 		Players pl = new Players(player);

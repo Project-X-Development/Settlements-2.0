@@ -24,10 +24,8 @@ public class SettlementRuntime {
 	public void sortMembers(final Settlement s){
 		new BukkitRunnable(){
 			public void run(){
-				System.out.println("[Settlements] Sorting Settlements members...");
 				Collections.sort(s.getCitizens());
 				Collections.sort(s.getOfficers());
-				System.out.println("[Settlements] Done!");
 			}
 		}.runTaskAsynchronously(Main.getInstance());
 
@@ -39,9 +37,7 @@ public class SettlementRuntime {
 	public void sortSettlements(){
 		new BukkitRunnable(){
 			public void run(){
-				System.out.println("[Settlements] Sorting Settlements...");
 				Collections.sort(SettlementManager.getManager().settlements, Settlement.comparator);
-				System.out.println("[Settlements] Done!");
 			}
 		}.runTaskAsynchronously(Main.getInstance());
 	}
