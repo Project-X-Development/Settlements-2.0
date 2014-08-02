@@ -27,20 +27,25 @@ public class BlockEvent implements Listener{
 
 		if (ChunkManager.getManager().isClaimed(x, z, c.getWorld())){
 			ClaimedChunk chunk = ChunkManager.getManager().getChunk(x, z, c.getWorld());
-			Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
-			if (chunk.getType() == ClaimType.SAFEZONE){
+			if (chunk.getType() == ClaimType.SAFEZONE && !e.getPlayer().hasPermission("settlements.safezone.build")){
 				e.setCancelled(true);
 				e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GOLD + "You cannot break blocks in a SafeZone");
 				return;
 			}
-
-			if (!SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()).isInWar()){
-				if (p != e.getPlayer()){
-					e.setCancelled(true);
-					e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You are not allowed to build here!");;
+			
+			if (chunk.getType() != ClaimType.SAFEZONE){
+				if (!SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()).isInWar()){
+					Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
+					if (p.getUniqueId() != e.getPlayer().getUniqueId()){
+						e.setCancelled(true);
+						e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You are not allowed to build here!");;
+					}
 				}
 			}
 		}
+		
+		if (e.getBlock().getWorld().getName().equalsIgnoreCase("Varym") && !e.getPlayer().hasPermission("settlements.safezone.build"))
+			e.setCancelled(true);
 	}
 
 	@EventHandler
@@ -51,20 +56,25 @@ public class BlockEvent implements Listener{
 
 		if (ChunkManager.getManager().isClaimed(x, z, c.getWorld())){
 			ClaimedChunk chunk = ChunkManager.getManager().getChunk(x, z, c.getWorld());
-			Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
-			if (chunk.getType() == ClaimType.SAFEZONE){
+			if (chunk.getType() == ClaimType.SAFEZONE && !e.getPlayer().hasPermission("settlements.safezone.build")){
 				e.setCancelled(true);
 				e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GOLD + "You cannot place blocks in a SafeZone");
 				return;
 			}
 
-			if (!SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()).isInWar()){
-				if (p != e.getPlayer()){
-					e.setCancelled(true);
-					e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You are not allowed to build here!");;
+			if (chunk.getType() != ClaimType.SAFEZONE){
+				if (!SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()).isInWar()){
+					Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
+					if (p.getUniqueId() != e.getPlayer().getUniqueId()){
+						e.setCancelled(true);
+						e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You are not allowed to build here!");;
+					}
 				}
-			}
+			}	
 		}
+		
+		if (e.getBlock().getWorld().getName().equalsIgnoreCase("Varym") && !e.getPlayer().hasPermission("settlements.safezone.build"))
+				e.setCancelled(true);
 	}
 
 	@EventHandler
