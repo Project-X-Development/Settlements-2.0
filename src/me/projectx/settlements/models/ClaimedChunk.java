@@ -1,5 +1,7 @@
 package me.projectx.settlements.models;
 
+import java.util.UUID;
+
 import me.projectx.settlements.enums.ClaimType;
 import me.projectx.settlements.managers.SettlementManager;
 
@@ -9,11 +11,12 @@ import org.bukkit.World;
 public class ClaimedChunk {
 
 	private final int x, z;
-	private String owner, world;
+	public String world;
+	private UUID owner;
 	private long setId;
 	private ClaimType ct;
 
-	public ClaimedChunk(int x, int z, String owner, long setId, String w, ClaimType ct){
+	public ClaimedChunk(int x, int z, UUID owner, long setId, String w, ClaimType ct){
 		this.x = x;
 		this.z = z;
 		this.world = w;
@@ -38,15 +41,11 @@ public class ClaimedChunk {
 		this.world = world;
 	}
 
-	public void setWorld(World world){
-		this.world = world.getName();
-	}
-
-	public String getOwner(){
+	public UUID getOwner(){
 		return this.owner;
 	}
 	
-	public void setOwner(String owner){
+	public void setOwner(UUID owner){
 		this.owner = owner;
 	}
 
