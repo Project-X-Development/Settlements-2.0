@@ -188,6 +188,9 @@ public class SettlementManager {
 				ChunkManager.getManager().setClaims.put(name, cc);
 				DatabaseUtils.queryOut("INSERT INTO settlements (id, name, leader)" + "VALUES ('" + s.getId() + "','" + s.getName()
 						+ "','" + s.getLeader().toString() + "');");
+				String desc = "Default Settlement Description";
+				s.setDescription(desc);
+				DatabaseUtils.queryOut("UPDATE settlements SET description='" + desc + "' WHERE id=" + s.getId() + ";");
 				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully created " + ChatColor.AQUA + s.getName());
 				sender.sendMessage(ChatColor.GRAY + "You can now set a description by doing " + ChatColor.AQUA + "/s desc <description>");
 				sender.sendMessage(ChatColor.GRAY + "For more things you can do, type " + ChatColor.AQUA + "/s");
