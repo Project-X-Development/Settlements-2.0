@@ -19,11 +19,12 @@ public class RenderMap extends MapRenderer {
 
 	public boolean seen;
 	public int mapid;
+	private String uuid;
 	
 	@Override
 	public void render(MapView view, MapCanvas canvas, Player p) {
 		if(seen)return;
-		seen = true;
+		if(p.getUniqueId().toString().equals(uuid))seen = true;
 		for(int j = 0; j < 128; j++) {
 			for(int i = 0; i < 128; i++) {
 				canvas.setPixel(i, j, MapPalette.WHITE);
@@ -87,6 +88,10 @@ public class RenderMap extends MapRenderer {
 
 	public int getZoom(Players pl){
 		return pl.getInt("map");
+	}
+	
+	public void setUUID(String uuid){
+		this.uuid = uuid;
 	}
 
 	public void zoom1(MapView view, MapCanvas canvas, ChunkManager cm, Settlement set, int pchunkx, int pchunkz, World w){

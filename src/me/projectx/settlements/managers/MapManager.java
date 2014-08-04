@@ -1,6 +1,7 @@
 package me.projectx.settlements.managers;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +35,7 @@ public class MapManager {
 		}
 		RenderMap rm = new RenderMap();
 		rm.setMapID(m.getId());
+		rm.setUUID(pl.getUniqueId().toString());
 		m.addRenderer(rm);
 		players.put(pl.getUniqueId().toString(), rm);
 		System.out.print("Added " + pl.getName());
@@ -58,6 +60,7 @@ public class MapManager {
 		ItemStack item = new ItemStack(Material.MAP, 1, (short)getPlayerMapID(pl));
 		ItemMeta im = item.getItemMeta();
 		im.setDisplayName(ChatColor.RED + "Dab " + ChatColor.BLUE + "Maps");
+		im.setLore(Arrays.asList(new String[]{ChatColor.RED + pl.getName()}));
 		item.setItemMeta(im);
 		if (!pl.getInventory().contains(item)){
 			pl.getInventory().addItem(item);

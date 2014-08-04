@@ -722,7 +722,7 @@ public class SettlementManager {
 	public void declineAllianceInvite(Player sender, Settlement inviter){
 		Settlement s = getPlayerSettlement(sender.getUniqueId());
 		if (s.isOfficer(sender.getUniqueId()) || s.isLeader(sender.getUniqueId())){
-			allyInvites.remove(s.getId(), inviter.getId());
+			allyInvites.remove(s.getId());
 			sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Declined an Alliance invite from " + ChatColor.AQUA + inviter.getName());
 			inviter.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + s.getName() + ChatColor.GRAY + " declined your Alliance request");
 		}else{
