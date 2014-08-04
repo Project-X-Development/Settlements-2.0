@@ -168,9 +168,31 @@ public class CommandSettlementPlayer extends CommandModel {
 				case "ally":
 					if (args.length == 2){
 						SettlementManager sm = SettlementManager.getManager();
-						sm.allySettlement(sm.getPlayerSettlement(sender.getName()), args[1]);
+						sm.sendAllianceInvite(p, sm.getSettlement(args[1]));
 					} else {
 						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s ally <Settlement>");
+					}
+					break;
+				case "acceptally":
+					if (args.length == 2){
+						SettlementManager.getManager().allySettlement(p, args[1]);
+					}else{
+						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s acceptally <Settlement>");
+					}
+					break;
+				case "denyally":
+					if (args.length == 2){
+						SettlementManager.getManager().declineAllianceInvite(p, SettlementManager.getManager().getSettlement(args[1]));
+					}else{
+						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s denyally <Settlement>");
+					}
+					break;
+				case "removeally":
+					if (args.length == 2){
+						SettlementManager sm = SettlementManager.getManager();
+						sm.removeAlly(sm.getPlayerSettlement(p.getUniqueId()),args[1]);
+					}else{
+						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s removeally <Settlement>");
 					}
 					break;
 				case "sethome":
@@ -294,7 +316,7 @@ public class CommandSettlementPlayer extends CommandModel {
 					break;
 				case "promote":
 					if (args.length == 2){
-						SettlementManager.getManager().promotePlayer(p, Bukkit.getPlayer(args[1]));
+						SettlementManager.getManager().promotePlayer(p, Bukkit.getOfflinePlayer(args[1]));
 					}else{
 						p.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s promote <player>");
 					}
