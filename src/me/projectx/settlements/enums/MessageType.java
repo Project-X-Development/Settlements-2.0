@@ -13,6 +13,8 @@ public enum MessageType {
 	ALLIANCE_CHAT_START(PREFIX.getMsg() + "&7Now chatting privately with alliance members"),
 	ALLIANCE_CHAT_END(PREFIX.getMsg() + "&7No longer privately chatting with alliance members"),
 	ALLIANCE_MEMBER_DAMAGE(PREFIX.getMsg() + "&cYou cannot hurt members of your own alliance!"),
+	ALLIANCE_INVITE_SENT(PREFIX.getMsg() + "&7Alliance invite sent to &b<settlement>"),
+	ALLIANCE_INVITE_PENDING(PREFIX.getMsg() + "&eYou've already sent an alliance request to &c<settlement> &ePlease wait for them to accept/deny it."),
 	CURRENTLY_IN_SETTLEMENT(PREFIX.getMsg() + "&4You must leave your Settlement to join another one!"),
 	SETTLEMENT_EXISTS(PREFIX.getMsg() + "&4That Settlement already exists!"),
 	SETTLEMENT_NOT_EXIST(PREFIX.getMsg() + "&4That Settlement could not be found :("),

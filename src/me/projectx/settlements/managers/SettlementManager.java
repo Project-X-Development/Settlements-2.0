@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import me.projectx.settlements.enums.MessageType;
@@ -30,7 +31,8 @@ import org.bukkit.inventory.meta.SkullMeta;
 public class SettlementManager {
 
 	public List<Settlement> settlements = new ArrayList<Settlement>();
-	private final Map<String, String> invitedPlayers = new HashMap<String, String>();
+	private Map<String, String> invitedPlayers = new HashMap<String, String>();
+	private Map<Long, Long> allyInvites = new HashMap<Long, Long>();
 	private static SettlementManager sm = new SettlementManager();
 
 	/**
@@ -74,12 +76,17 @@ public class SettlementManager {
 								set.getOfficers().add(uuid);
 							}
 							SettlementRuntime.getRuntime().sortMembers(set);
-
-							ResultSet homes = DatabaseUtils.queryIn("SELECT * FROM sethomes WHERE id=" + set.getId() + ";");
-							while (homes.next()){
-								set.setHome(new Location(Bukkit.getWorld(homes.getString("world")), homes.getDouble("x"), homes.getDouble("y"),
-										homes.getDouble("z"), homes.getFloat("yaw"), homes.getFloat("pitch")));
-							}
+						}
+						
+						ResultSet homes = DatabaseUtils.queryIn("SELECT * FROM sethomes WHERE id=" + set.getId() + ";");
+						while (homes.next()){
+							set.setHome(new Location(Bukkit.getWorld(homes.getString("world")), homes.getDouble("x"), homes.getDouble("y"),
+									homes.getDouble("z"), homes.getFloat("yaw"), homes.getFloat("pitch")));
+						}
+						
+						ResultSet alliances = DatabaseUtils.queryIn("SELECT * From alliances WHERE main=" + set.getId() + ";");
+						while (alliances.next()){
+							set.getAllies().add(alliances.getLong("ally"));
 						}
 						settlements.add(set);
 					}
@@ -510,21 +517,32 @@ public class SettlementManager {
 	 * @param s2: The name of the Settlement that will be added to s1's allies
 	 * @return True if successful
 	 */
-	public void allySettlement(Settlement s1, String s2) {
+	public void allySettlement(Player sender, String s2) {
+		Settlement s1 = getPlayerSettlement(sender.getUniqueId());
 		Settlement s = getSettlement(s2);
 		if (s != null) {
-			s1.addAlly(s);
-			s1.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + s2 + ChatColor.GRAY
-					+ " has been added to your Settlement's alliance!");
-			s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + s.getName() + ChatColor.GRAY
-					+ " has been added to your Settlement's alliance!");
-			try {
-				DatabaseUtils.queryOut("INSERT INTO alliances(main, ally) VALUES("+ s1.getId() + ", " + s.getId() + ";");
-				DatabaseUtils.queryOut("INSERT INTO alliances(main, ally) VALUES("+ s.getId() + ", " + s1.getId() + ";");
-			} catch(SQLException e) {
-				e.printStackTrace();
-			} 
-			//s.sendSettlementMessage(""); // should an alliance message be sent instead?
+			if (s1 != null){
+				if (allyInvites.containsKey(s.getId()) && allyInvites.get(s.getId()).equals(s1.getId())){
+					s1.addAlly(s);
+					s1.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + s2 + ChatColor.GRAY
+							+ " has been added to your Settlement's alliance!");
+					s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + s.getName() + ChatColor.GRAY
+							+ " has been added to your Settlement's alliance!");
+					allyInvites.remove(s.getId());
+					try {
+						DatabaseUtils.queryOut("INSERT INTO alliances(main, ally) VALUES("+ s1.getId() + ", " + s.getId() + ");");
+						DatabaseUtils.queryOut("INSERT INTO alliances(main, ally) VALUES("+ s.getId() + ", " + s1.getId() + ");");
+					} catch(SQLException e) {
+						e.printStackTrace();
+					} 
+				}else{
+					sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You don't have any pending alliance requests");
+				}
+			}else{
+				sender.sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
+			}
+		}else{
+			sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "That Settlement could not be found!");
 		}
 	}
 
@@ -629,21 +647,22 @@ public class SettlementManager {
 		player.openInventory(inv);
 	}
 
-	public void promotePlayer(Player sender, Player player) { // untested
+	public void promotePlayer(Player sender, OfflinePlayer player) { // untested
 		UUID id = player.getUniqueId();
 		Settlement s = getPlayerSettlement(id);
 		if (s != null) {
 			if (!s.isOfficer(id)){
+				s.revokeCitizenship(id);
 				s.setOfficer(id);
-				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + player.getDisplayName() +
+				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + player.getName() +
 						ChatColor.GRAY + " has been promoted to " + ChatColor.BLUE + "Officer");
 				try {
-					DatabaseUtils.queryOut("UPDATE citizens WHERE uuid='" + id.toString() + "' SET rank='2';");
+					DatabaseUtils.queryOut("UPDATE citizens SET rank=2 WHERE uuid=" + id + ";");
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 			}else{
-				sender.sendMessage(MessageType.PREFIX.getMsg() + player.getDisplayName() + ChatColor.GRAY + " is already an Officer!");
+				sender.sendMessage(MessageType.PREFIX.getMsg() + player.getName() + ChatColor.GRAY + " is already an Officer!");
 			}
 		}else{
 			sender.sendMessage(MessageType.SETTLEMENT_NO_MEMBER.getMsg());
@@ -683,6 +702,31 @@ public class SettlementManager {
 			}
 		}else{
 			player.sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
+		}
+	}
+	
+	public void sendAllianceInvite(Player sender, Settlement invited){
+		Settlement s = getPlayerSettlement(sender.getUniqueId());
+		if (s.isOfficer(sender.getUniqueId()) || s.isLeader(sender.getUniqueId())){
+			if (!allyInvites.containsKey(invited)){
+				allyInvites.put(invited.getId(), s.getId());
+				sender.sendMessage(MessageType.ALLIANCE_INVITE_SENT.getMsg().replace("<settlement>", invited.getName()));
+			}else{
+				sender.sendMessage(MessageType.ALLIANCE_INVITE_PENDING.getMsg().replace("<settlement>", invited.getName()));
+			}
+		}else{
+			sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.DARK_RED + "You don't have the required rank to do that!");
+		}
+	}
+	// invited, inviter
+	public void declineAllianceInvite(Player sender, Settlement inviter){
+		Settlement s = getPlayerSettlement(sender.getUniqueId());
+		if (s.isOfficer(sender.getUniqueId()) || s.isLeader(sender.getUniqueId())){
+			allyInvites.remove(s.getId(), inviter.getId());
+			sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Declined an Alliance invite from " + ChatColor.AQUA + inviter.getName());
+			inviter.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + s.getName() + ChatColor.GRAY + " declined your Alliance request");
+		}else{
+			sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.DARK_RED + "You don't have the required rank to do that!");
 		}
 	}
 }

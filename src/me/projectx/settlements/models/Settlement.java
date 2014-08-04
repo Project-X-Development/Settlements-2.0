@@ -207,6 +207,7 @@ public class Settlement {
 		if (hasMember(uuid)) {
 			if (!isOfficer(uuid)) {
 				officers.add(uuid);
+				citizens.remove(uuid);
 			}
 		}
 	}
@@ -223,6 +224,7 @@ public class Settlement {
 			if (hasMember(id)) {
 				if (!isOfficer(id)) {
 					officers.add(id);
+					citizens.remove(id);
 				}
 			}
 		}
@@ -355,27 +357,7 @@ public class Settlement {
 	 * @return True if the Settlement is allied with the other Settlement
 	 */
 	public boolean hasAlly(Settlement s) {
-		return allies.contains(s.getName());
-	}
-
-	/**
-	 * Get one of the allies of the Settlement
-	 * 
-	 * @param s
-	 *            : The ally to get
-	 * @return The allied Settlement
-	 */
-	public Settlement getAlly(String setName) {
-		return SettlementManager.getManager().getSettlement(setName);
-	}
-
-	/**
-	 * Get the names of all the allies of the Settlement
-	 * 
-	 * @return The names of all the allied Settlements
-	 */
-	public ArrayList<Long> getAllies() {
-		return allies;
+		return allies.contains(s.getId());
 	}
 
 	/**
@@ -383,7 +365,17 @@ public class Settlement {
 	 * 
 	 * @return All Settlements in this Settlement's alliance
 	 */
-	public ArrayList<Long> getAlliedSettlements() {
+	public ArrayList<Settlement> getAlliedSettlements() {
+		ArrayList<Settlement> list = new ArrayList<Settlement>();
+		for (Settlement s : SettlementManager.getManager().settlements){
+			if (allies.contains(s.getId())){
+				list.add(s);
+			}
+		}
+		return list;
+	}
+	
+	public ArrayList<Long> getAllies(){
 		return allies;
 	}
 
@@ -394,13 +386,11 @@ public class Settlement {
 	 *            : The Settlement to add
 	 * @return True if the ally was successfully added
 	 */
-	public boolean addAlly(Settlement s) {
+	public void addAlly(Settlement s) {
 		if (!hasAlly(s)) {
 			allies.add(s.getId());
 			s.addAlly(this);
-			return true;
 		}
-		return false;
 	}
 
 	/**
@@ -410,13 +400,11 @@ public class Settlement {
 	 *            : The Settlement who will no longer be in the alliance
 	 * @return True if the ally was successfully removed
 	 */
-	public boolean removeAlly(Settlement s) {
+	public void removeAlly(Settlement s) {
 		if (hasAlly(s)) {
-			allies.remove(s.getName());
+			allies.remove(s.getId());
 			s.removeAlly(this);
-			return true;
 		}
-		return false;
 	}
 
 	/**
