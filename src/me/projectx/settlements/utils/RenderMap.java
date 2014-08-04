@@ -1,5 +1,8 @@
 package me.projectx.settlements.utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import me.projectx.settlements.enums.ClaimType;
 import me.projectx.settlements.managers.ChunkManager;
 import me.projectx.settlements.managers.PlayerManager;
@@ -17,14 +20,14 @@ import org.bukkit.map.MapView;
 @SuppressWarnings("deprecation")
 public class RenderMap extends MapRenderer {
 
-	public boolean seen;
+	public Map<String, Boolean> players = new HashMap<String, Boolean>();
 	public int mapid;
 	private String uuid;
 	
 	@Override
 	public void render(MapView view, MapCanvas canvas, Player p) {
-		if(seen)return;
-		if(p.getUniqueId().toString().equals(uuid))seen = true;
+		if(players.get(p.getUniqueId().toString()))return;
+		players.put(p.getUniqueId().toString(), true);
 		for(int j = 0; j < 128; j++) {
 			for(int i = 0; i < 128; i++) {
 				canvas.setPixel(i, j, MapPalette.WHITE);
@@ -75,7 +78,11 @@ public class RenderMap extends MapRenderer {
 	}
 	
 	public void setSeen(boolean value){
-		this.seen = value;
+		if(!value){
+			this.players.clear();
+		}else{
+			players.put(uuid, value);
+		}
 	}
 	
 	public int getMapID(){
