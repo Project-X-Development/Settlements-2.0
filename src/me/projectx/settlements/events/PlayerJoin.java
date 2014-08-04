@@ -1,6 +1,7 @@
 package me.projectx.settlements.events;
 
 import me.projectx.settlements.enums.MessageType;
+import me.projectx.settlements.managers.MapManager;
 import me.projectx.settlements.managers.PlayerManager;
 import me.projectx.settlements.managers.SettlementManager;
 import me.projectx.settlements.models.Players;
@@ -12,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class PlayerJoin implements Listener {
 
@@ -21,6 +23,19 @@ public class PlayerJoin implements Listener {
 
 		Players pl = PlayerManager.getInstance().addPlayer(p);
 		pl.setInt("map", 25);
+		
+		MapManager.getInstance().add(e.getPlayer());
+		
+		boolean has = false;
+		for(ItemStack is : e.getPlayer().getInventory().getContents()){
+			if(is!=null&&is.getItemMeta()!=null&&is.getItemMeta().getDisplayName()!=null){
+				if(is.getItemMeta().getDisplayName().equals(ChatColor.RED + "Dab " + ChatColor.BLUE + "Maps")){
+					e.getPlayer().getInventory().remove(is);
+					has = true;
+				}
+			}
+		}
+		if(has)MapManager.getInstance().givePlayerMap(e.getPlayer());
 
 		Settlement s = SettlementManager.getManager().getPlayerSettlement(p.getUniqueId());
 		if (s != null){

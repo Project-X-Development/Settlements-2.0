@@ -1,29 +1,66 @@
 package me.projectx.settlements.managers;
 
-import org.bukkit.entity.Player;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.map.MapView;
+
+import me.projectx.settlements.enums.MessageType;
 import me.projectx.settlements.models.Players;
 import me.projectx.settlements.utils.RenderMap;
 
 public class MapManager {
 
 	private static MapManager mm = new MapManager();
-	private RenderMap rm = new RenderMap();
+	private Map<String, RenderMap> players = new HashMap<String, RenderMap>();
 
 	public static MapManager getInstance(){
 		return mm;
 	}
 
-	public RenderMap getRenderMap(){
-		return this.rm;
-	}
 
+	@SuppressWarnings("deprecation")
 	public void add(Player pl){
-		this.rm.add(pl);
+		MapView m = Bukkit.getServer().createMap(Bukkit.getWorlds().get(0));
+		for(org.bukkit.map.MapRenderer r : m.getRenderers()){
+			m.removeRenderer(r);
+		}
+		RenderMap rm = new RenderMap();
+		rm.setMapID(m.getId());
+		m.addRenderer(rm);
+		players.put(pl.getUniqueId().toString(), rm);
+		System.out.print("Added " + pl.getName());
 	}
 
 	public void remove(Player pl){
-		this.rm.remove(pl);
+		players.remove(pl.getUniqueId().toString());
+	}
+
+	public void refresh(Player pl){
+		players.get(pl.getUniqueId().toString()).setSeen(false);
+	}
+	
+	public int getPlayerMapID(Player pl){
+		return players.get(pl.getUniqueId().toString()).getMapID();
+	}
+
+	public void givePlayerMap(Player pl){
+		MapManager.getInstance().refresh(pl);
+		ItemStack item = new ItemStack(Material.MAP, 1, (short)getPlayerMapID(pl));
+		ItemMeta im = item.getItemMeta();
+		im.setDisplayName(ChatColor.RED + "Dab " + ChatColor.BLUE + "Maps");
+		item.setItemMeta(im);
+		if (!pl.getInventory().contains(item)){
+			pl.getInventory().addItem(item);
+			pl.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "You have been issued a Settlement map");
+		}else
+			pl.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.YELLOW + "Derp, you already have a map. Check your inventory again.");
 	}
 
 	public void increment(Player pl){
@@ -32,43 +69,43 @@ public class MapManager {
 		switch(i){
 		case 1:
 			p.setInt("map", 3);
-			remove(pl);
+			refresh(pl);
 			break;
 		case 3:
 			p.setInt("map", 5);
-			remove(pl);
+			refresh(pl);
 			break;
 		case 5:
 			p.setInt("map", 7);
-			remove(pl);
+			refresh(pl);
 			break;
 		case 7:
 			p.setInt("map", 9);
-			remove(pl);
+			refresh(pl);
 			break;
 		case 9:
 			p.setInt("map", 11);
-			remove(pl);
+			refresh(pl);
 			break;
 		case 11:
 			p.setInt("map", 13);
-			remove(pl);
+			refresh(pl);
 			break;
 		case 13:
 			p.setInt("map", 17);
-			remove(pl);
+			refresh(pl);
 			break;
 		case 17:
 			p.setInt("map", 25);
-			remove(pl);
+			refresh(pl);
 			break;
 		case 25:
 			p.setInt("map", 41);
-			remove(pl);
+			refresh(pl);
 			break;
 		case 41:
 			p.setInt("map", 125);
-			remove(pl);	
+			refresh(pl);	
 			break;		
 		}
 	}
@@ -79,43 +116,43 @@ public class MapManager {
 		switch(i){
 		case 3:
 			p.setInt("map", 1);
-			remove(pl);
+			refresh(pl);
 			break;
 		case 5:
 			p.setInt("map", 3);
-			remove(pl);
+			refresh(pl);
 			break;
 		case 7:
 			p.setInt("map", 5);
-			remove(pl);
+			refresh(pl);
 			break;
 		case 9:
 			p.setInt("map", 7);
-			remove(pl);
+			refresh(pl);
 			break;
 		case 11:
 			p.setInt("map", 9);
-			remove(pl);
+			refresh(pl);
 			break;
 		case 13:
 			p.setInt("map", 11);
-			remove(pl);
+			refresh(pl);
 			break;
 		case 17:
 			p.setInt("map", 13);
-			remove(pl);
+			refresh(pl);
 			break;
 		case 25:
 			p.setInt("map", 17);
-			remove(pl);
+			refresh(pl);
 			break;
 		case 41:
 			p.setInt("map", 25);
-			remove(pl);
+			refresh(pl);
 			break;
 		case 125:
 			p.setInt("map", 41);
-			remove(pl);
+			refresh(pl);
 			break;
 		}
 	}

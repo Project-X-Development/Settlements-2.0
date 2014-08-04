@@ -62,7 +62,7 @@ public class PlayerMove implements Listener{
 
 				@Override
 				public void run() {
-					MapManager.getInstance().remove(e.getPlayer());
+					MapManager.getInstance().refresh(e.getPlayer());
 				}
 			},1);
 		}

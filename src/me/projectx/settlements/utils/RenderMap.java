@@ -1,8 +1,5 @@
 package me.projectx.settlements.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import me.projectx.settlements.enums.ClaimType;
 import me.projectx.settlements.managers.ChunkManager;
 import me.projectx.settlements.managers.PlayerManager;
@@ -20,14 +17,13 @@ import org.bukkit.map.MapView;
 @SuppressWarnings("deprecation")
 public class RenderMap extends MapRenderer {
 
-	private List<String> players = new ArrayList<String>();
-
+	public boolean seen;
+	public int mapid;
+	
 	@Override
 	public void render(MapView view, MapCanvas canvas, Player p) {
-		if(contains(p)){
-			return;
-		}
-		add(p);
+		if(seen)return;
+		seen = true;
 		for(int j = 0; j < 128; j++) {
 			for(int i = 0; i < 128; i++) {
 				canvas.setPixel(i, j, MapPalette.WHITE);
@@ -76,24 +72,17 @@ public class RenderMap extends MapRenderer {
 		}
 		p.sendMap(view);
 	}
-
-	public void add(Player pl){
-		this.players.add(pl.getUniqueId().toString());
+	
+	public void setSeen(boolean value){
+		this.seen = value;
 	}
-
-	public void remove(Player pl){
-		String uuid = pl.getUniqueId().toString();
-		if(this.players.contains(uuid)){
-			this.players.remove(uuid);
-		}
+	
+	public int getMapID(){
+		return this.mapid;
 	}
-
-	public boolean contains(Player pl){
-		String uuid = pl.getUniqueId().toString();
-		if(this.players.contains(uuid)){
-			return true;
-		}
-		return false;
+	
+	public void setMapID(int id){
+		this.mapid = id;
 	}
 
 	public int getZoom(Players pl){
