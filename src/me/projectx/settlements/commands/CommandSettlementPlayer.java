@@ -7,6 +7,7 @@ import me.projectx.settlements.enums.CommandType;
 import me.projectx.settlements.enums.MessageType;
 import me.projectx.settlements.managers.ChunkManager;
 import me.projectx.settlements.managers.EconomyManager;
+import me.projectx.settlements.managers.MapManager;
 import me.projectx.settlements.managers.PlayerManager;
 import me.projectx.settlements.managers.SettlementManager;
 import me.projectx.settlements.managers.WarManager;
@@ -112,7 +113,7 @@ public class CommandSettlementPlayer extends CommandModel {
 					break;
 				case "map":
 					if (args.length == 1) {
-						ChunkManager.getManager().issueMap(p);
+						MapManager.getInstance().givePlayerMap(p);
 					} else {
 						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s map");
 					}

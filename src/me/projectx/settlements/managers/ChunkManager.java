@@ -334,19 +334,6 @@ public class ChunkManager {
 		return autoClaim.get(player.getName());
 	}
 	
-	public void issueMap(Player player){
-		MapManager.getInstance().remove(player);
-		ItemStack item = new ItemStack(Material.MAP, 1, (short)0);
-		ItemMeta im = item.getItemMeta();
-		im.setDisplayName(ChatColor.RED + "Dab " + ChatColor.BLUE + "Maps");
-		item.setItemMeta(im);
-		if (!player.getInventory().contains(item)){
-			player.getInventory().addItem(item);
-			player.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "You have been issued a Settlement map");
-		}else
-			player.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.YELLOW + "Derp, you already have a map. Check your inventory again.");
-	}
-	
 	/**
 	 * Make sure that every Settlement is in the setClaims map so no NPEs are thrown
 	 */
