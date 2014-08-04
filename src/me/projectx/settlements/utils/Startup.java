@@ -6,20 +6,8 @@ import me.projectx.settlements.Main;
 import me.projectx.settlements.commands.CommandSettlementAdmin;
 import me.projectx.settlements.commands.CommandSettlementPlayer;
 import me.projectx.settlements.enums.CommandType;
-import me.projectx.settlements.events.BlockEvent;
-import me.projectx.settlements.events.InventoryClick;
-import me.projectx.settlements.events.PlayerChat;
-import me.projectx.settlements.events.PlayerDamage;
-import me.projectx.settlements.events.PlayerDeath;
-import me.projectx.settlements.events.PlayerInteract;
-import me.projectx.settlements.events.PlayerJoin;
-import me.projectx.settlements.events.PlayerMove;
-import me.projectx.settlements.events.PlayerQuit;
-import me.projectx.settlements.managers.ChunkManager;
-import me.projectx.settlements.managers.EconomyManager;
-import me.projectx.settlements.managers.MapManager;
-import me.projectx.settlements.managers.PlayerManager;
-import me.projectx.settlements.managers.SettlementManager;
+import me.projectx.settlements.events.*;
+import me.projectx.settlements.managers.*;
 import me.projectx.settlements.models.Players;
 import me.projectx.settlements.runtime.SettlementRuntime;
 
@@ -44,6 +32,7 @@ public class Startup {
 		pm.registerEvents(new PlayerQuit(), Main.getInstance());
 		pm.registerEvents(new PlayerMove(), Main.getInstance());
 		pm.registerEvents(new InventoryClick(), Main.getInstance());
+		pm.registerEvents(new EntityExplode(), Main.getInstance());
 
 		Main.getInstance().getCommand("s").setExecutor(new CommandSettlementPlayer());
 		Main.getInstance().getCommand("sa").setExecutor(new CommandSettlementAdmin());
