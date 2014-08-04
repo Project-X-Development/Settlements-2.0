@@ -1,5 +1,6 @@
 package me.projectx.settlements.managers;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +40,8 @@ public class MapManager {
 	}
 
 	public void remove(Player pl){
+		File f = new File(Bukkit.getWorldContainer(), Bukkit.getWorlds().get(0).getName() + "/data/map_" + getPlayerMapID(pl));
+		f.delete();
 		players.remove(pl.getUniqueId().toString());
 	}
 
