@@ -22,7 +22,7 @@ public class ChatManager {
 			new FancyMessage("[")
 				.color(ChatColor.DARK_GRAY)
 			.then(s.getName())
-				.tooltip(ChatColor.DARK_GREEN + "Leader: " + ChatColor.RED + Bukkit.getPlayer(s.getLeader()).getName(),
+				.tooltip(ChatColor.DARK_GREEN + "Leader: " + ChatColor.RED + Bukkit.getOfflinePlayer(s.getLeader()).getName(),
 						ChatColor.GOLD + "Description: " + ChatColor.GREEN + s.getDescription())
 				.color(getColor(p))
 			.then("] ")
