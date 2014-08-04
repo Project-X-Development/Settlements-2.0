@@ -15,7 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class EconomyManager {
 	
 	private static EconomyManager em = new EconomyManager();
-	public int taxMinutes = 10;
+	public int taxMinutes = 20;
 	
 	public static EconomyManager getManager(){
 		return em;
