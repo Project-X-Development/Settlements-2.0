@@ -32,7 +32,7 @@ public class SettlementManager {
 
 	public List<Settlement> settlements = new ArrayList<Settlement>();
 	private Map<String, String> invitedPlayers = new HashMap<String, String>();
-	private Map<String, String> allyInvites = new HashMap<String, String>();
+	private Map<Long, Long> allyInvites = new HashMap<Long, Long>();
 	private static SettlementManager sm = new SettlementManager();
 
 	/**
@@ -709,7 +709,7 @@ public class SettlementManager {
 		Settlement s = getPlayerSettlement(sender.getUniqueId());
 		if (s.isOfficer(sender.getUniqueId()) || s.isLeader(sender.getUniqueId())){
 			if (!allyInvites.containsKey(invited)){
-				allyInvites.put(invited.getName(), s.getName());
+				allyInvites.put(invited.getId(), s.getId());
 				sender.sendMessage(MessageType.ALLIANCE_INVITE_SENT.getMsg().replace("<settlement>", invited.getName()));
 			}else{
 				sender.sendMessage(MessageType.ALLIANCE_INVITE_PENDING.getMsg().replace("<settlement>", invited.getName()));
@@ -722,7 +722,7 @@ public class SettlementManager {
 	public void declineAllianceInvite(Player sender, Settlement inviter){
 		Settlement s = getPlayerSettlement(sender.getUniqueId());
 		if (s.isOfficer(sender.getUniqueId()) || s.isLeader(sender.getUniqueId())){
-			allyInvites.remove(s.getName());
+			allyInvites.remove(s.getId());
 			sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Declined an Alliance invite from " + ChatColor.AQUA + inviter.getName());
 			inviter.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + s.getName() + ChatColor.GRAY + " declined your Alliance request");
 		}else{
