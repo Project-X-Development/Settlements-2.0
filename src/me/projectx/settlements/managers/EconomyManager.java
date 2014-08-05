@@ -79,7 +79,7 @@ public class EconomyManager {
 			int claimCount = ChunkManager.getManager().getClaims(s).size();
 			double cost = 0;
 			if (claimCount > 0)
-				cost = (claimCount + 1) * 15;
+				cost = (claimCount + 1) * 7;
 			withdrawFromSettlement(s, cost);
 			s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + 
 					"Your Settlement has been charged " + ChatColor.AQUA + "$" + cost + ChatColor.GRAY + " in land taxes");
@@ -91,7 +91,7 @@ public class EconomyManager {
 			public void run(){
 				taxSettlements();
 			}
-		}.runTaskTimerAsynchronously(Main.getInstance(), 1200, 1200 * taxMinutes); //wait 1 minute to start, then collect taxes every x minutes
+		}.runTaskTimerAsynchronously(Main.getInstance(), 1200 * taxMinutes, 1200 * taxMinutes);
 	}
 	
 	public void setTaxSchedule(int minutes){
