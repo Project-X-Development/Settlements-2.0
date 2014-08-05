@@ -26,7 +26,7 @@ public class RenderMap extends MapRenderer {
 	
 	@Override
 	public void render(MapView view, MapCanvas canvas, Player p) {
-		if(players.get(p.getUniqueId().toString()))return;
+		if(players.containsKey(p.getUniqueId().toString())&&players.get(p.getUniqueId().toString()))return;
 		players.put(p.getUniqueId().toString(), true);
 		for(int j = 0; j < 128; j++) {
 			for(int i = 0; i < 128; i++) {
