@@ -39,10 +39,11 @@ public class PlayerJoin implements Listener {
 
 		Settlement s = SettlementManager.getManager().getPlayerSettlement(p.getUniqueId());
 		if (s != null){
-			e.setJoinMessage(null);
 			s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.GREEN + p.getName() + ChatColor.GOLD + " has joined the game");
 			s.sendAllianceMessage(MessageType.PREFIX.getMsg() + ChatColor.LIGHT_PURPLE + p.getName() + ChatColor.GOLD + " has joined the game");
 		}
+		
+		e.setJoinMessage(ChatColor.AQUA + p.getDisplayName() + ChatColor.GRAY + " has joined the server");
 
 		if (!p.hasPlayedBefore()){
 			p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GOLD + "Welcome to the server " + p.getName() + "!");
