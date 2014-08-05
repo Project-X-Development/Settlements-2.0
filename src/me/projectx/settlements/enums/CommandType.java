@@ -78,18 +78,11 @@ public enum CommandType {
 		
 		for (CommandType ct : CommandType.values()){
 			im.setDisplayName(ChatColor.AQUA + ct.getUsage());
-			im.setLore(Arrays.asList(ChatColor.GOLD + ct.getInfo(), ChatColor.YELLOW + "Can I Use?: " + hasPerm(player, ct.getPerm())));
+			im.setLore(Arrays.asList(ChatColor.GOLD + ct.getInfo()));
 			is.setItemMeta(im);
 			i.setItem(slot, is);
 			slot++;
 		}
 		player.openInventory(i);
-	}
-	
-	private static String hasPerm(Player p, String perm){
-		if (p.hasPermission(perm))
-			return ChatColor.GREEN + "Yes";
-		else
-			return ChatColor.RED + "No";
 	}
 }
