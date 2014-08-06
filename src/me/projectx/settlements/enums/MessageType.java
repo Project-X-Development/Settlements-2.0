@@ -24,6 +24,7 @@ public enum MessageType {
 	SETTLEMENT_NO_MEMBER(PREFIX.getMsg() + "&4That player is not in your Settlement"),
 	SETTLEMENT_NO_CLAIMS(PREFIX.getMsg() + "&eThat Settlement has no land claims!"),
 	SETTLEMENT_BALANCE(PREFIX.getMsg() + "&7Settlement balance is &b$<bal>"),
+	SETTLEMENT_BALANCE_NOT_ENOUGH(PREFIX.getMsg() + "&cYou don't have that much money to deposit into your Settlement."),
 	SETTLEMENT_HOME_TP(PREFIX.getMsg() + "&7Teleported to your Settlement's home!"),
 	SETTLEMENT_NO_HOME(PREFIX.getMsg() + "&4Your Settlement doesn't have a home set!"),
 	SETTLEMENT_DELETE_CONFIRM(PREFIX.getMsg() + "&eAre you sure you want to delete your Settlement? Type &c/s delete &eagain to confirm or &c/s cancel &e to cancel"),

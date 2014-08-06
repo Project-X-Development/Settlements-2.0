@@ -3,6 +3,7 @@ package me.projectx.settlements.managers;
 import java.sql.SQLException;
 
 import me.projectx.Economy.Managers.AccountManager;
+import me.projectx.Economy.Models.Account;
 import me.projectx.settlements.Main;
 import me.projectx.settlements.enums.MessageType;
 import me.projectx.settlements.models.Settlement;
@@ -46,12 +47,16 @@ public class EconomyManager {
 	 * @throws SQLException
 	 */
 	public void depositIntoSettlement(Player player, Settlement s, double amount){
-		AccountManager.getManager().withdraw(player, amount);
-		s.setBalance(s.getBalance() + amount);
-		try {
-			DatabaseUtils.queryOut("UPDATE settlements SET balance=" + s.getBalance() + " WHERE id=" + s.getId() + ";");
-		} catch(SQLException e) {
-			e.printStackTrace();
+		Account a = AccountManager.getManager().getAccount(player);
+		if (a.getBalance() >= amount){
+			s.setBalance(s.getBalance() + amount);
+			try {
+				DatabaseUtils.queryOut("UPDATE settlements SET balance=" + s.getBalance() + " WHERE id=" + s.getId() + ";");
+			} catch(SQLException e) {
+				e.printStackTrace();
+			}
+		}else{
+			player.sendMessage(MessageType.SETTLEMENT_BALANCE_NOT_ENOUGH.getMsg());
 		}
 	}
 	
