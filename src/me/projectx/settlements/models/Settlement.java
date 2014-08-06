@@ -206,8 +206,8 @@ public class Settlement {
 	public void setOfficer(UUID uuid) {
 		if (hasMember(uuid)) {
 			if (!isOfficer(uuid)) {
-				officers.add(uuid);
 				citizens.remove(uuid);
+				officers.add(uuid);
 			}
 		}
 	}
@@ -223,8 +223,8 @@ public class Settlement {
 			UUID id = UUID.fromString(uuid);
 			if (hasMember(id)) {
 				if (!isOfficer(id)) {
+					citizens.remove(uuid);
 					officers.add(id);
-					citizens.remove(id);
 				}
 			}
 		}

@@ -652,7 +652,7 @@ public class SettlementManager {
 		Settlement s = getPlayerSettlement(id);
 		if (s != null) {
 			if (!s.isOfficer(id)){
-				s.revokeCitizenship(id);
+				s.getCitizens().remove(id);
 				s.setOfficer(id);
 				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + player.getName() +
 						ChatColor.GRAY + " has been promoted to " + ChatColor.BLUE + "Officer");
