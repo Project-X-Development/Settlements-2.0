@@ -464,13 +464,13 @@ public class SettlementManager {
 	public void kickPlayer(CommandSender sender, String name) throws SQLException {
 		final Settlement s = getPlayerSettlement(sender.getName());
 		if (s != null) {
-			Player p = Bukkit.getPlayer(name);
+			OfflinePlayer p = Bukkit.getOfflinePlayer(name);
 			UUID id = p.getUniqueId();
 			if (s.hasMember(p.getUniqueId())) {
 				if (!s.isLeader(p.getUniqueId())) {
 					s.revokeCitizenship(p.getUniqueId());
 					if (p.isOnline()) {
-						p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "You have been kicked from " + ChatColor.AQUA + s.getName());
+						((CommandSender) p).sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "You have been kicked from " + ChatColor.AQUA + s.getName());
 					}
 					s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + sender.getName() + ChatColor.GRAY 
 							+ " kicked " + ChatColor.AQUA + name + ChatColor.GRAY + " from the Settlement!");
