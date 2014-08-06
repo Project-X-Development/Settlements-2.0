@@ -5,6 +5,7 @@ import me.projectx.settlements.enums.MessageType;
 import me.projectx.settlements.managers.ChunkManager;
 import me.projectx.settlements.managers.SettlementManager;
 import me.projectx.settlements.models.ClaimedChunk;
+import me.projectx.settlements.models.Settlement;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -34,11 +35,21 @@ public class BlockEvent implements Listener{
 			}
 			
 			if (chunk.getType() != ClaimType.SAFEZONE){
-				if (!SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()).isInWar()){
-					Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
-					if (p.getUniqueId() != e.getPlayer().getUniqueId()){
+				Settlement s = SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getUniqueId());
+				if (s != null){
+					if (chunk.getSettlement().getId() != s.getId()){
+						if (!s.isInWar()){
+							//Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
+							//if (p.getUniqueId() != e.getPlayer().getUniqueId()){
+								e.setCancelled(true);
+								e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You are not allowed to build here!");;
+							//}
+						}
+					}
+				}else{
+					if (chunk.getType() == ClaimType.NORMAL){
 						e.setCancelled(true);
-						e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You are not allowed to build here!");;
+						e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You are not allowed to build here!");
 					}
 				}
 			}
@@ -63,11 +74,21 @@ public class BlockEvent implements Listener{
 			}
 
 			if (chunk.getType() != ClaimType.SAFEZONE){
-				if (!SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()).isInWar()){
-					Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
-					if (p.getUniqueId() != e.getPlayer().getUniqueId()){
+				Settlement s = SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getUniqueId());
+				if (s != null){
+					if (!s.isInWar()){
+						if (chunk.getSettlement().getId() != s.getId()){
+							//Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
+							//if (p.getUniqueId() != e.getPlayer().getUniqueId()){
+								e.setCancelled(true);
+								e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You are not allowed to build here!");
+							//}
+						}
+					}
+				}else{
+					if (chunk.getType() == ClaimType.NORMAL){
 						e.setCancelled(true);
-						e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You are not allowed to build here!");;
+						e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You are not allowed to build here!");
 					}
 				}
 			}	
@@ -87,18 +108,26 @@ public class BlockEvent implements Listener{
 
 				if (ChunkManager.getManager().isClaimed(x, z, c.getWorld())){
 					ClaimedChunk chunk = ChunkManager.getManager().getChunk(x, z, c.getWorld());
-					Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
+					//Player p = Bukkit.getServer().getPlayer(chunk.getOwner());
 
-					if (SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()) != null){
-						if (!SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()).isInWar()){
-							if (!(p == e.getPlayer())){
-								if (chunk.getType() == ClaimType.SAFEZONE)
-									e.setCancelled(false);
-								else{
-									e.setCancelled(true);
-									e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You cannot interact with blocks in this territory!");
-								}
+					Settlement s = SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getUniqueId());
+					if (s != null){
+						//if (!SettlementManager.getManager().getPlayerSettlement(e.getPlayer().getName()).isInWar()){
+							//if (!(p.getUniqueId() == e.getPlayer().getUniqueId())){
+						/*if (chunk.getType() == ClaimType.SAFEZONE){
+							e.setCancelled(true);
+							e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You cannot interact with blocks in this territory!");
+						}*/
+							
+						if (chunk.getType() == ClaimType.NORMAL){
+							if (chunk.getSettlement().getId() != s.getId()){
+								e.setCancelled(true);
+								e.getPlayer().sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You cannot interact with blocks in this territory");
 							}
+						}
+					}else{
+						if (chunk.getType() == ClaimType.NORMAL){
+							e.setCancelled(true);
 						}
 					}
 				}
