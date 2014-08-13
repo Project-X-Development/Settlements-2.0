@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 import me.projectx.settlements.enums.MessageType;
@@ -31,7 +30,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 public class SettlementManager {
 
 	public List<Settlement> settlements = new ArrayList<Settlement>();
-	private Map<String, String> invitedPlayers = new HashMap<String, String>();
+	private Map<UUID, String> invitedPlayers = new HashMap<UUID, String>();
 	private Map<Long, Long> allyInvites = new HashMap<Long, Long>();
 	private static SettlementManager sm = new SettlementManager();
 
@@ -329,30 +328,25 @@ public class SettlementManager {
 	 * @param invite: The player to invite
 	 * @param sender: Who issued the invite
 	 */
-	public void inviteCitizen(String invite, CommandSender sender) {
-		if (!invitedPlayers.containsKey(invite)) {
+	public void inviteCitizen(Player invite, CommandSender sender) {
+		if (!invitedPlayers.containsKey(invite.getUniqueId())) {
 			Settlement s = getPlayerSettlement(sender.getName());
 			if (s != null) {
-				Player p = Bukkit.getPlayer(invite);
-				if (!s.hasMember(p.getUniqueId())) {
-					Player pl = (Player) sender;
-					if (s.isOfficer(pl.getUniqueId()) || s.isLeader(pl.getUniqueId())) {
-						invitedPlayers.put(invite, s.getName());
-						s.sendSettlementMessage(MessageType.PREFIX.getMsg()
-								+ pl.getName() + ChatColor.GRAY
-								+ " invited " + ChatColor.AQUA + invite
-								+ ChatColor.GRAY + " to your Settlement");
-						p.sendMessage(MessageType.PREFIX.getMsg()
-								+ ChatColor.AQUA + sender.getName()
-								+ ChatColor.GRAY + " invited you to join "
-								+ ChatColor.AQUA + s.getName());
+				if (!s.hasMember(invite.getUniqueId())) {
+					Player send = (Player) sender;
+					if (s.isOfficer(send.getUniqueId()) || s.isLeader(send.getUniqueId())) {
+						invitedPlayers.put(invite.getUniqueId(), s.getName());
+						s.sendSettlementMessage(MessageType.PREFIX.getMsg() + send.getName() + ChatColor.GRAY
+								+ " invited " + ChatColor.AQUA + invite + ChatColor.GRAY + " to your Settlement");
+						invite.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + sender.getName()
+								+ ChatColor.GRAY + " invited you to join " + ChatColor.AQUA + s.getName() + ". " 
+								+ ChatColor.GRAY + "Type " + ChatColor.AQUA + "/s accept " + ChatColor.GRAY + " to accept or " 
+								+ ChatColor.AQUA +  "/s decline" + ChatColor.GRAY + " to decline");
 					} else {
 						sender.sendMessage(MessageType.INVITE_NOT_RANK.getMsg());
 					}
 				} else {
-					sender.sendMessage(MessageType.PREFIX.getMsg()
-							+ ChatColor.AQUA + invite + ChatColor.GRAY
-							+ " is already in your Settlement!");
+					sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + invite + ChatColor.GRAY + " is already in your Settlement!");
 				}
 			} else {
 				sender.sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
@@ -370,20 +364,17 @@ public class SettlementManager {
 	public void acceptInvite(final String player) throws SQLException {
 		Player p = Bukkit.getPlayer(player);
 		UUID id = p.getUniqueId();
-		if (hasInvite(player)) {
+		if (hasInvite(p)) {
 			if (getPlayerSettlement(id) == null) {
-				final Settlement s = getSettlement(invitedPlayers.get(player));
+				final Settlement s = getSettlement(invitedPlayers.get(id));
 				s.giveCitizenship(id);
-				invitedPlayers.remove(player);
+				invitedPlayers.remove(p.getUniqueId());
 				DatabaseUtils.queryOut("DELETE FROM citizens WHERE uuid='" + id.toString() + "';");
 				DatabaseUtils.queryOut("INSERT INTO citizens(uuid, settlement, rank) VALUES ('"
 						+ id.toString() + "','" + s.getName() + "','1');");	
-				p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY
-						+ "Successfully joined " + ChatColor.AQUA
+				p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully joined " + ChatColor.AQUA
 						+ getPlayerSettlement(id).getName());
-				s.sendSettlementMessage(MessageType.PREFIX.getMsg()
-						+ ChatColor.AQUA + player + ChatColor.GRAY
-						+ " joined the Settlement!");
+				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + player + ChatColor.GRAY + " joined the Settlement!");
 				SettlementRuntime.getRuntime().sortMembers(s);
 				s.setPower(s.getPower() + 1);
 			} else {
@@ -400,8 +391,8 @@ public class SettlementManager {
 	 * @param player: The player to check
 	 * @return True if the player has an invite
 	 */
-	public boolean hasInvite(String player) {
-		return invitedPlayers.containsKey(player);
+	public boolean hasInvite(Player player) {
+		return invitedPlayers.containsKey(player.getUniqueId());
 	}
 
 	/**
@@ -411,10 +402,10 @@ public class SettlementManager {
 	 */
 	public void declineInvite(String player) {
 		Player p = Bukkit.getPlayer(player);
-		if (hasInvite(player)) {
+		if (hasInvite(p)) {
 			p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "You declined an invite to join " + ChatColor.AQUA
 					+ invitedPlayers.get(player));
-			invitedPlayers.remove(player);
+			invitedPlayers.remove(p.getUniqueId());
 		} else {
 			p.sendMessage(MessageType.NO_INVITE.getMsg());
 		}
@@ -522,7 +513,7 @@ public class SettlementManager {
 		Settlement s = getSettlement(s2);
 		if (s != null) {
 			if (s1 != null){
-				if (allyInvites.containsKey(s.getId()) && allyInvites.get(s.getId()).equals(s1.getId())){
+				//if (allyInvites.containsKey(s.getId()) && allyInvites.get(s.getId()).equals(s1.getId())){
 					s1.addAlly(s);
 					s1.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + s2 + ChatColor.GRAY
 							+ " has been added to your Settlement's alliance!");
@@ -535,9 +526,9 @@ public class SettlementManager {
 					} catch(SQLException e) {
 						e.printStackTrace();
 					} 
-				}else{
+				/*}else{
 					sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You don't have any pending alliance requests");
-				}
+				}*/
 			}else{
 				sender.sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
 			}
@@ -646,13 +637,37 @@ public class SettlementManager {
 		}
 		player.openInventory(inv);
 	}
+	
+	/**
+	 * Display all if the player's allied Settlements in a GUI
+	 * 
+	 * @param player : The player who issued the command and will view the GUI
+	 */
+	public void listAllies(Player player){
+		Settlement s = getPlayerSettlement(player.getUniqueId());
+		int allySize = s.getAllies().size();
+		Inventory inv = Bukkit.createInventory(null, getInventorySize(allySize), ChatColor.DARK_PURPLE + "Your Settlement's Allies");
+		ItemStack is = new ItemStack(Material.INK_SACK, 1, (short)13);
+		ItemMeta im = is.getItemMeta();
+
+		for (int i = 0; i < allySize; i++){
+			Settlement ally = settlements.get(i);
+			im.setDisplayName(ChatColor.LIGHT_PURPLE + ally.getName());
+			im.setLore(Arrays.asList(ChatColor.DARK_AQUA + ally.getDescription(), ChatColor.GOLD + "Owner: " + ChatColor.GREEN + Bukkit.getOfflinePlayer(ally.getLeader()).getName(),
+					ChatColor.DARK_GREEN + "Members: " + ChatColor.RED + ally.memberSize(), ChatColor.LIGHT_PURPLE + "Power: " + ChatColor.BLUE + ally.getPower(),
+					ChatColor.GREEN + "Money: " + ChatColor.GOLD + "$" + ally.getBalance()));
+			is.setItemMeta(im);
+			inv.setItem(i, is);
+		}
+		player.openInventory(inv);
+	}
 
 	public void promotePlayer(Player sender, OfflinePlayer player) { // untested
 		UUID id = player.getUniqueId();
 		Settlement s = getPlayerSettlement(id);
 		if (s != null) {
 			if (!s.isOfficer(id)){
-				s.getCitizens().remove(id);
+				//s.getCitizens().remove(id);
 				s.setOfficer(id);
 				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + player.getName() +
 						ChatColor.GRAY + " has been promoted to " + ChatColor.BLUE + "Officer");
@@ -705,7 +720,7 @@ public class SettlementManager {
 		}
 	}
 	
-	public void sendAllianceInvite(Player sender, Settlement invited){
+	/*public void sendAllianceInvite(Player sender, Settlement invited){
 		Settlement s = getPlayerSettlement(sender.getUniqueId());
 		if (s.isOfficer(sender.getUniqueId()) || s.isLeader(sender.getUniqueId())){
 			if (!allyInvites.containsKey(invited)){
@@ -728,5 +743,5 @@ public class SettlementManager {
 		}else{
 			sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.DARK_RED + "You don't have the required rank to do that!");
 		}
-	}
+	}*/
 }

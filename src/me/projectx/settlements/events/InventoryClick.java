@@ -9,13 +9,14 @@ public class InventoryClick implements Listener{
 	
 	@EventHandler
 	public void onClick(InventoryClickEvent e){
-		if (e.getInventory().getTitle().contains(ChatColor.BLUE + "Members of "))
+		String title = e.getInventory().getTitle();
+		if (title.contains(ChatColor.BLUE + "Members of "))
 			e.setCancelled(true);
-		
-		else if (e.getInventory().getTitle().equals(ChatColor.BLUE + "All Current Settlements:"))
+		else if (title.equals(ChatColor.BLUE + "All Current Settlements:"))
 			e.setCancelled(true);
-		
-		else if (e.getInventory().getTitle().equals(ChatColor.DARK_RED + "Settlement Commands"))
+		else if (title.equals(ChatColor.DARK_RED + "Settlement Commands"))
+			e.setCancelled(true);
+		else if (title.equals(ChatColor.DARK_PURPLE + "Your Settlement's Allies"))
 			e.setCancelled(true);
 	}	
 }
