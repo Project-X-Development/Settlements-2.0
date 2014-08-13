@@ -26,7 +26,6 @@ public class Startup {
 		pm.registerEvents(new BlockEvent(), Main.getInstance());
 		pm.registerEvents(new PlayerChat(), Main.getInstance());
 		pm.registerEvents(new PlayerDamage(), Main.getInstance());
-		pm.registerEvents(new PlayerDeath(), Main.getInstance());
 		pm.registerEvents(new PlayerInteract(), Main.getInstance());
 		pm.registerEvents(new PlayerJoin(), Main.getInstance());
 		pm.registerEvents(new PlayerQuit(), Main.getInstance());
