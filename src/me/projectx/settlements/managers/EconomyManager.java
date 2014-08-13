@@ -23,22 +23,6 @@ public class EconomyManager {
 	}
 	
 	/**
-	 * Deposit a given amount into a Settlement's account
-	 *
-	 * @param s : The Settlement
-	 * @param amount : The amount to deposit
-	 * @throws SQLException
-	 */
-	public void depositIntoSettlement(Settlement s, double amount){
-		s.setBalance(s.getBalance() + amount);
-		try {
-			DatabaseUtils.queryOut("UPDATE settlements SET balance=" + s.getBalance() + " WHERE id=" + s.getId() + ";");
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
 	 * Deposit a given amount into a Settlement's account from a player's balance
 	 * 
 	 * @param player : The player who is giving the money
@@ -50,6 +34,10 @@ public class EconomyManager {
 		Account a = AccountManager.getManager().getAccount(player);
 		if (a.getBalance() >= amount){
 			s.setBalance(s.getBalance() + amount);
+			AccountManager.getManager().withdraw(player, amount);
+			s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + player.getName()
+					+ ChatColor.GRAY + " deposited " + ChatColor.AQUA + "$" 
+					+ amount + ChatColor.GRAY + " into your Settlement's account!");
 			try {
 				DatabaseUtils.queryOut("UPDATE settlements SET balance=" + s.getBalance() + " WHERE id=" + s.getId() + ";");
 			} catch(SQLException e) {
@@ -81,25 +69,28 @@ public class EconomyManager {
 	 */
 	public void taxSettlements(){
 		for (Settlement s : SettlementManager.getManager().settlements){
-			int claimCount = ChunkManager.getManager().getClaims(s).size();
-			double cost = 0;
-			if (claimCount > 0)
-				cost = (claimCount + 1) * 7;
-			withdrawFromSettlement(s, cost);
-			s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + 
-					"Your Settlement has been charged " + ChatColor.AQUA + "$" + cost + ChatColor.GRAY + " in land taxes");
+			if (s.hasOnlineMember()){
+				int claimCount = ChunkManager.getManager().getClaims(s).size();
+				double cost = 0;
+				if (claimCount > 0)
+					cost = claimCount * 7;
+				withdrawFromSettlement(s, cost);
+				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + 
+						"Your Settlement has been charged " + ChatColor.AQUA + "$" + cost + ChatColor.GRAY + " in land taxes");
+			}else{
+				System.out.println("[Settlements] " + s.getName() + " has no members online. Not charging taxes.");
+			}
 		}
 	}
 
-	public synchronized void scheduleTaxCollection(){
+	/**
+	 * Schedule Settlement tax collection
+	 */
+	public synchronized void scheduleTaxCollection(){ //synchronized to avoid CMEs
 		new BukkitRunnable(){
 			public void run(){
 				taxSettlements();
 			}
-		}.runTaskTimerAsynchronously(Main.getInstance(), 1200 * taxMinutes, 1200 * taxMinutes);
-	}
-	
-	public void setTaxSchedule(int minutes){
-		this.taxMinutes = minutes;
+		}.runTaskTimerAsynchronously(Main.getInstance(), 0, 1200 * taxMinutes);
 	}
 } 

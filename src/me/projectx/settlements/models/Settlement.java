@@ -1,6 +1,7 @@
 package me.projectx.settlements.models;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
 import java.util.UUID;
@@ -206,7 +207,6 @@ public class Settlement {
 	public void setOfficer(UUID uuid) {
 		if (hasMember(uuid)) {
 			if (!isOfficer(uuid)) {
-				citizens.remove(uuid);
 				officers.add(uuid);
 			}
 		}
@@ -223,7 +223,6 @@ public class Settlement {
 			UUID id = UUID.fromString(uuid);
 			if (hasMember(id)) {
 				if (!isOfficer(id)) {
-					citizens.remove(uuid);
 					officers.add(id);
 				}
 			}
@@ -519,5 +518,20 @@ public class Settlement {
 	 */
 	public void setToDelete(boolean delete){
 		this.delete = delete;
+	}
+	
+	/**
+	 * Determine if the Settlement has any online members
+	 * 
+	 * @return True if there is at least 1 member online
+	 */
+	public boolean hasOnlineMember(){
+		int onlineCount = 0;
+		for (int i = 0; i < memberSize(); i++){
+			if (Bukkit.getOfflinePlayer(getPlayer(i)).isOnline()){
+				onlineCount++;
+			}
+		}
+		return onlineCount >= 1;
 	}
 }
