@@ -18,11 +18,8 @@ import me.projectx.settlements.utils.DatabaseUtils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class ChunkManager {
@@ -43,8 +40,8 @@ public class ChunkManager {
 			final Settlement s = SettlementManager.getManager().getPlayerSettlement(owner);
 			if (s != null){
 				if (!claimed){
-					final int bonus = setClaims.get(s.getName()).size() + 1;
-					if (s.getBalance() >= bonus + BASE_CHUNK_COST){
+					final int bonus = setClaims.get(s.getName()).size();
+					if (s.getBalance() >= (bonus + BASE_CHUNK_COST)){
 						new BukkitRunnable(){
 							public void run(){
 								ClaimedChunk cc = new ClaimedChunk(x, z, owner, s.getId(), world.getName(), type);
@@ -124,12 +121,12 @@ public class ChunkManager {
 									List<ClaimedChunk> l = setClaims.get(s.getName());
 									l.remove(cc);
 									claimedChunks.remove(cc);
-									
 									try {
 										DatabaseUtils.queryOut("DELETE FROM chunks WHERE x=" + cc.getX() + " AND z=" + cc.getZ() + ";");
 									} catch(SQLException e) {
 										e.printStackTrace();
 									}
+									cc = null; //maybe this will make things work better
 									return ClaimResult.UNCLAIM_SUCESS;
 								}else{
 									return ClaimResult.UNCLAIM_NO_CLAIMS;
@@ -150,10 +147,10 @@ public class ChunkManager {
 							} catch(SQLException e) {
 								e.printStackTrace();
 							}
+							cc = null;
 							return ClaimResult.UNCLAIM_SUCESS;
 						}
 					}
-					break;
 				case SAFEZONE:
 					if (admin){
 						List<ClaimedChunk> list = setClaims.get(null);
@@ -207,6 +204,7 @@ public class ChunkManager {
 		new BukkitRunnable(){
 			public void run() {
 				try {
+					verifyClaims();
 					ResultSet result = DatabaseUtils.queryIn("SELECT * FROM chunks;");
 					while (result.next()){
 						int x = result.getInt("x");
@@ -219,13 +217,18 @@ public class ChunkManager {
 						String w = result.getString("world");
 						Settlement s = SettlementManager.getManager().getSettlement(setid);
 						ClaimedChunk cc = new ClaimedChunk(x, z, player, setid, w, ClaimType.valueOf(result.getString("type")));
-						List<ClaimedChunk> list = new ArrayList<ClaimedChunk>();
-						list.add(cc);
 						claimedChunks.add(cc);
-						if (s != null)
-							setClaims.put(s.getName(), list);
-						else
-							setClaims.put(null, list);
+						if (s != null){
+							setClaims.get(s.getName()).add(cc);
+						}else{
+							if (setClaims.containsKey(null)){
+								setClaims.get(null).add(cc);
+							}else{
+								List<ClaimedChunk> list = new ArrayList<ClaimedChunk>();
+								list.add(cc);
+								setClaims.put(null, list);
+							}
+						}
 					}
 					this.cancel();
 				} catch(SQLException e) {
@@ -283,7 +286,7 @@ public class ChunkManager {
 				player.sendMessage(MessageType.CHUNK_NOT_ADMIN.getMsg());
 				break;
 			case UNCLAIM_NOT_OWNER:
-				player.sendMessage(MessageType.CHUNK_CLAIM_OWNED.getMsg());
+				player.sendMessage(MessageType.CHUNK_UNCLAIM_FAIL.getMsg());
 				break;
 			case UNCLAIM_NO_CLAIMS:
 				player.sendMessage(MessageType.SETTLEMENT_NO_CLAIMS.getMsg());
@@ -352,5 +355,18 @@ public class ChunkManager {
 				this.cancel();
 			}
 		}.runTaskAsynchronously(Main.getInstance());
+	}
+	
+	public void unregisterClaims(){
+		new Thread(){
+			public void run(){
+				for (ClaimedChunk cc : claimedChunks){
+					setClaims.get(cc.getSettlement().getName()).clear();
+					claimedChunks.remove(cc);
+					cc = null;
+				}
+				this.interrupt();
+			}
+		}.start();
 	}
 }
