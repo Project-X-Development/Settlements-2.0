@@ -60,7 +60,7 @@ public class CommandSettlementPlayer extends CommandModel {
 					break;
 				case "invite":
 					if (args.length == 2) {
-						SettlementManager.getManager().inviteCitizen(args[1], sender);
+						SettlementManager.getManager().inviteCitizen(Bukkit.getPlayer(args[1]), sender);
 					} else {
 						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s invite <player>");
 					}
@@ -168,13 +168,12 @@ public class CommandSettlementPlayer extends CommandModel {
 					break;
 				case "ally":
 					if (args.length == 2){
-						SettlementManager sm = SettlementManager.getManager();
-						sm.sendAllianceInvite(p, sm.getSettlement(args[1]));
+						SettlementManager.getManager().allySettlement(p, args[1]);
 					} else {
 						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s ally <Settlement>");
 					}
 					break;
-				case "acceptally":
+				/*case "acceptally":
 					if (args.length == 2){
 						SettlementManager.getManager().allySettlement(p, args[1]);
 					}else{
@@ -187,13 +186,20 @@ public class CommandSettlementPlayer extends CommandModel {
 					}else{
 						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s denyally <Settlement>");
 					}
-					break;
+					break;*/
 				case "removeally":
 					if (args.length == 2){
 						SettlementManager sm = SettlementManager.getManager();
 						sm.removeAlly(sm.getPlayerSettlement(p.getUniqueId()),args[1]);
 					}else{
 						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s removeally <Settlement>");
+					}
+					break;
+				case "allies":
+					if (args.length == 1){
+						SettlementManager.getManager().listAllies((Player)sender);
+					}else{
+						sender.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s allies");
 					}
 					break;
 				case "sethome":
@@ -272,10 +278,6 @@ public class CommandSettlementPlayer extends CommandModel {
 					if (args.length == 2) {
 						Settlement s = SettlementManager.getManager().getPlayerSettlement(p.getUniqueId());
 						EconomyManager.getManager().depositIntoSettlement(p, s, Double.valueOf(args[1]));
-						s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + p.getName()
-								+ ChatColor.GRAY + " deposited " + ChatColor.AQUA + "$" 
-								+ args[1] + ChatColor.GRAY + " into your Settlement's account!");
-						
 					} else {
 						p.sendMessage(MessageType.COMMAND_INVALID_ARGS.getMsg() + "Try /s deposit <amount>");
 					}
