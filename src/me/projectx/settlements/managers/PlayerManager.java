@@ -2,11 +2,12 @@ package me.projectx.settlements.managers;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.bukkit.entity.Player;
+import java.util.UUID;
 
 import me.projectx.settlements.enums.MessageType;
 import me.projectx.settlements.models.Players;
+
+import org.bukkit.entity.Player;
 
 public class PlayerManager {
 	
@@ -14,6 +15,7 @@ public class PlayerManager {
 	private List<String> allianceChat = new ArrayList<String>();
 	private List<String> settlementChat = new ArrayList<String>();
 	private List<Players> playerobjects = new ArrayList<Players>();
+	private List<UUID> override = new ArrayList<UUID>();
 	
 	public static PlayerManager getInstance(){
 		return pm;
@@ -36,6 +38,9 @@ public class PlayerManager {
 	
 	public void removePlayer(Player player){
 		this.playerobjects.remove(getPlayer(player));
+		this.settlementChat.remove(player.getName());
+		this.allianceChat.remove(player.getName());
+		this.override.remove(player.getUniqueId());
 	}
 	
 	public void setAllianceChatting(Player player){
@@ -64,5 +69,20 @@ public class PlayerManager {
 	
 	public boolean isSettlementChatting(Player player){
 		return settlementChat.contains(player.getName());
+	}
+	
+	public void setAdminOverride(Player player){
+		UUID id = player.getUniqueId();
+		if (override.contains(id)){
+			override.remove(id);
+			player.sendMessage(MessageType.ADMIN_OVERRIDE_END.getMsg());
+		}else{
+			override.add(id);
+			player.sendMessage(MessageType.ADMIN_OVERRIDE_START.getMsg());
+		}
+	}
+	
+	public boolean hasAdminOverride(Player player){
+		return override.contains(player.getUniqueId());
 	}
 }
