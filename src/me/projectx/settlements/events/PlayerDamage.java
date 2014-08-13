@@ -16,29 +16,29 @@ public class PlayerDamage implements Listener {
 	
 	@EventHandler
 	public void onDmg(EntityDamageByEntityEvent e){
-		if (e.getEntity() instanceof Player){	
-			Chunk c = e.getEntity().getLocation().getChunk();
-			int x = c.getX();
-			int z = c.getZ();
+		Chunk c = e.getEntity().getLocation().getChunk();
+		int x = c.getX();
+		int z = c.getZ();
 
-			if (ChunkManager.getManager().isClaimed(x, z, c.getWorld())){
-				if (ChunkManager.getManager().getChunk(x, z, c.getWorld()).getType() == ClaimType.SAFEZONE){
-					e.setCancelled(true);
-				}
+		if (ChunkManager.getManager().isClaimed(x, z, c.getWorld())){
+			if (ChunkManager.getManager().getChunk(x, z, c.getWorld()).getType() == ClaimType.SAFEZONE){
+				e.setCancelled(true);
 			}
-
+		}
+		
+		if (e.getEntity() instanceof Player){	
 			if (e.getDamager() instanceof Player){
 				Player damaged = (Player) e.getEntity();
 				Player damager = (Player) e.getDamager();
-				Settlement a = SettlementManager.getManager().getPlayerSettlement(damaged.getName());
-				Settlement b = SettlementManager.getManager().getPlayerSettlement(damager.getName());
+				Settlement a = SettlementManager.getManager().getPlayerSettlement(damaged.getUniqueId());
+				Settlement b = SettlementManager.getManager().getPlayerSettlement(damager.getUniqueId());
 				
 				if (a.hasAlly(b)){
 					e.setCancelled(true);
 					damager.sendMessage(MessageType.ALLIANCE_MEMBER_DAMAGE.getMsg());
 				}
 				
-				if (a.equals(b)){
+				if (a.getId() == b.getId()){
 					e.setCancelled(true);
 					damager.sendMessage(MessageType.SETTLEMENT_MEMBER_DAMAGE.getMsg());
 				}
