@@ -31,6 +31,7 @@ public enum MessageType {
 	SETTLEMENT_NO_HOME(PREFIX.getMsg() + "&4Your Settlement doesn't have a home set!"),
 	SETTLEMENT_DELETE_CONFIRM(PREFIX.getMsg() + "&eAre you sure you want to delete your Settlement? Type &c/s delete &eagain to confirm or &c/s cancel &e to cancel"),
 	SETTLEMENT_DELETE_CANCEL(PREFIX.getMsg() + "&eCancelled deletion"),
+	SETTLEMENT_TAX(MessageType.PREFIX.getMsg() + "&7Your Settlement has been charged &b$<cost> &7in land taxes"),
 	CREATE_IN_SETTLEMENT(PREFIX.getMsg() + "&4You cannot be a member of a Settlement when creating a new one!"),
 	NOT_IN_SETTLEMENT(PREFIX.getMsg() + "&4You are not in a Settlement!"),
 	MUST_APPOINT_NEW_LEADER(PREFIX.getMsg() + "&e Please appoint a new leader before leaving!"),

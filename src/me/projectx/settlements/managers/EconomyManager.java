@@ -75,12 +75,15 @@ public class EconomyManager {
 				if (claimCount > 0)
 					cost = claimCount * 7;
 				withdrawFromSettlement(s, cost);
-				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + 
-						"Your Settlement has been charged " + ChatColor.AQUA + "$" + cost + ChatColor.GRAY + " in land taxes");
+				s.sendSettlementMessage(MessageType.SETTLEMENT_TAX.getMsg().replace("<cost>", Double.valueOf(cost).toString()));
 			}else{
 				System.out.println("[Settlements] " + s.getName() + " has no members online. Not charging taxes.");
 			}
 		}
+	}
+	
+	public void calculateAllianceBonus(){
+		
 	}
 
 	/**
