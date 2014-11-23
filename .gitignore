@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 *.pydevproject
 .metadata
 .gradle
@@ -32,3 +33,17 @@ local.properties
 # TeXlipse plugin
 .texlipse
 *.classpath
+=======
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+>>>>>>> dfd42a57c20355ec6f6fe6003bace31ce4b141ab
