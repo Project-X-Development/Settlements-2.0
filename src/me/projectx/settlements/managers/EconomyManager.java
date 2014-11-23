@@ -16,6 +16,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class EconomyManager {
 	
 	private static EconomyManager em = new EconomyManager();
+	private int memberMinCount = 3;
+	private int chunkMinCount = 10;
 	public int taxMinutes = 20;
 	
 	public static EconomyManager getManager(){
@@ -71,13 +73,9 @@ public class EconomyManager {
 		for (Settlement s : SettlementManager.getManager().settlements){
 			if (s.hasOnlineMember()){
 				int claimCount = ChunkManager.getManager().getClaims(s).size();
-				double cost = 0;
-				if (claimCount > 0)
-					cost = claimCount * 7;
+				double cost = (s.getCitizens().size() + 1 >= memberMinCount && claimCount >= chunkMinCount) ? claimCount * 7 : 0;
 				withdrawFromSettlement(s, cost);
 				s.sendSettlementMessage(MessageType.SETTLEMENT_TAX.getMsg().replace("<cost>", Double.valueOf(cost).toString()));
-			}else{
-				System.out.println("[Settlements] " + s.getName() + " has no members online. Not charging taxes.");
 			}
 		}
 	}
