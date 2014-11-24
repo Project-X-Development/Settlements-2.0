@@ -43,7 +43,7 @@ public class DatabaseUtils {
 
 	public static void setupMySQL() throws SQLException {
 		queryOut("CREATE TABLE IF NOT EXISTS settlements(id BIGINT, name varchar(255), "
-				+ "leader varchar(255), description varchar(255), balance BIGINT, deleted tinyint(1));");
+				+ "leader varchar(255), description varchar(255), balance BIGINT, deleted BOOLEAN);");
 		queryOut("CREATE TABLE IF NOT EXISTS citizens(uuid varchar(255), settlement varchar(255), rank varchar(255));");
 		queryOut("CREATE TABLE IF NOT EXISTS sethomes(id BIGINT, world VARCHAR(255), x BIGINT, y BIGINT, z BIGINT, yaw BIGINT, pitch BIGINT);");
 		queryOut("CREATE TABLE IF NOT EXISTS chunks(x BIGINT, z BIGINT, player VARCHAR(255), settlement BIGINT, world VARCHAR(255), type VARCHAR(255));");

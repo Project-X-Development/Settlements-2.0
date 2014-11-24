@@ -52,10 +52,10 @@ public class SettlementManager {
 	public void loadSettlmentsFromDB() throws SQLException {
 		new Thread() {
 			@Override
-			public void run() {
-				ResultSet result = null;
+			public void run() { 
 				try {
-					result = DatabaseUtils.queryIn("SELECT * FROM settlements;");
+					//Load the Settlement
+					ResultSet result = DatabaseUtils.queryIn("SELECT * FROM settlements WHERE deleted=false;");
 					while (result.next()) {
 						String name = result.getString("name");
 						Settlement set = new Settlement(name);
@@ -63,6 +63,8 @@ public class SettlementManager {
 						set.setLeader(result.getString(("leader")));
 						set.setDescription(result.getString("description"));
 						set.setBalance(result.getDouble("balance"));
+						
+						//Load the Settlement members
 						ResultSet citizens = DatabaseUtils.queryIn("SELECT * FROM citizens WHERE settlement='" + set.getName() + "';");
 						while (citizens.next()) {
 							UUID uuid = UUID.fromString(citizens.getString("uuid"));
@@ -76,15 +78,18 @@ public class SettlementManager {
 							}
 							SettlementRuntime.getRuntime().sortMembers(set);
 						}
-
+						
+						//Load the Settlement's home
 						ResultSet homes = DatabaseUtils.queryIn("SELECT * FROM sethomes WHERE id=" + set.getId() + ";");
 						while (homes.next()){
 							set.setHome(new Location(Bukkit.getWorld(homes.getString("world")), homes.getDouble("x"), homes.getDouble("y"),
 									homes.getDouble("z"), homes.getFloat("yaw"), homes.getFloat("pitch")));
 						}
-
+						
+						//Load the Settlement's alliances
 						ResultSet alliances = DatabaseUtils.queryIn("SELECT * From alliances WHERE main=" + set.getId() + ";");
 						while (alliances.next()){
+							ResultSet load = DatabaseUtils.queryIn("SELECT delete FROM settlements WHERE id=" + set.getId() + ";");//TODO
 							set.getAllies().add(alliances.getLong("ally"));
 						}
 						settlements.add(set);
@@ -229,8 +234,7 @@ public class SettlementManager {
 						@Override
 						public void run() {
 							try {
-								DatabaseUtils.queryOut("UPDATE settlements SET deleted='1' WHERE id=" + s.getId() + ";");
-
+								DatabaseUtils.queryOut("UPDATE settlements SET deleted=true WHERE id=" + s.getId() + ";");
 								settlements.remove(s);
 								SettlementRuntime.getRuntime().sortSettlements();
 
