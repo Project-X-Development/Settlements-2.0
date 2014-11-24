@@ -36,7 +36,7 @@ public class SettlementManager {
 
 	/**
 	 * Get an instance of the SettlementManager class
-	 * 
+	 *
 	 * @return SettlementManager class instance
 	 */
 	public static SettlementManager getManager() {
@@ -45,7 +45,7 @@ public class SettlementManager {
 
 	/**
 	 * Load settlements (Call onEnable)
-	 * 
+	 *
 	 * @return Returns true if successful, false otherwise
 	 * @throws SQLException
 	 */
@@ -76,13 +76,13 @@ public class SettlementManager {
 							}
 							SettlementRuntime.getRuntime().sortMembers(set);
 						}
-						
+
 						ResultSet homes = DatabaseUtils.queryIn("SELECT * FROM sethomes WHERE id=" + set.getId() + ";");
 						while (homes.next()){
 							set.setHome(new Location(Bukkit.getWorld(homes.getString("world")), homes.getDouble("x"), homes.getDouble("y"),
 									homes.getDouble("z"), homes.getFloat("yaw"), homes.getFloat("pitch")));
 						}
-						
+
 						ResultSet alliances = DatabaseUtils.queryIn("SELECT * From alliances WHERE main=" + set.getId() + ";");
 						while (alliances.next()){
 							set.getAllies().add(alliances.getLong("ally"));
@@ -100,7 +100,7 @@ public class SettlementManager {
 
 	/**
 	 * Get the settlement of a player
-	 * 
+	 *
 	 * @param uuid: The UUID of the player to get the settlement for.
 	 *<p>
 	 *<b> UUID-based lookup is faster than name-based lookup! </b>
@@ -118,7 +118,7 @@ public class SettlementManager {
 
 	/**
 	 * Get the settlement of a player
-	 * 
+	 *
 	 * @param name: The name of the player to get the settlement for
 	 * <p>
 	 * <b> This is slower than UUID-based lookup! </b>
@@ -137,7 +137,7 @@ public class SettlementManager {
 
 	/**
 	 * Determine if a settlement exists
-	 * 
+	 *
 	 * @param name: The name of the settlement to check
 	 * @return True if the settlement exists
 	 */
@@ -147,7 +147,7 @@ public class SettlementManager {
 
 	/**
 	 * Get a settlement by name
-	 * 
+	 *
 	 * @param name: The name of the settlement to get
 	 * @return The designated settlement. Returns null if it doesn't exist
 	 */
@@ -162,7 +162,7 @@ public class SettlementManager {
 
 	/**
 	 * Get a settlement by id
-	 * 
+	 *
 	 * @param id: The id of the settlement to get
 	 * @return The designated settlement. Returns null if it doesn't exist
 	 */
@@ -179,7 +179,7 @@ public class SettlementManager {
 	 * Create a new settlement. The settlement will only get created if the
 	 * settlement doesn't already exist and if the sender isn't a member of a
 	 * different settlement
-	 * 
+	 *
 	 * @param name: The name of the new settlement
 	 * @param sender: Who issued the creation of the settlement
 	 * @throws SQLException
@@ -213,7 +213,7 @@ public class SettlementManager {
 	/**
 	 * Delete a settlement. Only works if the settlement exists and the sender
 	 * is the leader of the settlement
-	 * 
+	 *
 	 * @param name: The name of the settlement to delete
 	 * @param sender: Who issued the deletion of the settlement
 	 * @throws SQLException
@@ -229,24 +229,7 @@ public class SettlementManager {
 						@Override
 						public void run() {
 							try {
-								DatabaseUtils.queryOut("DELETE FROM settlements WHERE id=" + s.getId() + ";");
-								DatabaseUtils.queryOut("DELETE FROM chunks WHERE settlement=" + s.getId() + ";");
-								DatabaseUtils.queryOut("DELETE FROM citizens WHERE settlement=" + s.getName() + ";");
-								DatabaseUtils.queryOut("DELETE FROM sethomes WHERE id=" + s.getId() + ";");
-
-								List<ClaimedChunk> cc = ChunkManager.getManager().getClaims(s);
-								if (cc != null){
-									for (ClaimedChunk c : cc){
-										ChunkManager.getManager().claimedChunks.remove(c);
-										ChunkManager.getManager().setClaims.remove(s.getName());
-										c = null; //gc collection?
-									}
-									cc = null;
-								}
-
-								if (invitedPlayers.containsValue(s)) {
-									invitedPlayers.remove(s);
-								}
+								DatabaseUtils.queryOut("UPDATE settlements SET deleted='1' WHERE id=" + s.getId() + ";");
 
 								settlements.remove(s);
 								SettlementRuntime.getRuntime().sortSettlements();
@@ -275,7 +258,7 @@ public class SettlementManager {
 	/**
 	 * Delete a settlement. Will work for any settlement, even if the sender
 	 * isn't the leader
-	 * 
+	 *
 	 * @param name: The name of the settlement to delete
 	 * @param sender: Who issued the deletion of the settlement
 	 * @throws SQLException
@@ -324,7 +307,7 @@ public class SettlementManager {
 	/**
 	 * Invite a player to join the Settlement. The command sender must be an
 	 * Officer or higher in the Settlement
-	 * 
+	 *
 	 * @param invite: The player to invite
 	 * @param sender: Who issued the invite
 	 */
@@ -339,8 +322,8 @@ public class SettlementManager {
 						s.sendSettlementMessage(MessageType.PREFIX.getMsg() + send.getName() + ChatColor.GRAY
 								+ " invited " + ChatColor.AQUA + invite + ChatColor.GRAY + " to your Settlement");
 						invite.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + sender.getName()
-								+ ChatColor.GRAY + " invited you to join " + ChatColor.AQUA + s.getName() + ". " 
-								+ ChatColor.GRAY + "Type " + ChatColor.AQUA + "/s accept " + ChatColor.GRAY + " to accept or " 
+								+ ChatColor.GRAY + " invited you to join " + ChatColor.AQUA + s.getName() + ". "
+								+ ChatColor.GRAY + "Type " + ChatColor.AQUA + "/s accept " + ChatColor.GRAY + " to accept or "
 								+ ChatColor.AQUA +  "/s decline" + ChatColor.GRAY + " to decline");
 					} else {
 						sender.sendMessage(MessageType.INVITE_NOT_RANK.getMsg());
@@ -357,7 +340,7 @@ public class SettlementManager {
 	/**
 	 * Accept an invite to a Settlement. Will only work if the player has a
 	 * pending invite
-	 * 
+	 *
 	 * @param player: The player who is accepting the invite
 	 * @throws SQLException
 	 */
@@ -371,7 +354,7 @@ public class SettlementManager {
 				invitedPlayers.remove(p.getUniqueId());
 				DatabaseUtils.queryOut("DELETE FROM citizens WHERE uuid='" + id.toString() + "';");
 				DatabaseUtils.queryOut("INSERT INTO citizens(uuid, settlement, rank) VALUES ('"
-						+ id.toString() + "','" + s.getName() + "','1');");	
+						+ id.toString() + "','" + s.getName() + "','1');");
 				p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully joined " + ChatColor.AQUA
 						+ getPlayerSettlement(id).getName());
 				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + player + ChatColor.GRAY + " joined the Settlement!");
@@ -387,7 +370,7 @@ public class SettlementManager {
 
 	/**
 	 * Determine if a player has a pending invite
-	 * 
+	 *
 	 * @param player: The player to check
 	 * @return True if the player has an invite
 	 */
@@ -397,7 +380,7 @@ public class SettlementManager {
 
 	/**
 	 * Decline an invite to a Settlement. Player must have a valid invite
-	 * 
+	 *
 	 * @param player: The player who is declining the invite
 	 */
 	public void declineInvite(String player) {
@@ -413,7 +396,7 @@ public class SettlementManager {
 
 	/**
 	 * Remove a player from a Settlement
-	 * 
+	 *
 	 * @param name: The player to remove from the Settlement
 	 * @throws SQLException
 	 */
@@ -447,7 +430,7 @@ public class SettlementManager {
 
 	/**
 	 * Kick a player from a Settlement
-	 * 
+	 *
 	 * @param sender: The sender who issued the command
 	 * @param name: The name of the player to kick
 	 * @throws SQLException
@@ -463,7 +446,7 @@ public class SettlementManager {
 					if (p.isOnline()) {
 						((CommandSender) p).sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "You have been kicked from " + ChatColor.AQUA + s.getName());
 					}
-					s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + sender.getName() + ChatColor.GRAY 
+					s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + sender.getName() + ChatColor.GRAY
 							+ " kicked " + ChatColor.AQUA + name + ChatColor.GRAY + " from the Settlement!");
 					DatabaseUtils.queryOut("DELETE FROM citizens WHERE uuid='" + id.toString() + "';");
 					SettlementRuntime.getRuntime().sortMembers(s);
@@ -480,7 +463,7 @@ public class SettlementManager {
 
 	/**
 	 * Set the description for a Settlement
-	 * 
+	 *
 	 * @param sender: Who issued the command
 	 * @param desc: The description for the Settlement
 	 * @throws SQLException
@@ -503,7 +486,7 @@ public class SettlementManager {
 
 	/**
 	 * Ally a Settlement
-	 * 
+	 *
 	 * @param s1: The Settlement that is issuing the request
 	 * @param s2: The name of the Settlement that will be added to s1's allies
 	 * @return True if successful
@@ -514,18 +497,18 @@ public class SettlementManager {
 		if (s != null) {
 			if (s1 != null){
 				//if (allyInvites.containsKey(s.getId()) && allyInvites.get(s.getId()).equals(s1.getId())){
-					s1.addAlly(s);
-					s1.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + s2 + ChatColor.GRAY
-							+ " has been added to your Settlement's alliance!");
-					s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + s.getName() + ChatColor.GRAY
-							+ " has been added to your Settlement's alliance!");
-					allyInvites.remove(s.getId());
-					try {
-						DatabaseUtils.queryOut("INSERT INTO alliances(main, ally) VALUES("+ s1.getId() + ", " + s.getId() + ");");
-						DatabaseUtils.queryOut("INSERT INTO alliances(main, ally) VALUES("+ s.getId() + ", " + s1.getId() + ");");
-					} catch(SQLException e) {
-						e.printStackTrace();
-					} 
+				s1.addAlly(s);
+				s1.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + s2 + ChatColor.GRAY
+						+ " has been added to your Settlement's alliance!");
+				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + s.getName() + ChatColor.GRAY
+						+ " has been added to your Settlement's alliance!");
+				allyInvites.remove(s.getId());
+				try {
+					DatabaseUtils.queryOut("INSERT INTO alliances(main, ally) VALUES("+ s1.getId() + ", " + s.getId() + ");");
+					DatabaseUtils.queryOut("INSERT INTO alliances(main, ally) VALUES("+ s.getId() + ", " + s1.getId() + ");");
+				} catch(SQLException e) {
+					e.printStackTrace();
+				}
 				/*}else{
 					sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.RED + "You don't have any pending alliance requests");
 				}*/
@@ -539,7 +522,7 @@ public class SettlementManager {
 
 	/**
 	 * Remove a Settlement's ally
-	 * 
+	 *
 	 * @param s1: The Settlement issuing the request
 	 * @param s2: The name of the Settlement that will be removed
 	 * @return True if successful
@@ -563,7 +546,7 @@ public class SettlementManager {
 
 	/**
 	 * Display the members of a Settlement in a GUI
-	 * 
+	 *
 	 * @param player: The player who issued the command & will view the GUI
 	 * @param settlement: The Settlement who's members will be listed
 	 */
@@ -604,7 +587,7 @@ public class SettlementManager {
 	 * <p>
 	 * This ensures than no matter what the number is, a GUI's size will always
 	 * be set to a multiple of 9.
-	 * 
+	 *
 	 * @param max: The maximum size of the inventory
 	 * @return The size of the inventory, based on a multiple of 9
 	 */
@@ -618,7 +601,7 @@ public class SettlementManager {
 
 	/**
 	 * List all of the existing Settlements in a GUI
-	 * 
+	 *
 	 * @param player: The player who issued the command and will view the GUI
 	 */
 	public void listSettlements(Player player) {
@@ -637,10 +620,10 @@ public class SettlementManager {
 		}
 		player.openInventory(inv);
 	}
-	
+
 	/**
 	 * Display all if the player's allied Settlements in a GUI
-	 * 
+	 *
 	 * @param player : The player who issued the command and will view the GUI
 	 */
 	public void listAllies(Player player){
@@ -694,9 +677,9 @@ public class SettlementManager {
 				try{
 					if (s.hasHome()){
 						DatabaseUtils.queryOut("DELETE FROM sethomes WHERE id=" + s.getId() + ";"); //shorter to simply DELETE than UPDATE
-					}	
-					DatabaseUtils.queryOut("INSERT INTO sethomes(id, world, x, y, z, yaw, pitch) VALUES(" + s.getId() + ", '" 
-							+ loc.getWorld().getName() + "', " + loc.getX() + ", " + loc.getY() + ", " + loc.getZ() + ", " + loc.getYaw() 
+					}
+					DatabaseUtils.queryOut("INSERT INTO sethomes(id, world, x, y, z, yaw, pitch) VALUES(" + s.getId() + ", '"
+							+ loc.getWorld().getName() + "', " + loc.getX() + ", " + loc.getY() + ", " + loc.getZ() + ", " + loc.getYaw()
 							+ ", " + loc.getPitch() + ");");
 					s.setHome(loc);
 				}catch(SQLException e){
@@ -719,7 +702,7 @@ public class SettlementManager {
 			player.sendMessage(MessageType.NOT_IN_SETTLEMENT.getMsg());
 		}
 	}
-	
+
 	/*public void sendAllianceInvite(Player sender, Settlement invited){
 		Settlement s = getPlayerSettlement(sender.getUniqueId());
 		if (s.isOfficer(sender.getUniqueId()) || s.isLeader(sender.getUniqueId())){
