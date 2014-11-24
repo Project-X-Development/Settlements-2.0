@@ -526,12 +526,11 @@ public class Settlement {
 	 * @return True if there is at least 1 member online
 	 */
 	public boolean hasOnlineMember(){
-		int onlineCount = 0;
 		for (int i = 0; i < memberSize(); i++){
 			if (Bukkit.getOfflinePlayer(getPlayer(i)).isOnline()){
-				onlineCount++;
+				return true;
 			}
 		}
-		return onlineCount >= 1;
+		return false;
 	}
 }
