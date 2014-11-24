@@ -32,6 +32,8 @@ public class Startup {
 		pm.registerEvents(new PlayerMove(), Main.getInstance());
 		pm.registerEvents(new InventoryClick(), Main.getInstance());
 		pm.registerEvents(new EntityExplode(), Main.getInstance());
+		pm.registerEvents(new ChunkLoad(), Main.getInstance());
+		pm.registerEvents(new ChunkUnload(), Main.getInstance());
 
 		Main.getInstance().getCommand("s").setExecutor(new CommandSettlementPlayer());
 		Main.getInstance().getCommand("sa").setExecutor(new CommandSettlementAdmin());
@@ -43,9 +45,9 @@ public class Startup {
 
 		SettlementManager.getManager().loadSettlmentsFromDB();
 
-		ChunkManager.getManager().loadChunks();
+		//ChunkManager.getManager().loadChunks();
 
-		ChunkManager.getManager().verifyClaims();
+		//ChunkManager.getManager().verifyClaims();
 
 		//WarManager.getInstance().loadWarsFromDB();
 
