@@ -1,5 +1,6 @@
 package me.projectx.settlements.managers;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import me.projectx.Economy.Managers.AccountManager;
@@ -19,6 +20,15 @@ public class EconomyManager {
 	private int memberMinCount = 3;
 	private int chunkMinCount = 10;
 	public int taxMinutes = 20;
+	private PreparedStatement update;
+	
+	private EconomyManager(){
+		try{
+			update = DatabaseUtils.getConnection().prepareStatement("UPDATE settlements SET balance=? WHERE id=?;");
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
 	
 	public static EconomyManager getManager(){
 		return em;
@@ -41,7 +51,9 @@ public class EconomyManager {
 					+ ChatColor.GRAY + " deposited " + ChatColor.AQUA + "$" 
 					+ amount + ChatColor.GRAY + " into your Settlement's account!");
 			try {
-				DatabaseUtils.queryOut("UPDATE settlements SET balance=" + s.getBalance() + " WHERE id=" + s.getId() + ";");
+				update.setDouble(1, s.getBalance());
+				update.setInt(2, (int)s.getId());
+				DatabaseUtils.queryOut(update);
 			} catch(SQLException e) {
 				e.printStackTrace();
 			}
@@ -60,7 +72,9 @@ public class EconomyManager {
 	public void withdrawFromSettlement(Settlement s, double amount){
 		s.setBalance(s.getBalance() - amount);
 		try {
-			DatabaseUtils.queryOut("UPDATE settlements SET balance=" + s.getBalance() + " WHERE id=" + s.getId() + ";");
+			update.setDouble(1, s.getBalance());
+			update.setInt(2, (int)s.getId());
+			DatabaseUtils.queryOut(update);
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}

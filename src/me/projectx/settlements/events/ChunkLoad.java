@@ -1,18 +1,19 @@
 package me.projectx.settlements.events;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import me.projectx.Economy.Utils.DatabaseUtils;
 import me.projectx.settlements.Main;
 import me.projectx.settlements.enums.ClaimType;
 import me.projectx.settlements.managers.ChunkManager;
 import me.projectx.settlements.managers.SettlementManager;
 import me.projectx.settlements.models.ClaimedChunk;
 import me.projectx.settlements.models.Settlement;
+import me.projectx.settlements.utils.DatabaseUtils;
 
 import org.bukkit.Chunk;
 import org.bukkit.event.EventHandler;
@@ -21,9 +22,18 @@ import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class ChunkLoad implements Listener {
-	
+
 	private ChunkManager cm = ChunkManager.getManager();
-	
+	private PreparedStatement select_chunks;
+
+	public ChunkLoad(){
+		try{
+			select_chunks = DatabaseUtils.getConnection().prepareStatement("SELECT * FROM chunks WHERE x=? AND z=?;");
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
 	@EventHandler
 	public void onLoad(ChunkLoadEvent e){
 		final Chunk c = e.getChunk();
@@ -31,7 +41,9 @@ public class ChunkLoad implements Listener {
 			@Override
 			public void run() {
 				try {
-					ResultSet result = DatabaseUtils.queryIn("SELECT * FROM chunks WHERE x=" + c.getX() + "AND z=" + c.getZ() + ";");
+					select_chunks.setInt(1, c.getX());
+					select_chunks.setInt(2, c.getZ());
+					ResultSet result = DatabaseUtils.queryIn(select_chunks);
 					int x = result.getInt("x");
 					int z = result.getInt("z");
 					UUID player = null;

@@ -1,6 +1,7 @@
 package me.projectx.settlements.utils;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -42,13 +43,13 @@ public class DatabaseUtils {
 	}
 
 	public static void setupMySQL() throws SQLException {
-		queryOut("CREATE TABLE IF NOT EXISTS settlements(id BIGINT, name varchar(255), "
-				+ "leader varchar(255), description varchar(255), balance BIGINT, deleted BOOLEAN);");
-		queryOut("CREATE TABLE IF NOT EXISTS citizens(uuid varchar(255), settlement varchar(255), rank varchar(255));");
-		queryOut("CREATE TABLE IF NOT EXISTS sethomes(id BIGINT, world VARCHAR(255), x BIGINT, y BIGINT, z BIGINT, yaw BIGINT, pitch BIGINT);");
-		queryOut("CREATE TABLE IF NOT EXISTS chunks(x BIGINT, z BIGINT, player VARCHAR(255), settlement BIGINT, world VARCHAR(255), type VARCHAR(255));");
-		queryOut("CREATE TABLE IF NOT EXISTS alliances(main BIGINT, ally BIGINT);");
-		queryOut("CREATE TABLE IF NOT EXISTS wars(setA VARCHAR(255), setB VARCHAR(255));");
+		queryOut(con.prepareStatement("CREATE TABLE IF NOT EXISTS settlements(id BIGINT, name varchar(255), "
+				+ "leader varchar(255), description varchar(255), balance BIGINT, deleted BOOLEAN);"));
+		queryOut(con.prepareStatement("CREATE TABLE IF NOT EXISTS citizens(uuid varchar(255), settlement varchar(255), rank varchar(255));"));
+		queryOut(con.prepareStatement("CREATE TABLE IF NOT EXISTS sethomes(id BIGINT, world VARCHAR(255), x BIGINT, y BIGINT, z BIGINT, yaw BIGINT, pitch BIGINT);"));
+		queryOut(con.prepareStatement("CREATE TABLE IF NOT EXISTS chunks(x BIGINT, z BIGINT, player VARCHAR(255), settlement BIGINT, world VARCHAR(255), type VARCHAR(255));"));
+		queryOut(con.prepareStatement("CREATE TABLE IF NOT EXISTS alliances(main BIGINT, ally BIGINT);"));
+		queryOut(con.prepareStatement("CREATE TABLE IF NOT EXISTS wars(setA VARCHAR(255), setB VARCHAR(255));"));
 	}
 
 	public static void closeConnection() {
@@ -69,20 +70,18 @@ public class DatabaseUtils {
 	}
 
 	// Query database using SQL Syntax
-	public static ResultSet queryIn(String query) throws SQLException {
-		Statement statement = con.createStatement();
-		ResultSet result = statement.executeQuery(query);
+	public static ResultSet queryIn(PreparedStatement ps) throws SQLException {
+		ResultSet result = ps.executeQuery();
 		return result;
 	}
 
-	public static void queryOut(final String query) throws SQLException {
+	public static void queryOut(final PreparedStatement ps) throws SQLException {
 		new Thread() {
 			@Override
 			public void run() {
 				Statement statement;
 				try {
-					statement = con.createStatement();
-					statement.executeUpdate(query);
+					ps.execute();
 					this.interrupt();
 				} catch (SQLException e) {
 					e.printStackTrace();

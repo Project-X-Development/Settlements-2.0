@@ -1,5 +1,6 @@
 package me.projectx.settlements.managers;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -21,13 +22,24 @@ public class WarManager {
 	private static WarManager instance;
 
 	private final Map<Settlement, Settlement> requests = new HashMap<Settlement, Settlement>();
+	private PreparedStatement selectall, delete, add;
 
+	private WarManager(){
+		try{
+			selectall = DatabaseUtils.getConnection().prepareStatement("SELECT * FROM wars;");
+			delete = DatabaseUtils.getConnection().prepareStatement("DELETE FROM wars WHERE setA=? AND setB=?;");
+			add = DatabaseUtils.getConnection().prepareStatement("INSERT INTO wars(setA, setB) VALUES (?,?);");
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
 	public static WarManager getInstance() {
 		return instance;
 	}
 
 	public void loadWarsFromDB() throws SQLException{
-		ResultSet res = DatabaseUtils.queryIn("SELECT * FROM wars;");
+		ResultSet res = DatabaseUtils.queryIn(selectall);
 		while (res.next()){
 			String setAstr = res.getString("setA");
 			String setBstr = res.getString("setB");
@@ -100,7 +112,9 @@ public class WarManager {
 		w.getStarter().sendSettlementMessage(ChatColor.GREEN + "The war with " + w.getAccepter().getName() + " has ended! ☮");
 		w.getAccepter().sendSettlementMessage(ChatColor.GREEN + "The war with " + w.getStarter().getName() + " has ended! ☮");
 		War.instances.remove(w);
-		DatabaseUtils.queryOut("DELETE FROM wars WHERE setA='" + w.getStarter() + "' AND setB='" + w.getAccepter() + "';");
+		delete.setString(1, w.getStarter().getName());
+		delete.setString(2, w.getAccepter().getName());
+		DatabaseUtils.queryOut(delete);
 	}
 
 	public void sendRequest(Settlement sender, Settlement set) {
@@ -129,7 +143,9 @@ public class WarManager {
 							+ " is now at war with your settlement!");
 					new War(temp, set);
 					requests.remove(temp);
-					DatabaseUtils.queryOut("INSERT INTO wars(setA, setB) VALUES ('" + temp.getName() + "', '" + set.getName() + "');");
+					add.setString(1, temp.getName());
+					add.setString(2, set.getName());
+					DatabaseUtils.queryOut(add);
 					break;
 				}
 			}

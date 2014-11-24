@@ -1,5 +1,6 @@
 package me.projectx.settlements.managers;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -29,6 +30,17 @@ public class ChunkManager {
 	public Map<String, ClaimType> autoClaim = new HashMap<String, ClaimType>();
 	private final int BASE_CHUNK_COST = 50;
 	private static ChunkManager cm = new ChunkManager();
+	private PreparedStatement claim, unclaim, select_chunks;
+	
+	private ChunkManager(){
+		try{
+			claim = DatabaseUtils.getConnection().prepareStatement("INSERT INTO chunks(x, z, player, settlement, world, type) VALUES(?,?,?,?,?,?);");
+			unclaim = DatabaseUtils.getConnection().prepareStatement("DELETE FROM chunks WHERE x=? AND z=?;");
+			select_chunks = DatabaseUtils.getConnection().prepareStatement("SELECT * FROM chunks WHERE x=? AND z=?;");
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
 	
 	public static ChunkManager getManager(){
 		return cm;
@@ -63,8 +75,13 @@ public class ChunkManager {
 								}
 								
 								try {
-									DatabaseUtils.queryOut("INSERT INTO chunks(x, z, player, settlement, world, type) VALUES('"
-											+ x + "', '" + z + "','" + owner + "','" + s.getId() +"', '" + world.getName() + "','" + type + "');");
+									claim.setInt(1, x);
+									claim.setInt(2, z);
+									claim.setString(3, owner.toString());
+									claim.setLong(4, s.getId());
+									claim.setString(5, world.getName());
+									claim.setString(6, type.name());
+									DatabaseUtils.queryOut(claim);
 								} catch(SQLException e) {
 									e.printStackTrace();
 								}
@@ -94,8 +111,13 @@ public class ChunkManager {
 						}
 						
 						try {
-							DatabaseUtils.queryOut("INSERT INTO chunks(x, z, player, settlement, world, type) VALUES('"
-									+ x + "', '" + z + "','" + null + "','" + -1 +"', '" + world.getName() + "','" + type + "');");
+							claim.setInt(1, x);
+							claim.setInt(2, z);
+							claim.setString(3, null);
+							claim.setInt(4, -1);
+							claim.setString(5, world.getName());
+							claim.setString(6, type.name());
+							DatabaseUtils.queryOut(claim);
 						} catch(SQLException e) {
 							e.printStackTrace();
 						}
@@ -122,7 +144,9 @@ public class ChunkManager {
 									l.remove(cc);
 									claimedChunks.remove(cc);
 									try {
-										DatabaseUtils.queryOut("DELETE FROM chunks WHERE x=" + cc.getX() + " AND z=" + cc.getZ() + ";");
+										unclaim.setInt(1, cc.getX());
+										unclaim.setInt(2, cc.getZ());
+										DatabaseUtils.queryOut(unclaim);
 									} catch(SQLException e) {
 										e.printStackTrace();
 									}
@@ -143,7 +167,9 @@ public class ChunkManager {
 							list.remove(cc);
 							claimedChunks.remove(cc);
 							try {
-								DatabaseUtils.queryOut("DELETE FROM chunks WHERE x=" + cc.getX() + " AND z=" + cc.getZ() + ";");
+								unclaim.setInt(1, cc.getX());
+								unclaim.setInt(2, cc.getZ());
+								DatabaseUtils.queryOut(unclaim);
 							} catch(SQLException e) {
 								e.printStackTrace();
 							}
@@ -159,7 +185,9 @@ public class ChunkManager {
 							list.remove(cc);
 							claimedChunks.remove(cc);
 							try {
-								DatabaseUtils.queryOut("DELETE FROM chunks WHERE x=" + cc.getX() + " AND z=" + cc.getZ() + ";");
+								unclaim.setInt(1, cc.getX());
+								unclaim.setInt(2, cc.getZ());
+								DatabaseUtils.queryOut(unclaim);
 							} catch(SQLException e) {
 								e.printStackTrace();
 							}
@@ -205,7 +233,7 @@ public class ChunkManager {
 			public void run() {
 				try {
 					verifyClaims();
-					ResultSet result = DatabaseUtils.queryIn("SELECT * FROM chunks;");
+					ResultSet result = DatabaseUtils.queryIn(select_chunks);
 					while (result.next()){
 						int x = result.getInt("x");
 						int z = result.getInt("z");

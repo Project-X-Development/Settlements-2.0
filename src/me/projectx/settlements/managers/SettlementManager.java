@@ -1,5 +1,6 @@
 package me.projectx.settlements.managers;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -33,7 +34,38 @@ public class SettlementManager {
 	private Map<UUID, String> invitedPlayers = new HashMap<UUID, String>();
 	private Map<Long, Long> allyInvites = new HashMap<Long, Long>();
 	private static SettlementManager sm = new SettlementManager();
+	private PreparedStatement selectnotdeleted, getcitizens, gethomes, createset, setdiscription, setdelete,
+	deletesettlement, deletechunks, deletecitizens, deletehomes,
+	removecitizen, addcitizen, setleader,
+	addally, removeally,
+	setrank,
+	deletehome, sethome;
 
+	private SettlementManager(){
+		try{
+			selectnotdeleted = DatabaseUtils.getConnection().prepareStatement("SELECT * FROM settlements WHERE deleted=false;");
+			getcitizens = DatabaseUtils.getConnection().prepareStatement("SELECT * FROM citizens WHERE settlement=?;");
+			gethomes = DatabaseUtils.getConnection().prepareStatement("SELECT * FROM sethomes WHERE id=?;");
+			createset = DatabaseUtils.getConnection().prepareStatement("INSERT INTO settlements (id, name, leader)" + "VALUES (?,?,?);");
+			setdiscription = DatabaseUtils.getConnection().prepareStatement("UPDATE settlements SET description=? WHERE id=?;");
+			setdelete = DatabaseUtils.getConnection().prepareStatement("UPDATE settlements SET deleted=true WHERE id=?;");
+			deletesettlement = DatabaseUtils.getConnection().prepareStatement("DELETE FROM settlements WHERE id=?;");
+			deletechunks = DatabaseUtils.getConnection().prepareStatement("DELETE FROM chunks WHERE id=?;");
+			deletecitizens = DatabaseUtils.getConnection().prepareStatement("DELETE FROM citizens WHERE id=?;");
+			deletehomes = DatabaseUtils.getConnection().prepareStatement("DELETE FROM sethomes WHERE id=?;");
+			removecitizen = DatabaseUtils.getConnection().prepareStatement("DELETE FROM citizens WHERE uuid=?;");
+			addcitizen = DatabaseUtils.getConnection().prepareStatement("INSERT INTO citizens(uuid, settlement, rank) VALUES (?,?,?);");
+			setleader = DatabaseUtils.getConnection().prepareStatement("UPDATE settlements SET leader=? WHERE name=?;");
+			addally = DatabaseUtils.getConnection().prepareStatement("INSERT INTO alliances(main, ally) VALUES(?, ?);");
+			removeally = DatabaseUtils.getConnection().prepareStatement("DELTE FROM alliances WHERE main=?, ally=?;");
+			setrank = DatabaseUtils.getConnection().prepareStatement("UPDATE citizens SET rank=? WHERE uuid=?;");
+			deletehome = DatabaseUtils.getConnection().prepareStatement("DELETE FROM sethomes WHERE id=?;");
+			sethome = DatabaseUtils.getConnection().prepareStatement("INSERT INTO sethomes(id, world, x, y, z, yaw, pitch) VALUES(?,?,?,?,?,?,?);");
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * Get an instance of the SettlementManager class
 	 *
@@ -55,7 +87,7 @@ public class SettlementManager {
 			public void run() { 
 				try {
 					//Load the Settlement
-					ResultSet result = DatabaseUtils.queryIn("SELECT * FROM settlements WHERE deleted=false;");
+					ResultSet result = DatabaseUtils.queryIn(selectnotdeleted);
 					while (result.next()) {
 						String name = result.getString("name");
 						Settlement set = new Settlement(name);
@@ -65,7 +97,8 @@ public class SettlementManager {
 						set.setBalance(result.getDouble("balance"));
 						
 						//Load the Settlement members
-						ResultSet citizens = DatabaseUtils.queryIn("SELECT * FROM citizens WHERE settlement='" + set.getName() + "';");
+						getcitizens.setString(1, set.getName());
+						ResultSet citizens = DatabaseUtils.queryIn(getcitizens);
 						while (citizens.next()) {
 							UUID uuid = UUID.fromString(citizens.getString("uuid"));
 							String rank = citizens.getString("rank");
@@ -80,16 +113,18 @@ public class SettlementManager {
 						}
 						
 						//Load the Settlement's home
-						ResultSet homes = DatabaseUtils.queryIn("SELECT * FROM sethomes WHERE id=" + set.getId() + ";");
+						gethomes.setLong(1, set.getId());
+						ResultSet homes = DatabaseUtils.queryIn(gethomes);
 						while (homes.next()){
 							set.setHome(new Location(Bukkit.getWorld(homes.getString("world")), homes.getDouble("x"), homes.getDouble("y"),
 									homes.getDouble("z"), homes.getFloat("yaw"), homes.getFloat("pitch")));
 						}
 						
 						//Load the Settlement's alliances
-						ResultSet alliances = DatabaseUtils.queryIn("SELECT * From alliances WHERE main=" + set.getId() + ";");
+						gethomes.setLong(1, set.getId());
+						ResultSet alliances = DatabaseUtils.queryIn(gethomes);
 						while (alliances.next()){
-							ResultSet load = DatabaseUtils.queryIn("SELECT delete FROM settlements WHERE id=" + set.getId() + ";");//TODO
+							//ResultSet load = DatabaseUtils.queryIn("SELECT delete FROM settlements WHERE id=" + set.getId() + ";");//TODO
 							set.getAllies().add(alliances.getLong("ally"));
 						}
 						settlements.add(set);
@@ -198,11 +233,15 @@ public class SettlementManager {
 				settlements.add(s);
 				List<ClaimedChunk> cc = new ArrayList<ClaimedChunk>();
 				ChunkManager.getManager().setClaims.put(name, cc);
-				DatabaseUtils.queryOut("INSERT INTO settlements (id, name, leader)" + "VALUES ('" + s.getId() + "','" + s.getName()
-						+ "','" + s.getLeader().toString() + "');");
+				createset.setLong(1, s.getId());
+				createset.setString(2, s.getName());
+				createset.setString(3, s.getLeader().toString());
+				DatabaseUtils.queryOut(createset);
 				String desc = "Default Settlement Description";
 				s.setDescription(desc);
-				DatabaseUtils.queryOut("UPDATE settlements SET description='" + desc + "' WHERE id=" + s.getId() + ";");
+				setdiscription.setString(1, desc);
+				setdiscription.setLong(2, s.getId());
+				DatabaseUtils.queryOut(setdiscription);
 				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully created " + ChatColor.AQUA + s.getName());
 				sender.sendMessage(ChatColor.GRAY + "You can now set a description by doing " + ChatColor.AQUA + "/s desc <description>");
 				sender.sendMessage(ChatColor.GRAY + "For more things you can do, type " + ChatColor.AQUA + "/s");
@@ -234,7 +273,8 @@ public class SettlementManager {
 						@Override
 						public void run() {
 							try {
-								DatabaseUtils.queryOut("UPDATE settlements SET deleted=true WHERE id=" + s.getId() + ";");
+								setdelete.setLong(1, s.getId());
+								DatabaseUtils.queryOut(setdelete);
 								settlements.remove(s);
 								SettlementRuntime.getRuntime().sortSettlements();
 
@@ -274,10 +314,14 @@ public class SettlementManager {
 				@Override
 				public void run() {
 					try {
-						DatabaseUtils.queryOut("DELETE FROM settlements WHERE id=" + s.getId() + ";");
-						DatabaseUtils.queryOut("DELETE FROM chunks WHERE settlement='" + s.getId() + "';");
-						DatabaseUtils.queryOut("DELETE FROM citizens WHERE settlement=" + s.getName() + ";");
-						DatabaseUtils.queryOut("DELETE FROM sethomes WHERE id=" + s.getId() + ";");
+						deletesettlement.setLong(1, s.getId());
+						DatabaseUtils.queryOut(deletesettlement);
+						deletechunks.setLong(1, s.getId());
+						DatabaseUtils.queryOut(deletechunks);
+						deletecitizens.setLong(1, s.getId());
+						DatabaseUtils.queryOut(deletecitizens);
+						deletehomes.setLong(1, s.getId());
+						DatabaseUtils.queryOut(deletehomes);
 
 						List<ClaimedChunk> cc = ChunkManager.getManager().getClaims(s);
 						if (cc != null){
@@ -356,9 +400,12 @@ public class SettlementManager {
 				final Settlement s = getSettlement(invitedPlayers.get(id));
 				s.giveCitizenship(id);
 				invitedPlayers.remove(p.getUniqueId());
-				DatabaseUtils.queryOut("DELETE FROM citizens WHERE uuid='" + id.toString() + "';");
-				DatabaseUtils.queryOut("INSERT INTO citizens(uuid, settlement, rank) VALUES ('"
-						+ id.toString() + "','" + s.getName() + "','1');");
+				removecitizen.setString(1, id.toString());
+				DatabaseUtils.queryOut(removecitizen);
+				addcitizen.setString(1, id.toString());
+				addcitizen.setString(2, s.getName());
+				addcitizen.setInt(3, 1);
+				DatabaseUtils.queryOut(addcitizen);
 				p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully joined " + ChatColor.AQUA
 						+ getPlayerSettlement(id).getName());
 				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + player + ChatColor.GRAY + " joined the Settlement!");
@@ -413,10 +460,13 @@ public class SettlementManager {
 				p.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Successfully left " + ChatColor.AQUA + s.getName());
 				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + name + ChatColor.GRAY + " left the Settlement :(");
 				s.revokeCitizenship(p.getUniqueId());
-				DatabaseUtils.queryOut("DELETE FROM citizens WHERE uuid='" + id.toString() + "';");
+				removecitizen.setString(1, id.toString());
+				DatabaseUtils.queryOut(removecitizen);
 				if (s.getQueuedLeader() != null){
 					s.setLeader(s.getQueuedLeader());
-					DatabaseUtils.queryOut("UPDATE settlements SET leader='" + s.getQueuedLeader().toString() + "' WHERE name='" + s.getName() + "';");
+					setleader.setString(1, s.getQueuedLeader().toString());
+					setleader.setString(2, s.getName());
+					DatabaseUtils.queryOut(setleader);
 					s.setQueuedLeader(null);
 				}
 				SettlementRuntime.getRuntime().sortMembers(s);
@@ -452,7 +502,8 @@ public class SettlementManager {
 					}
 					s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + sender.getName() + ChatColor.GRAY
 							+ " kicked " + ChatColor.AQUA + name + ChatColor.GRAY + " from the Settlement!");
-					DatabaseUtils.queryOut("DELETE FROM citizens WHERE uuid='" + id.toString() + "';");
+					removecitizen.setString(1, id.toString());
+					DatabaseUtils.queryOut(removecitizen);
 					SettlementRuntime.getRuntime().sortMembers(s);
 				} else {
 					sender.sendMessage(MessageType.KICK_NOT_LEADER.getMsg());
@@ -479,7 +530,9 @@ public class SettlementManager {
 			if (s.isOfficer(p.getUniqueId()) || s.isLeader(p.getUniqueId())) {
 				s.setDescription(desc);
 				sender.sendMessage(MessageType.PREFIX.getMsg() + ChatColor.GRAY + "Set your Settlement's description to " + ChatColor.AQUA + desc);
-				DatabaseUtils.queryOut("UPDATE settlements SET description='" + desc + "' WHERE id=" + s.getId() + ";");
+				setdiscription.setString(1, desc);
+				setdiscription.setLong(2, s.getId());
+				DatabaseUtils.queryOut(setdiscription);
 			} else {
 				sender.sendMessage(MessageType.DESCRIPTION_NOT_RANK.getMsg());
 			}
@@ -508,8 +561,12 @@ public class SettlementManager {
 						+ " has been added to your Settlement's alliance!");
 				allyInvites.remove(s.getId());
 				try {
-					DatabaseUtils.queryOut("INSERT INTO alliances(main, ally) VALUES("+ s1.getId() + ", " + s.getId() + ");");
-					DatabaseUtils.queryOut("INSERT INTO alliances(main, ally) VALUES("+ s.getId() + ", " + s1.getId() + ");");
+					addally.setLong(1, s1.getId());
+					addally.setLong(2, s.getId());
+					DatabaseUtils.queryOut(addally);
+					addally.setLong(1, s.getId());
+					addally.setLong(2, s1.getId());
+					DatabaseUtils.queryOut(addally);
 				} catch(SQLException e) {
 					e.printStackTrace();
 				}
@@ -536,8 +593,12 @@ public class SettlementManager {
 		if (s1.hasAlly(s)) {
 			s1.removeAlly(s);
 			try {
-				DatabaseUtils.queryOut("DELTE FROM alliances WHERE main=" + s1.getId() + ", ally=" + s.getId() + ";");
-				DatabaseUtils.queryOut("DELTE FROM alliances WHERE main=" + s.getId() + ", ally=" + s1.getId() + ";");
+				removeally.setLong(1, s1.getId());
+				removeally.setLong(2, s.getId());
+				DatabaseUtils.queryOut(removeally);
+				removeally.setLong(1, s.getId());
+				removeally.setLong(2, s1.getId());
+				DatabaseUtils.queryOut(removeally);
 			} catch(SQLException e) {
 				e.printStackTrace();
 			}
@@ -659,7 +720,9 @@ public class SettlementManager {
 				s.sendSettlementMessage(MessageType.PREFIX.getMsg() + ChatColor.AQUA + player.getName() +
 						ChatColor.GRAY + " has been promoted to " + ChatColor.BLUE + "Officer");
 				try {
-					DatabaseUtils.queryOut("UPDATE citizens SET rank=2 WHERE uuid=" + id + ";");
+					setrank.setInt(1, 2);
+					setrank.setString(2, id.toString());
+					DatabaseUtils.queryOut(setrank);
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -680,11 +743,17 @@ public class SettlementManager {
 				s.sendSettlementMessage("New home location set!"); //temp msg
 				try{
 					if (s.hasHome()){
-						DatabaseUtils.queryOut("DELETE FROM sethomes WHERE id=" + s.getId() + ";"); //shorter to simply DELETE than UPDATE
+						deletehome.setLong(1, s.getId());
+						DatabaseUtils.queryOut(deletehome); //shorter to simply DELETE than UPDATE
 					}
-					DatabaseUtils.queryOut("INSERT INTO sethomes(id, world, x, y, z, yaw, pitch) VALUES(" + s.getId() + ", '"
-							+ loc.getWorld().getName() + "', " + loc.getX() + ", " + loc.getY() + ", " + loc.getZ() + ", " + loc.getYaw()
-							+ ", " + loc.getPitch() + ");");
+					sethome.setLong(1, s.getId());
+					sethome.setString(2, loc.getWorld().getName());
+					sethome.setDouble(3, loc.getX());
+					sethome.setDouble(4, loc.getY());
+					sethome.setDouble(5, loc.getZ());
+					sethome.setFloat(6, loc.getYaw());
+					sethome.setFloat(7, loc.getPitch());
+					DatabaseUtils.queryOut(sethome);
 					s.setHome(loc);
 				}catch(SQLException e){
 					e.printStackTrace();
